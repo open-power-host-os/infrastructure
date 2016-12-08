@@ -1,0 +1,15 @@
+---
+- name: Install required packages
+  package: name={{item}} state=present
+  with_items:
+    # Required when installing Jenkins web UI over a headless Java
+    - dejavu-sans-fonts
+    # Git version control system (VCS) client
+    # Needed to checkout code used by jobs run on Jenkins master
+    - git
+    # Java Runtime Environment. Jenkins master dependency
+    - java-1.8.0-openjdk-headless
+    # provide HTTPS
+    - nginx
+  tags:
+    - setup

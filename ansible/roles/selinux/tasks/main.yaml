@@ -1,0 +1,5 @@
+---
+- name: Set SELinux to Permissive
+  selinux: policy=targeted state=permissive
+  tags:
+    - setup

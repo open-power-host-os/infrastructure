@@ -1,0 +1,25 @@
+---
+- name: Install required packages
+  package: name={{item}} state=present
+  with_items:
+    # Git version control system (VCS) client
+    - git
+    # Uncompress sources
+    - bzip2
+    # Create YUM repositories with the built packages
+    - createrepo
+    # Git API for Python
+    - GitPython
+    # Build packages in a chroot
+    - mock
+    # YAML API for Python
+    - PyYAML
+    # SVN version control system (VCS) client
+    - svn
+    # Download sources
+    - wget
+    # Utils to build RPMs and manage spec files
+    - rpm-build
+    - rpmdevtools
+  tags:
+    - setup

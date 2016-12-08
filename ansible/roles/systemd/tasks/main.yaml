@@ -1,0 +1,15 @@
+---
+- name: Configure jenkins.service
+  template:
+    src=jenkins.service dest=/etc/systemd/system/jenkins.service
+    owner=root group=root mode=0644
+  notify:
+    - reload systemd
+    - restart jenkins
+  tags:
+    - setup
+
+- name: Enable jenkins service
+  service: name=jenkins enabled=yes
+  tags:
+    - setup

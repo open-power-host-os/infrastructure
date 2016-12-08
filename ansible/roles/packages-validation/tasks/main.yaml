@@ -1,0 +1,19 @@
+---
+- name: Install required packages
+  package: name={{item}} state=present
+  with_items:
+    # Python package management system
+    - python-pip
+  tags:
+    - setup
+
+- name: Install required python packages
+  pip: name={{item}} state=present
+  with_items:
+    # Python code linter
+    - pylint
+    # Unit tests for Python
+    - nose
+    - nose-parameterized
+  tags:
+    - setup

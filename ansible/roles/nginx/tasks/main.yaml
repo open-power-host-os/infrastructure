@@ -1,0 +1,37 @@
+---
+- name: Create nginx directories
+  file:
+    path={{item}} state=directory owner=root group=root mode=0755
+  with_items:
+    - /etc/nginx/ssl
+    - /etc/nginx/conf.d
+  tags:
+    - setup
+
+- name: Create SSL certificate and private key
+  command: >
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048
+    -subj /CN={{ansible_fqdn}}
+    -keyout {{nginx_ssl_certificate_key}}
+    -out {{nginx_ssl_certificate}}
+    creates="{{nginx_ssl_certificate}}"
+  tags:
+    - setup
+
+- name: Configure nginx.conf and jenkins.conf
+  template:
+    src={{item.src}} dest={{item.dest}}
+    owner={{item.owner}} group={{item.group}} mode={{item.mode}}
+  with_items:
+    - { src: jenkins.conf, dest: /etc/nginx/conf.d/jenkins.conf,
+        owner: root, group: root, mode: 0644 }
+    - { src: nginx.conf, dest: /etc/nginx/nginx.conf,
+        owner: root, group: root, mode: 0644 }
+  notify: restart nginx
+  tags:
+    - setup
+
+- name: Enable nginx service
+  service: name=nginx state=started enabled=yes
+  tags:
+    - setup

@@ -1,0 +1,34 @@
+---
+- name: Create Host OS build directories
+  file:
+    name={{item.name}} group={{item.group}}
+    mode={{item.mode}} state=directory
+  with_items:
+    - { name: /var/lib/host-os, group: mock, mode: "0775" }
+    - { name: /var/log/host-os, group: mock, mode: "0775" }
+  tags:
+    - setup
+
+- name: Configure SSH key to upload to remote server
+  copy:
+    src={{upload_server_user_private_ssh_key_file_path}}
+    dest="{{builder_home_dir}}/.ssh/{{upload_server_user_name}}_id_rsa"
+    owner={{builder_user_name}} group={{builder_user_name}} mode=0600
+  tags:
+    - setup
+
+- name: Configure SSH key to push to GitHub repository
+  copy:
+    src={{github_user_private_ssh_key_file_path}}
+    dest="{{builder_home_dir}}/.ssh/{{github_bot_user_name}}_id_rsa"
+    owner={{builder_user_name}} group={{builder_user_name}} mode=0600
+  tags:
+    - setup
+
+- name: Configure SSH to push to GitHub repository
+  template:
+    src=github_ssh_config.j2
+    dest="{{builder_home_dir}}/.ssh/config"
+    owner={{builder_user_name}} group={{builder_user_name}} mode=0600
+  tags:
+    - setup

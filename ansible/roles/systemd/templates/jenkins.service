@@ -1,0 +1,15 @@
+# /etc/systemd/system/jenkins.service
+#
+# Installed by Ansible on {{ansible_date_time.date}} at {{ansible_date_time.time}}.
+# WARNING: Any change to this file can be lost!
+
+[Unit]
+Description=Jenkins Daemon
+
+[Service]
+Type=forking
+ExecStart={{jenkins_bin_dir}}/bin/jenkinsd
+User=jenkins
+
+[Install]
+WantedBy=multi-user.target

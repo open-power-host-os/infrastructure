@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>REPOSITORY_URL</name>
+          <description>Repository to download the DSL job descriptors.</description>
+          <defaultValue>https://github.com/{{github_organization_name}}/infrastructure.git</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>REPOSITORY_COMMIT</name>
+          <description>Commit ID to checkout from the repository.</description>
+          <defaultValue>master</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>JOB_DESCRIPTORS_FILES</name>
+          <description>Path to DSL job descriptors.</description>
+          <defaultValue>jenkins_jobs/*.groovy</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_ORGANIZATION_NAME</name>
+          <description>GitHub organization from where the Host OS repositories will be checked out.</description>
+          <defaultValue>{{github_organization_name}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>CENTOS_INTERNAL_MIRROR_BASE_URL</name>
+          <description>Base URL to the CentOS YUM repository internal mirror. Empty to use base repository.</description>
+          <defaultValue>{{centos_internal_mirror_url_prefix}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_BOT_NAME</name>
+          <description>Name of the GitHub user to create commits automatically.</description>
+          <defaultValue>{{github_bot_name}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_BOT_USER_NAME</name>
+          <description>User name of the GitHub user to create commits automatically.</description>
+          <defaultValue>{{github_bot_user_name}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_BOT_EMAIL</name>
+          <description>Email of the GitHub user to create commits automatically</description>
+          <defaultValue>{{github_bot_email}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GHPRB_ADMIN_USER</name>
+          <description>GitHub user allowed to start tests with the Jenkins GitHub Pull Request Builder plugin.</description>
+          <defaultValue>{{ghprb_admin_user}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GHPRB_ADMIN_ORGANIZATION</name>
+          <description>GitHub organization whose users are allowed to start tests with the Jenkins GitHub Pull Request Builder plugin.</description>
+          <defaultValue>{{ghprb_admin_organization}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UPLOAD_SERVER_HOST_NAME</name>
+          <description>Host name of the target server to upload build results.</description>
+          <defaultValue>{{upload_server_host_name}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UPLOAD_SERVER_USER_NAME</name>
+          <description>User name of the target server to upload build results.</description>
+          <defaultValue>{{upload_server_user_name}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UPLOAD_SERVER_BUILDS_DIR</name>
+          <description>Directory in the target server to upload build results.</description>
+          <defaultValue>{{upload_server_builds_dir_path}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>UPLOAD_SERVER_WEEKLY_DIR</name>
+          <description>Directory in the target server to upload weekly build results.</description>
+          <defaultValue>{{upload_server_weekly_dir_path}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.0.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>$REPOSITORY_URL</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>$REPOSITORY_COMMIT</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <assignedNode>master</assignedNode>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.53">
+      <targets>$JOB_DESCRIPTORS_FILES</targets>
+      <usingScriptText>false</usingScriptText>
+      <ignoreExisting>false</ignoreExisting>
+      <ignoreMissingFiles>false</ignoreMissingFiles>
+      <failOnMissingPlugin>false</failOnMissingPlugin>
+      <unstableOnDeprecation>false</unstableOnDeprecation>
+      <removedJobAction>IGNORE</removedJobAction>
+      <removedViewAction>IGNORE</removedViewAction>
+      <lookupStrategy>JENKINS_ROOT</lookupStrategy>
+    </javaposse.jobdsl.plugin.ExecuteDslScripts>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

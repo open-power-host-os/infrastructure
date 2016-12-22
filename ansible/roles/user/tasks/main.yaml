@@ -1,0 +1,12 @@
+---
+- name: Create Jenkins group
+  group: name=jenkins state=present
+  tags:
+    - setup
+
+- name: Create Jenkins user
+  user:
+    name=jenkins group=jenkins groups={{user_groups}} comment="Jenkins User"
+    home="{{jenkins_home_dir}}" state=present
+  tags:
+    - setup

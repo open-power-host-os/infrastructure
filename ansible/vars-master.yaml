@@ -1,0 +1,15 @@
+---
+user_groups:
+
+nginx_access_log: /var/log/nginx/access.log
+nginx_error_log: /var/log/nginx/error.log
+nginx_jenkins_access_log: /var/log/nginx/jenkins.access.log
+nginx_server_name: "{{ansible_fqdn}}"
+nginx_ssl_certificate: /etc/nginx/ssl/nginx.crt
+nginx_ssl_certificate_key: /etc/nginx/ssl/nginx.key
+nginx_user: "nginx"
+
+jenkins_home_dir: /var/lib/jenkins
+jenkins_bin_dir: /opt/jenkins
+jenkins_port: 8080
+jenkins_local_url: "http://127.0.0.1:{{jenkins_port}}"

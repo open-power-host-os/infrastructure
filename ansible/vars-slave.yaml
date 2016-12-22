@@ -1,0 +1,6 @@
+---
+builder_user_name: jenkins
+builder_home_dir: "/home/{{builder_user_name}}"
+user_groups: mock
+
+jenkins_home_dir: /home/jenkins

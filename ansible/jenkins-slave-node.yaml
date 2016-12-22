@@ -1,0 +1,31 @@
+---
+- name: >
+    Set up Jenkins slave node capable of building Host OS and executing Pylint
+    validation
+  hosts: jenkins-slave
+  remote_user: root
+  roles:
+    - selinux
+    - epel
+    - packages-jenkins-slave
+    - packages-builds
+    - packages-validation
+    - user
+    - ssh
+    - builds
+  vars_files:
+    - vars.yaml
+    - vars-slave.yaml
+  vars_prompt:
+    - name: "jenkins_private_ssh_key_file_path"
+      prompt: "Enter Jenkins private SSH key file path"
+      default: "~/.ssh/jenkins_id_rsa"
+      private: no
+    - name: "upload_server_user_private_ssh_key_file_path"
+      prompt: "Enter upload server user's private SSH key file path"
+      default: "~/.ssh/open-power-host-os-builds-bot_id_rsa"
+      private: no
+    - name: "github_user_private_ssh_key_file_path"
+      prompt: "Enter GitHub user's private SSH key file path"
+      default: "~/.ssh/open-power-host-os-builds-bot_id_rsa"
+      private: no

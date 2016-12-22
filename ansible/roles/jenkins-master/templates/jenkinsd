@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# {{jenkins_bin_dir}}/bin/jenkinsd
+#
+# Installed by Ansible on {{ansible_date_time.date}} at {{ansible_date_time.time}}.
+# WARNING: Any change to this file can be lost!
+#
+# Start jenkins.war with custom JVM parameters.
+
+export JENKINS_HOME={{jenkins_home_dir}}
+export JAVA_HOME={{java_home}}
+
+# As of OpenJDK 1.8.0:
+# option MaxPermSize is ignored;
+# parameter --javaHome is not supported;
+
+/usr/bin/java -Xms{{java_initial_heap_size}} -Xmx{{java_max_heap_size}} \
+              -Djava.awt.headless=true \
+	      -Djenkins.install.runSetupWizard=false \
+              -DJENKINS_HOME=${JENKINS_HOME} \
+              -jar {{jenkins_bin_dir}}/jenkins.war \
+              --httpPort={{jenkins_port}} \
+              --logfile={{jenkins_log_file}} \
+              --debug={{java_debug}} \
+              --handlerCountMax=100 \
+              --handlerCountMaxIdle=20 &

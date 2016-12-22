@@ -1,0 +1,23 @@
+---
+- name: Setup Jenkins master node
+  hosts: jenkins-master
+  remote_user: root
+  roles:
+    - selinux
+    - epel
+    - packages-jenkins-master
+    - user
+    - nginx
+    - firewalld
+    - ssh
+    - systemd
+    - jenkins-master
+    - jenkins-seed-job
+  vars_files:
+    - vars.yaml
+    - vars-master.yaml
+  vars_prompt:
+    - name: "jenkins_private_ssh_key_file_path"
+      prompt: "Enter Jenkins private SSH key file path"
+      default: "~/.ssh/jenkins_id_rsa"
+      private: no

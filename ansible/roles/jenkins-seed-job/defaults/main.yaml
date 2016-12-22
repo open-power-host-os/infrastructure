@@ -1,0 +1,3 @@
+---
+seed_job_name: seed_job
+seed_job_template: "{{seed_job_name}}_config.xml.j2"

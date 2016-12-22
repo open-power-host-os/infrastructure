@@ -1,0 +1,36 @@
+---
+java_home: "/usr/lib64/jvm/jre"
+java_initial_heap_size: "512M"
+java_max_heap_size: "1024M"
+java_debug: "5"
+
+jenkins_log_file: "/var/log/jenkins/jenkins.log"
+jenkins_plugins:
+  # Automatically build GitHub pull requests
+  - ghprb
+  # Checkout git repositories
+  - git
+  # Support for GitHub repositories
+  - github
+  # Execute Jenkins groovy scripts
+  - groovy
+  # Create jobs dynamically
+  - job-dsl
+  # Hide password parameters
+  - mask-passwords
+  # Show when scheduled builds will execute
+  - next-executions
+  # Allow job parameters
+  - parameterized-trigger
+  # Easily rebuild a job
+  - rebuild
+  # Add SSH key credentials
+  - ssh-credentials
+  # Connect to slaves using SSH
+  - ssh-slaves
+  # Allow jobs to execute concurrently in different nodes
+  - throttle-concurrents
+  # Mark logs with timestamps
+  - timestamper
+  # Clean workspace before/after builds
+  - ws-cleanup

@@ -1,0 +1,26 @@
+---
+- name: Create ~/.ssh directories
+  file:
+    name={{item.name}} owner={{item.owner}} group={{item.group}}
+    mode={{item.mode}} state=directory
+  with_items:
+    - { name: "{{jenkins_home_dir}}/.ssh", owner: jenkins, group: jenkins,
+      	mode: "0700" }
+  tags:
+    - setup
+
+# {{jenkins_home_dir}}/.ssh/jenkins_id_rsa is required by Jenkins user to
+# access slaves via SSH.
+- name: Configure ssh keys and authorized_keys
+  copy:
+    src={{item.src}} dest={{item.dest}}
+    owner={{item.owner}} group={{item.group}} mode={{item.mode}}
+  with_items:
+    - { src: "{{jenkins_private_ssh_key_file_path}}",
+        dest: "{{jenkins_home_dir}}/.ssh/jenkins_id_rsa",
+        owner: jenkins, group: jenkins, mode: "0600" }
+    - { src: jenkins_id_rsa.pub,
+        dest: "{{jenkins_home_dir}}/.ssh/authorized_keys",
+        owner: jenkins, group: jenkins, mode: "0600" }
+  tags:
+    - setup

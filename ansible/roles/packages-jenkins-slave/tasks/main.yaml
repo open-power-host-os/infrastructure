@@ -1,0 +1,11 @@
+---
+- name: Install required packages
+  package: name={{item}} state=present
+  with_items:
+    # Git version control system (VCS) client
+    # Get code used by jobs run on Jenkins slave
+    - git
+    # Java Runtime Environment. Jenkins slave dependency
+    - java-1.8.0-openjdk-headless
+  tags:
+    - setup

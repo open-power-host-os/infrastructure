@@ -41,6 +41,9 @@ job('build_host_os') {
   steps {
     shell(readFileFromWorkspace('jenkins_jobs/build_host_os/script.sh'))
   }
+  publishers {
+    archiveArtifacts('repository/')
+  }
   wrappers {
     timestamps()
     preBuildCleanup()

@@ -19,14 +19,6 @@ job('build_host_os') {
     stringParam('CENTOS_INTERNAL_MIRROR_BASE_URL',
 		"${CENTOS_INTERNAL_MIRROR_BASE_URL}",
 		'Base URL to the CentOS YUM repository internal mirror. Empty to use main repository.')
-    stringParam('UPLOAD_SERVER_HOST_NAME', "${UPLOAD_SERVER_HOST_NAME}",
-		'Host name of the target server to upload build results.')
-    stringParam('UPLOAD_SERVER_USER_NAME',
-		"${UPLOAD_SERVER_USER_NAME}",
-		'User name of the target server to upload build results.')
-    stringParam('UPLOAD_SERVER_BUILDS_DIR',
-		"${UPLOAD_SERVER_BUILDS_DIR}",
-		'Directory in the target server to upload build results.')
   }
   scm {
     git {
@@ -42,8 +34,20 @@ job('build_host_os') {
     shell(readFileFromWorkspace('jenkins_jobs/build_host_os/script.sh'))
   }
   publishers {
+    archiveArtifacts('SUCCESS')
     archiveArtifacts('repository/')
-    archiveArtifacts('build/*/build.log')
+    archiveArtifacts {
+      pattern('build/*/build.log')
+      allowEmpty()
+    }
+    downstreamParameterized {
+      trigger('upload_build_artifacts') {
+	condition('FAILED_OR_BETTER')
+	parameters {
+	  predefinedProp('BUILD_JOB_NUMBER', '$BUILD_NUMBER')
+	}
+      }
+    }
   }
   wrappers {
     timestamps()

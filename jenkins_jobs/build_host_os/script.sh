@@ -14,14 +14,8 @@ function on_error(){
     exit 1
 }
 
-function on_abort(){
-    echo  "{'REPO': null, 'BUILD_LOG': '$BUILD_URL', 'BUILD_ID': $BUILD_NUMBER, 'BUILD_STATUS': 'ABORTED'}" > STATUS
-
-}
-
 trap on_exit EXIT
 trap on_error ERR
-trap on_abort SIGTERM
 
 set +e
 

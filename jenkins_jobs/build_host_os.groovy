@@ -43,6 +43,7 @@ job('build_host_os') {
   }
   publishers {
     archiveArtifacts('repository/')
+    archiveArtifacts('build/*/build.log')
   }
   wrappers {
     timestamps()

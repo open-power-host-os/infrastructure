@@ -20,14 +20,14 @@
 
 - name: Download jenkins.war checksum
   get_url:
-    url=http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.sha256
-    dest="{{jenkins_bin_dir}}/jenkins.sha256"
+    url=http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war.sha256
+    dest="{{jenkins_bin_dir}}/jenkins.war.sha256"
     force=yes
   tags:
     - setup
 
 - name: Read jenkins.war checksum
-  shell: "cat {{jenkins_bin_dir}}/jenkins.sha256 | awk '{ print $1 }'"
+  shell: "cat {{jenkins_bin_dir}}/jenkins.war.sha256 | awk '{ print $1 }'"
   register: jenkins_war_sha256
   tags:
     - setup

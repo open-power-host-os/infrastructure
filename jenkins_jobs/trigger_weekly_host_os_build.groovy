@@ -25,7 +25,7 @@ job('trigger_weekly_host_os_build') {
   scm {
     git {
       remote {
-	url("https://github.com/${GITHUB_ORGANIZATION_NAME}/builds/")
+	url('https://github.com/${GITHUB_ORGANIZATION_NAME}/builds/')
       }
       branch('master')
     }
@@ -46,7 +46,7 @@ job('trigger_weekly_host_os_build') {
 	parameters {
 	  predefinedProps(
 	    [BUILDS_REPO_URL:
-	     "https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git",
+	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
 	     BUILDS_REPO_COMMIT: 'master',
 	     VERSIONS_REPO_URL:
 	     "https://github.com/${GITHUB_BOT_USER_NAME}/versions.git"])

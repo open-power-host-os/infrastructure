@@ -6,6 +6,8 @@ java_debug: "5"
 
 jenkins_log_file: "/var/log/jenkins/jenkins.log"
 jenkins_plugins:
+  # Copy artifacts from other builds
+  - copyartifact
   # Automatically build GitHub pull requests
   - ghprb
   # Checkout git repositories

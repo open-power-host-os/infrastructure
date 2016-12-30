@@ -21,5 +21,9 @@
     # Utils to build RPMs and manage spec files
     - rpm-build
     - rpmdevtools
+    # Used by mock to avoid fsync() calls
+    - nosync
+    # Compress mock root cache
+    - lzop
   tags:
     - setup

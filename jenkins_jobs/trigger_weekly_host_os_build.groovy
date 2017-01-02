@@ -15,9 +15,6 @@ job('trigger_weekly_host_os_build') {
     stringParam('UPLOAD_SERVER_USER_NAME',
 		"${UPLOAD_SERVER_USER_NAME}",
 		'User name of the target server to upload build results.')
-    stringParam('UPLOAD_SERVER_BUILDS_DIR',
-		"${UPLOAD_SERVER_BUILDS_DIR}",
-		'Directory in the target server to upload build results.')
     stringParam('UPLOAD_SERVER_WEEKLY_DIR',
 		"${UPLOAD_SERVER_WEEKLY_DIR}",
 		'Directory in the target server to upload weekly build results.')

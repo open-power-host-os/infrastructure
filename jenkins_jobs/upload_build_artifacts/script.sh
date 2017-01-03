@@ -23,6 +23,7 @@ echo -e """[hostos]
 name=hostos
 baseurl=http://${UPLOAD_SERVER_HOST_NAME}${UPLOAD_SERVER_BUILDS_DIR}/${BUILD_JOB_NUMBER}/repository
 enabled=1
+priority=1
 gpgcheck=0""" > hostos.repo
 
 rsync -e "ssh -i $HOME/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" \

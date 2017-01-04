@@ -1,6 +1,5 @@
 WEEKLY_DIR_NAME=$(cat WEEKLY_DIR_NAME)
-BUILD_DIR_NAME=$(rsync -e "ssh -i $HOME/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" --list-only "${UPLOAD_SERVER_USER_NAME}@${UPLOAD_SERVER_HOST_NAME}:${UPLOAD_SERVER_BUILDS_DIR}/" | tr -s ' ' | cut -d ' ' -f 5 | sort -g | tail -n1)
-BUILD_DIR_PATH="../to_build/${BUILD_DIR_NAME}"
+BUILD_DIR_PATH="../to_build/${TRIGGERED_BUILD_NUMBER_build_host_os}"
 
 # update weekly build dir and latest weekly build
 ln -s "$BUILD_DIR_PATH" "$WEEKLY_DIR_NAME"

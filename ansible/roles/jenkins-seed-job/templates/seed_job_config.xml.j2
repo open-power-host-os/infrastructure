@@ -31,9 +31,9 @@
           <defaultValue>{{github_organization_name}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>CENTOS_INTERNAL_MIRROR_BASE_URL</name>
-          <description>Base URL to the CentOS YUM repository internal mirror. Empty to use base repository.</description>
-          <defaultValue>{{centos_internal_mirror_url_prefix}}</defaultValue>
+          <name>CENTOS_ALTERNATE_MIRROR_RELEASE_URL</name>
+          <description>URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release offical repository.</description>
+          <defaultValue>{{centos_alternate_mirror_release_url}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_BOT_NAME</name>

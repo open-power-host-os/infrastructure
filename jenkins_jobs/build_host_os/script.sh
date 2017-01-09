@@ -1,6 +1,6 @@
 VERSIONS_REPO_DIR="components"
-REPO_FILE="extras/centOS/7.2/mock/epel-7-ppc64le.cfg"
-MAIN_CENTOS_REPO_BASE_URL="http://mirror.centos.org/altarch"
+MOCK_CONFIG_FILE="extras/centOS/7.2/mock/epel-7-ppc64le.cfg"
+MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
 # Fetch pull requests in case this job was triggered by one
 git clone $VERSIONS_REPO_URL $VERSIONS_REPO_DIR --no-checkout
@@ -8,12 +8,14 @@ pushd $VERSIONS_REPO_DIR
 git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
 popd
 
-# Use an internal mirror to speedup the chroot install
-# This is also a workaround to an issue  with CentOS mirrors where yum can`t download the packages
-if [ -n "$CENTOS_INTERNAL_MIRROR_BASE_URL" ]; then
+# Tell mock to use a different mirror/repo. This could be used to:
+# - speedup the chroot installation
+# - use a different version of CentOS
+# - workaround any issue with CentOS official mirrors
+if [ -n "$CENTOS_ALTERNATE_MIRROR_RELEASE_URL" ]; then
     sed -i \
-        "s|${MAIN_CENTOS_REPO_BASE_URL}|${CENTOS_INTERNAL_MIRROR_BASE_URL}|" \
-        $REPO_FILE
+        "s|${MAIN_CENTOS_REPO_RELEASE_URL}|${CENTOS_ALTERNATE_MIRROR_RELEASE_URL}|" \
+        $MOCK_CONFIG_FILE
 fi
 
 # running

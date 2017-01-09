@@ -9,7 +9,7 @@ github_bot_email:
 ghprb_admin_user:
 ghprb_admin_organization:
 
-centos_internal_mirror_url_prefix:
+centos_alternate_mirror_release_url:
 
 upload_server_host_name:
 upload_server_user_name:

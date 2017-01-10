@@ -65,14 +65,14 @@
 
 - name: Create Jenkins admin user directory
   file:
-    path="{{jenkins_home_dir}}/users/admin"
+    path="{{jenkins_home_dir}}/users/{{jenkins_admin_user}}"
     owner=jenkins group=jenkins mode=0755 state=directory recurse=yes
   tags:
     - setup
 
 - name: Create Jenkins admin user
   template:
-    src=admin_config.xml.j2 dest="{{jenkins_home_dir}}/users/admin/config.xml"
+    src=admin_config.xml.j2 dest="{{jenkins_home_dir}}/users/{{jenkins_admin_user}}/config.xml"
     force=no
   register: jenkins_admin_config
   tags:
@@ -97,7 +97,7 @@
 
 - name: Get Jenkins crumb
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/crumbIssuer/api/json"
@@ -118,7 +118,7 @@
 
 - name: Install Jenkins plugins
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/pluginManager/install?plugin.{{item}}.default=on&{{jenkins_crumb_token}}"
@@ -134,7 +134,7 @@
 
 - name: Wait for plugins to be installed
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/updateCenter/installStatus?{{jenkins_crumb_token}}"
@@ -148,7 +148,7 @@
 
 - name: Check if we need to restart Jenkins to activate plugins
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/updateCenter/api/json?tree=restartRequiredForCompletion&{{jenkins_crumb_token}}"

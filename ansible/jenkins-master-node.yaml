@@ -17,6 +17,13 @@
     - vars.yaml
     - vars-master.yaml
   vars_prompt:
+    - name: "jenkins_admin_user"
+      prompt: "Enter Jenkins admin user name"
+      default: "admin"
+      private: no
+    - name: "jenkins_admin_password"
+      prompt: "Enter Jenkins admin password"
+      private: yes
     - name: "jenkins_private_ssh_key_file_path"
       prompt: "Enter Jenkins private SSH key file path"
       default: "~/.ssh/jenkins_id_rsa"

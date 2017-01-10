@@ -3,7 +3,7 @@
 
 - name: Get Jenkins crumb [seed job]
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/crumbIssuer/api/json"
@@ -24,7 +24,7 @@
 
 - name: Get list of jobs
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/api/json?tree=jobs[name]"
@@ -44,7 +44,7 @@
 
 - name: Create seed job
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/createItem?name={{seed_job_name}}&{{jenkins_crumb_token}}"
@@ -58,7 +58,7 @@
 
 - name: Update seed job
   uri:
-    user: admin
+    user: "{{jenkins_admin_user}}"
     password: "{{jenkins_admin_password}}"
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/job/{{seed_job_name}}/config.xml?{{jenkins_crumb_token}}"

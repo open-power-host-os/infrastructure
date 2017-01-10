@@ -21,6 +21,10 @@
       prompt: "Enter Jenkins private SSH key file path"
       default: "~/.ssh/jenkins_id_rsa"
       private: no
+    - name: "jenkins_public_ssh_key_file_path"
+      prompt: "Enter Jenkins public SSH key file path"
+      default: "~/.ssh/jenkins_id_rsa.pub"
+      private: no
     - name: "upload_server_user_private_ssh_key_file_path"
       prompt: "Enter upload server user's private SSH key file path"
       default: "~/.ssh/open-power-host-os-builds-bot_id_rsa"

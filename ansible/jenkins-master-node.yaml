@@ -28,3 +28,7 @@
       prompt: "Enter Jenkins private SSH key file path"
       default: "~/.ssh/jenkins_id_rsa"
       private: no
+    - name: "jenkins_public_ssh_key_file_path"
+      prompt: "Enter Jenkins public SSH key file path"
+      default: "~/.ssh/jenkins_id_rsa.pub"
+      private: no

@@ -13,3 +13,4 @@ upload_server_host_name:
 upload_server_user_name:
 upload_server_builds_dir_path:
 upload_server_weekly_dir_path:
+upload_server_nightly_dir_path:

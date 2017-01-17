@@ -37,7 +37,7 @@ job('build_host_os') {
     archiveArtifacts('SUCCESS')
     archiveArtifacts('repository/')
     archiveArtifacts {
-      pattern('build/*/*.log')
+      pattern('build/*/*/*.log')
       allowEmpty()
     }
     downstreamParameterized {

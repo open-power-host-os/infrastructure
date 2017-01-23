@@ -16,6 +16,7 @@ job('build_host_os') {
     stringParam('VERSIONS_REPO_COMMIT', 'master',
 		'Commit ID to checkout from the versions repository.')
     stringParam('PACKAGES', '', 'Packages to build. Leave empty to build all.')
+    stringParam('MOCK_ARGS','', 'Mock arguments.')
     stringParam('CENTOS_ALTERNATE_MIRROR_RELEASE_URL',
 		"${CENTOS_ALTERNATE_MIRROR_RELEASE_URL}",
 		'URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release offical repository.')

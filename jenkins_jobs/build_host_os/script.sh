@@ -26,7 +26,8 @@ python host_os.py \
         --result-dir ./repository \
         --build-versions-repository-url $VERSIONS_REPO_URL \
         --build-version $VERSIONS_REPO_COMMIT \
-        --packages $PACKAGES
+        --packages $PACKAGES \
+        --mock-args "$MOCK_ARGS"
 
 # creating the yum repository locally
 createrepo ./repository

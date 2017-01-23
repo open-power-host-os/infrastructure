@@ -24,4 +24,3 @@ python host_os.py \
 
 echo "VERSIONS_REPO_COMMIT=$COMMIT_BRANCH" > BUILD_PARAMETERS
 echo "$RELEASE_DATE" > WEEKLY_DIR_NAME
-echo "$TRIGERED_BUILD_NUMBER_build-host-os"

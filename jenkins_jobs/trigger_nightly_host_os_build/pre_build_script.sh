@@ -1,0 +1,2 @@
+RELEASE_DATE=$(date +%Y-%m-%d)
+echo "$RELEASE_DATE" > NIGHTLY_DIR_NAME

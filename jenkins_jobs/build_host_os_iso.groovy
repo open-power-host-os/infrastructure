@@ -42,6 +42,15 @@ job('build_host_os_iso') {
   publishers {
     archiveArtifacts('*.iso')
     archiveArtifacts('*-CHECKSUM')
+    downstreamParameterized {
+      trigger('upload_iso') {
+        condition('FAILED_OR_BETTER')
+        parameters {
+          predefinedProps(['BUILD_JOB_NUMBER': '$BUILD_JOB_NUMBER',
+                           'BUILD_ISO_JOB_NUMBER': '$BUILD_NUMBER'])
+        }
+      }
+    }
   }
   wrappers {
     timestamps()

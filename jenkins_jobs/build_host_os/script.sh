@@ -1,6 +1,9 @@
+# ISO 8601 date with nanoseconds precision
+TIMESTAMP=$(date --utc -Ins)
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
 MOCK_CONFIG_FILE="extras/centOS/7/mock/epel-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
+
 
 # Fetch pull requests in case this job was triggered by one
 git clone $VERSIONS_REPO_URL $VERSIONS_REPO_DIR --no-checkout
@@ -31,6 +34,9 @@ python host_os.py \
 
 # creating the yum repository locally
 createrepo ./repository
+
+# Create BUILD_TIMESTAMP file with timestamp information
+echo "${TIMESTAMP}" > ./BUILD_TIMESTAMP
 
 # inform status to upload job
 touch SUCCESS

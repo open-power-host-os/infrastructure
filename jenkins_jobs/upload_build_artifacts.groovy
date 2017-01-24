@@ -18,6 +18,8 @@ job('upload_build_artifacts') {
       buildSelector {
 	buildNumber('$BUILD_JOB_NUMBER')
       }
+
+      includePatterns('BUILD_TIMESTAMP')
       includePatterns('SUCCESS')
       includePatterns('repository/')
       optional()

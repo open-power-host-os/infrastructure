@@ -22,9 +22,6 @@ fi
 if [ -n "$PACKAGES" ]; then
     PACKAGES_PARAMETER="--packages $PACKAGES"
 fi
-if [ -n "$MOCK_ARGS" ]; then
-    MOCK_PARAMETER="--mock-args \"$MOCK_ARGS\""
-fi
 eval python host_os.py \
      --verbose \
      build-package \
@@ -33,7 +30,7 @@ eval python host_os.py \
          --build-versions-repository-url $VERSIONS_REPO_URL \
          --build-version $VERSIONS_REPO_COMMIT \
          $PACKAGES_PARAMETER \
-         $MOCK_PARAMETER
+         $EXTRA_PARAMETERS
 
 # creating the yum repository locally
 createrepo ./repository

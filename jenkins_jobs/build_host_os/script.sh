@@ -19,15 +19,21 @@ if [ -n "$CENTOS_ALTERNATE_MIRROR_RELEASE_URL" ]; then
 fi
 
 # running
-python host_os.py \
-    --verbose \
-    build-package \
-        --keep-builddir \
-        --result-dir ./repository \
-        --build-versions-repository-url $VERSIONS_REPO_URL \
-        --build-version $VERSIONS_REPO_COMMIT \
-        --packages $PACKAGES \
-        --mock-args "$MOCK_ARGS"
+if [ -n "$PACKAGES" ]; then
+    PACKAGES_PARAMETER="--packages $PACKAGES"
+fi
+if [ -n "$MOCK_ARGS" ]; then
+    MOCK_PARAMETER="--mock-args \"$MOCK_ARGS\""
+fi
+eval python host_os.py \
+     --verbose \
+     build-package \
+         --keep-builddir \
+         --result-dir ./repository \
+         --build-versions-repository-url $VERSIONS_REPO_URL \
+         --build-version $VERSIONS_REPO_COMMIT \
+         $PACKAGES_PARAMETER \
+         $MOCK_PARAMETER
 
 # creating the yum repository locally
 createrepo ./repository

@@ -42,7 +42,7 @@ job('trigger_nightly_host_os_build') {
 	     VERSIONS_REPO_URL:
 	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git',
              VERSIONS_REPO_COMMIT: 'master',
-             MOCK_ARGS: '--enable-plugin=tmpfs --plugin-option=tmpfs:keep_mounted=True --plugin-option=tmpfs:max_fs_size=32g --plugin-option=tmpfs:required_ram_mb=39800 --with tests'])
+             EXTRA_PARAMETERS: '--mock-args "--enable-plugin=tmpfs --plugin-option=tmpfs:keep_mounted=True --plugin-option=tmpfs:max_fs_size=32g --plugin-option=tmpfs:required_ram_mb=39800 --with tests"'])
 	}
       }
     }

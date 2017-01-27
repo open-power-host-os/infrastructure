@@ -1,5 +1,5 @@
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
-MOCK_CONFIG_FILE="extras/centOS/7/mock/epel-7-ppc64le.cfg"
+MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
 # Fetch pull requests in case this job was triggered by one

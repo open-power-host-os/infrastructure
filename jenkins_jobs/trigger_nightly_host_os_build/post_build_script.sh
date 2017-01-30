@@ -1,5 +1,6 @@
 NIGHTLY_DIR_NAME=$(cat NIGHTLY_DIR_NAME)
-BUILD_DIR_PATH="../to_build/${TRIGGERED_BUILD_NUMBER_build_host_os}"
+BUILD_TIMESTAMP=$(cat BUILD_TIMESTAMP)
+BUILD_DIR_PATH="../to_build/${BUILD_TIMESTAMP}"
 
 # update nightly build dir and latest nightly build
 ln -s "$BUILD_DIR_PATH" "$NIGHTLY_DIR_NAME"

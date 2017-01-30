@@ -36,6 +36,7 @@ job('build_host_os') {
   }
   publishers {
     archiveArtifacts('SUCCESS')
+    archiveArtifacts('BUILD_TIMESTAMP')
     archiveArtifacts('repository/')
     archiveArtifacts {
       pattern('build/*/*/*.log')

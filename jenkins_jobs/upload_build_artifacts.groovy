@@ -1,5 +1,8 @@
 job('upload_build_artifacts') {
   label('builds_slave_label')
+  logRotator {
+    numToKeep(30)
+  }
   concurrentBuild()
   parameters {
     stringParam('BUILD_JOB_NUMBER', '',

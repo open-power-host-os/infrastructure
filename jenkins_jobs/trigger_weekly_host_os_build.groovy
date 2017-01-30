@@ -1,5 +1,8 @@
 job('trigger_weekly_host_os_build') {
   label('!master')
+  logRotator {
+    numToKeep(30)
+  }
   parameters {
     stringParam('GITHUB_ORGANIZATION_NAME',
 		"${GITHUB_ORGANIZATION_NAME}",

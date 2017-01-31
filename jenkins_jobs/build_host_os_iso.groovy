@@ -15,7 +15,10 @@ job('build_host_os_iso') {
     stringParam('EXTRA_PARAMETERS', '', 'Arbitrary extra parameters to pass to the builds script. Arguments containing spaces have to be enclosed in double quotes, e.g. --mock-args "--with tests"')
     stringParam('CENTOS_ALTERNATE_MIRROR_RELEASE_URL',
                 "${CENTOS_ALTERNATE_MIRROR_RELEASE_URL}",
-                'URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release offical repository.')
+                'URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release official repository.')
+    stringParam('EPEL_ALTERNATE_MIRROR_RELEASE_URL',
+                "${EPEL_ALTERNATE_MIRROR_RELEASE_URL}",
+                'URL up to the release component of an EPEL YUM repository alternate mirror. Empty to use EPEL latest release official repository.')
   }
   scm {
     git {

@@ -32,8 +32,13 @@
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>CENTOS_ALTERNATE_MIRROR_RELEASE_URL</name>
-          <description>URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release offical repository.</description>
+          <description>URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release official repository.</description>
           <defaultValue>{{centos_alternate_mirror_release_url}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>EPEL_ALTERNATE_MIRROR_RELEASE_URL</name>
+          <description>URL up to the release component of an EPEL YUM repository alternate mirror. Empty to use EPEL latest release official repository.</description>
+          <defaultValue>{{epel_alternate_mirror_release_url}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_BOT_NAME</name>

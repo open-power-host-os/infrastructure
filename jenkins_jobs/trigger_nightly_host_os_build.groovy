@@ -46,15 +46,12 @@ job('trigger_nightly_host_os_build') {
 	}
       }
     }
-
     copyArtifacts('build_host_os') {
       buildSelector {
-        buildNumber('$BUILD_JOB_NUMBER')
+        buildNumber('$TRIGGERED_BUILD_NUMBER_build_host_os')
       }
-
       includePatterns('BUILD_TIMESTAMP')
     }
-
     shell(readFileFromWorkspace(
 	    'jenkins_jobs/trigger_nightly_host_os_build/post_build_script.sh'))
   }

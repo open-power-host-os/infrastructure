@@ -8,6 +8,7 @@ ghprb_admin_user:
 ghprb_admin_organization:
 
 centos_alternate_mirror_release_url:
+epel_alternate_mirror_release_url:
 
 upload_server_host_name:
 upload_server_user_name:

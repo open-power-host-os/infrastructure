@@ -46,17 +46,31 @@ job('trigger_nightly_host_os_build') {
 	}
       }
     }
-
     copyArtifacts('build_host_os') {
       buildSelector {
-        buildNumber('$BUILD_JOB_NUMBER')
+        buildNumber('$TRIGGERED_BUILD_NUMBER_build_host_os')
       }
-
       includePatterns('BUILD_TIMESTAMP')
     }
-
     shell(readFileFromWorkspace(
 	    'jenkins_jobs/trigger_nightly_host_os_build/post_build_script.sh'))
+    downstreamParameterized {
+      trigger('build_host_os_iso') {
+        block {
+          buildStepFailure('FAILURE')
+          failure('FAILURE')
+          unstable('UNSTABLE')
+        }
+        parameters {
+          predefinedProps(
+            [BUILDS_REPO_URL:
+             'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
+             BUILDS_REPO_COMMIT: 'master',
+             BUILD_JOB_NUMBER:
+             '${TRIGGERED_BUILD_NUMBER_build_host_os}'])
+        }
+      }
+    }
   }
   wrappers {
     timestamps()

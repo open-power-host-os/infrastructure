@@ -7,6 +7,12 @@ job('trigger_nightly_host_os_build') {
     stringParam('GITHUB_ORGANIZATION_NAME',
 		"${GITHUB_ORGANIZATION_NAME}",
 		'GitHub organization from where the Host OS repositories will be checked out.')
+    stringParam('GITHUB_BOT_NAME', "${GITHUB_BOT_NAME}",
+		'Name of the GitHub user to create commits automatically.')
+    stringParam('GITHUB_BOT_USER_NAME', "${GITHUB_BOT_USER_NAME}",
+		'User name of the GitHub user to create commits automatically.')
+    stringParam('GITHUB_BOT_EMAIL', "${GITHUB_BOT_EMAIL}",
+		'Email of the GitHub user to create commits automatically')
     stringParam('UPLOAD_SERVER_HOST_NAME', "${UPLOAD_SERVER_HOST_NAME}",
 		'Host name of the target server to upload build results.')
     stringParam('UPLOAD_SERVER_USER_NAME',
@@ -43,9 +49,9 @@ job('trigger_nightly_host_os_build') {
 	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
 	     BUILDS_REPO_COMMIT: 'master',
 	     VERSIONS_REPO_URL:
-	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git',
-             VERSIONS_REPO_COMMIT: 'master',
+	     'https://github.com/${GITHUB_BOT_USER_NAME}/versions.git',
              EXTRA_PARAMETERS: '--mock-args "--enable-plugin=tmpfs --plugin-option=tmpfs:keep_mounted=True --plugin-option=tmpfs:max_fs_size=32g --plugin-option=tmpfs:required_ram_mb=39800 --with tests"'])
+          propertiesFile("BUILD_PARAMETERS", true)
 	}
       }
     }

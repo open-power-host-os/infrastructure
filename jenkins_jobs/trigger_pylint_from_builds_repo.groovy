@@ -1,5 +1,8 @@
 job('trigger_pylint_from_builds_repo') {
   label('validation_slave_label')
+  logRotator {
+    numToKeep(30)
+  }
   concurrentBuild()
   parameters {
     stringParam('sha1', '', 'SHA-1 of the commit to validate.')

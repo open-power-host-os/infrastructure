@@ -1,5 +1,8 @@
 job('trigger_host_os_build_from_versions_repo') {
   label('!master')
+  logRotator {
+    numToKeep(30)
+  }
   concurrentBuild()
   throttleConcurrentBuilds {
     maxPerNode(1)

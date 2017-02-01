@@ -1,5 +1,8 @@
 job('build_host_os') {
   label('builds_slave_label')
+  logRotator {
+    numToKeep(30)
+  }
   concurrentBuild()
   throttleConcurrentBuilds {
     maxPerNode(1)

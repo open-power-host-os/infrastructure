@@ -6,6 +6,8 @@
     - python-pip
     # RPM specification file linter
     - rpmlint
+    # YAML file linter
+    - yamllint
   tags:
     - setup
 

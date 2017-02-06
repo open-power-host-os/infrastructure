@@ -1,5 +1,5 @@
 # ISO 8601 date with nanoseconds precision
-TIMESTAMP=$(date --utc -Ins)
+TIMESTAMP=$(date --utc +'%Y-%m-%dT%H:%M:%S.%N')
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
 MOCK_CONFIG_FILE="extras/centOS/7/mock/epel-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"

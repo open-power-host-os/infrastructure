@@ -36,3 +36,5 @@ jenkins_plugins:
   - timestamper
   # Clean workspace before/after builds
   - ws-cleanup
+  # Allow credentials to be bound to environment variables
+  - credentials-binding

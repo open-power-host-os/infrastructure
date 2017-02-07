@@ -7,6 +7,13 @@ job('trigger_nightly_host_os_build') {
     stringParam('GITHUB_ORGANIZATION_NAME',
 		"${GITHUB_ORGANIZATION_NAME}",
 		'GitHub organization from where the Host OS repositories will be checked out.')
+    stringParam('BUILDS_REPOSITORY_BRANCH',
+		"master",
+		'Branch of the builds repository to clone and pass to the build jobs.')
+    stringParam('GITHUB_BOT_NAME', "${GITHUB_BOT_NAME}",
+		'Name of the GitHub user to create commits automatically.')
+    stringParam('GITHUB_BOT_EMAIL', "${GITHUB_BOT_EMAIL}",
+		'Email of the GitHub user to create commits automatically')
     stringParam('UPLOAD_SERVER_HOST_NAME', "${UPLOAD_SERVER_HOST_NAME}",
 		'Host name of the target server to upload build results.')
     stringParam('UPLOAD_SERVER_USER_NAME',
@@ -21,7 +28,7 @@ job('trigger_nightly_host_os_build') {
       remote {
 	url('https://github.com/${GITHUB_ORGANIZATION_NAME}/builds/')
       }
-      branch('master')
+      branch('$BUILDS_REPOSITORY_BRANCH')
     }
   }
   triggers {
@@ -41,11 +48,11 @@ job('trigger_nightly_host_os_build') {
 	  predefinedProps(
 	    [BUILDS_REPO_URL:
 	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
-	     BUILDS_REPO_COMMIT: 'master',
+	     BUILDS_REPO_COMMIT: '$BUILDS_REPOSITORY_BRANCH',
 	     VERSIONS_REPO_URL:
-	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git',
-             VERSIONS_REPO_COMMIT: 'master',
+	     'file://${WORKSPACE}/versions',
              EXTRA_PARAMETERS: '--mock-args "--enable-plugin=tmpfs --plugin-option=tmpfs:keep_mounted=True --plugin-option=tmpfs:max_fs_size=32g --plugin-option=tmpfs:required_ram_mb=39800 --with tests"'])
+          propertiesFile("BUILD_PARAMETERS", true)
 	}
       }
     }
@@ -68,7 +75,7 @@ job('trigger_nightly_host_os_build') {
           predefinedProps(
             [BUILDS_REPO_URL:
              'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
-             BUILDS_REPO_COMMIT: 'master',
+             BUILDS_REPO_COMMIT: '$BUILDS_REPOSITORY_BRANCH',
              BUILD_JOB_NUMBER:
              '${TRIGGERED_BUILD_NUMBER_build_host_os}'])
         }

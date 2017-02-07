@@ -7,8 +7,8 @@ COMMIT_BRANCH="release-${RELEASE_DATE}"
 python host_os.py \
    --verbose \
    upgrade-versions \
-       --committer-name "$GITHUB_BOT_NAME" \
-       --committer-email "$GITHUB_BOT_EMAIL" \
+       --updater-name "$GITHUB_BOT_NAME" \
+       --updater-email "$GITHUB_BOT_EMAIL" \
        --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
        --push-repo-branch "$COMMIT_BRANCH"
 

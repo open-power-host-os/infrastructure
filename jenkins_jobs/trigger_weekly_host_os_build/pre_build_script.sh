@@ -17,8 +17,8 @@ python host_os.py \
     release-notes \
         --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
 	--build-version "$COMMIT_BRANCH" \
-	--committer-name "$GITHUB_BOT_NAME" \
-	--committer-email "$GITHUB_BOT_EMAIL" \
+	--updater-name "$GITHUB_BOT_NAME" \
+	--updater-email "$GITHUB_BOT_EMAIL" \
 	--push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
 	--push-repo-branch "$COMMIT_BRANCH"
 

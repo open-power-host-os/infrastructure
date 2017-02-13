@@ -52,7 +52,7 @@ job('trigger_weekly_host_os_build') {
 	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
 	     BUILDS_REPO_COMMIT: '$BUILDS_REPOSITORY_BRANCH',
 	     VERSIONS_REPO_URL:
-	     "https://github.com/${GITHUB_BOT_USER_NAME}/versions.git"])
+	     'https://github.com/${GITHUB_BOT_USER_NAME}/versions.git'])
 	  propertiesFile("BUILD_PARAMETERS", true)
 	}
       }

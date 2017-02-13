@@ -12,6 +12,8 @@ job('trigger_nightly_host_os_build') {
 		'Branch of the builds repository to clone and pass to the build jobs.')
     stringParam('GITHUB_BOT_NAME', "${GITHUB_BOT_NAME}",
 		'Name of the GitHub user to create commits automatically.')
+    stringParam('GITHUB_BOT_USER_NAME', "${GITHUB_BOT_USER_NAME}",
+		'User name of the GitHub user to create commits automatically.')
     stringParam('GITHUB_BOT_EMAIL', "${GITHUB_BOT_EMAIL}",
 		'Email of the GitHub user to create commits automatically')
     stringParam('UPLOAD_SERVER_HOST_NAME', "${UPLOAD_SERVER_HOST_NAME}",
@@ -50,7 +52,7 @@ job('trigger_nightly_host_os_build') {
 	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
 	     BUILDS_REPO_COMMIT: '$BUILDS_REPOSITORY_BRANCH',
 	     VERSIONS_REPO_URL:
-	     'file://${WORKSPACE}/versions',
+	     "https://github.com/${GITHUB_BOT_USER_NAME}/versions.git",
              EXTRA_PARAMETERS: '--mock-args "--enable-plugin=tmpfs --plugin-option=tmpfs:keep_mounted=True --plugin-option=tmpfs:max_fs_size=32g --plugin-option=tmpfs:required_ram_mb=39800 --with tests"'])
           propertiesFile("BUILD_PARAMETERS", true)
 	}

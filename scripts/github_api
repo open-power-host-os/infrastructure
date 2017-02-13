@@ -42,7 +42,8 @@ def _request(auth, method, url, **kwargs):
         dict: HTTP response
     """
     methods = {
-        'POST': requests.post
+        'POST': requests.post,
+        'GET': requests.get,
     }
 
     r = methods[method](url, auth=auth, **kwargs)
@@ -59,18 +60,33 @@ def _request(auth, method, url, **kwargs):
     return response
 
 
+def _print_dict(_dict):
+    """
+    Prints a dict in a key=value format.
+
+    Args:
+        _dict (dict): values to be formatted
+    """
+    for k, v in _dict.items():
+        print '%s="%s"' % (k, v)
+
+
 class PullRequest:
     """
     https://developer.github.com/v3/pulls/
     """
-    def __init__(self, repo):
+    def __init__(self, repo, number=None):
         """
         Args:
             repo (str): git repository path. Format: <repo owner>/<repo>
+            number (int): pull-request number
         """
         self.repo = repo
         self._url = os.path.join(
             API_BASE_URL, "repos/%(repo)s/pulls" % dict(repo=self.repo))
+
+        if number:
+            self._set_attributes(self.get(number))
 
     def open(self, title, body, src_branch, dst_branch):
         """
@@ -93,6 +109,23 @@ class PullRequest:
         self._set_attributes(
             request('POST', self._url, data=json.dumps(payload_body)))
 
+    def get(self, pr_number):
+        """
+        Gets a GitHub pull-request
+
+        Args:
+            pr_number (int): pull-request number
+
+        Returns:
+            dict: pull-request information. See
+                https://developer.github.com/v3/pulls/#get-a-single-pull-request
+        """
+        url = os.path.join(self._url, str(pr_number))
+
+        pr_info = request('GET', url)
+
+        return pr_info
+
     def _set_attributes(self, pr_info):
         """
         Sets this class' attributes
@@ -100,6 +133,7 @@ class PullRequest:
         Args:
             pr_info (dict): information about a GitHub pull request
         """
+
         for k, v in pr_info.items():
             # just set the simple types that can later be accessed by
             # pull_request.attr. Ignore dicts for now because they
@@ -123,6 +157,24 @@ def open_pull_request(title, src_branch, repo, dst_branch, body=""):
     pr.open(title, body, src_branch, dst_branch)
 
 
+def query_pull_request(repo, number, **kwargs):
+    """
+    Handler for the query_pr command. Returns information about a
+    GitHub pull-request.
+
+    Args:
+        repo (str): target repository path. Format: <repo owner>/<repo>
+        number (int): pull-request number
+        kwargs: keys being queried in the form: key=True
+    """
+    pr = PullRequest(repo, number)
+
+    if all(not v for v in kwargs.values()):
+        kwargs['title'] = True
+
+    return {k:getattr(pr, k) for k, v in kwargs.items() if v}
+
+
 if __name__ == '__main__':
     commands = {
         'open_pr': {
@@ -137,6 +189,26 @@ if __name__ == '__main__':
                 (('dst_branch',), dict(metavar='dst-branch',
                     help='pull request destination branch: <branch>')),
                 (('--body',), dict(help='pull request body text')),
+            ],
+        },
+        'query_pr': {
+            'description': "Get information about a GitHub pull-request",
+            'function': query_pull_request,
+            'arguments': [
+                (('repo',), dict(
+                    help='target repository path: <repo owner>/<repo>')),
+                (('number',), dict(help='pull request number', type=int)),
+                (('--title',), dict(
+                    help='get pull request title text', action='store_true')),
+                (('--state',), dict(
+                    help='get pull request state, i.e. open, closed',
+                    action='store_true')),
+                (('--merged',), dict(
+                    help='get whether the pull request is merged',
+                    action='store_true')),
+                (('--mergeable',), dict(
+                    help='get whether the pull request can be merged',
+                    action='store_true')),
             ],
         },
     }
@@ -168,4 +240,6 @@ if __name__ == '__main__':
         if value is None:
             cmd_args.pop(key)
 
-    commands[args.command]['function'](**cmd_args)
+    cmd_output = commands[args.command]['function'](**cmd_args)
+    if cmd_output:
+        _print_dict(cmd_output)

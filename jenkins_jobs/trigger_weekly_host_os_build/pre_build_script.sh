@@ -1,6 +1,6 @@
 VERSIONS_REPO_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
 RELEASE_DATE=$(date +%Y-%m-%d)
-COMMIT_BRANCH="release-${RELEASE_DATE}"
+COMMIT_BRANCH="weekly-${RELEASE_DATE}"
 
 # Upgrade versions
 # sudo yum install rpmdevtools

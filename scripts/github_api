@@ -71,6 +71,40 @@ def _print_dict(_dict):
         print '%s="%s"' % (k, v)
 
 
+class Status:
+    """
+    https://developer.github.com/v3/repos/statuses/
+    """
+    def __init__(self, repo, reference):
+        """
+        Args:
+            repo (str): target repository path. Format:
+                <repo owner>/<repo>
+            reference (str): git reference or GitHub pull request
+                number
+        """
+        self.ref = reference
+        self._url = os.path.join(
+            API_BASE_URL,
+            "repos/%(repo)s/commits/%(reference)s/status" % dict(
+                repo=repo, reference=reference))
+        self.get()
+
+    def get(self):
+        """
+        Gets the status
+        """
+        status_info = request('GET', self._url)
+
+        self.num_contexts = status_info['total_count']
+
+        self.latest = {}
+        for status in status_info['statuses']:
+            context = status['context']
+            status.pop('context')
+            self.latest[context] = status
+
+
 class PullRequest:
     """
     https://developer.github.com/v3/pulls/
@@ -124,6 +158,8 @@ class PullRequest:
 
         pr_info = request('GET', url)
 
+        self.reference = pr_info['head']['sha']
+
         return pr_info
 
     def _set_attributes(self, pr_info):
@@ -175,6 +211,42 @@ def query_pull_request(repo, number, **kwargs):
     return {k:getattr(pr, k) for k, v in kwargs.items() if v}
 
 
+def query_status(repo, reference, context, **kwargs):
+    """
+    Handler for the query_status command. Returns information about
+    the status of a GitHub issue or pull-request.
+
+    Args:
+        repo (str): target repository path. Format:
+            <repo owner>/<repo>
+        reference (str): git reference. Either a sha1 or a
+            pull-request number
+        context (str): status context to query
+        kwargs: keys being queried in the form: key=True
+    """
+    try:
+        # if we were given a number as the reference, interpret is as
+        # a pull-request number
+        int(reference)
+        pr = PullRequest(repo, reference)
+        reference = pr.reference
+    except:
+        pass
+
+    status = Status(repo, reference)
+    if not status.num_contexts or context not in status.latest:
+        sys.stderr.write('No %s context. Its build might not have spawned yet.' % context)
+        # We don't want to raise an exception here because this kind
+        # of situation happens too often. For instance, every time a
+        # PR is updated or when a build trigger hasn't run yet.
+        return
+
+    if all(not v for v in kwargs.values()):
+        kwargs['state'] = True
+
+    return {k:status.latest[context][k] for k, v in kwargs.items() if v}
+
+
 if __name__ == '__main__':
     commands = {
         'open_pr': {
@@ -211,6 +283,28 @@ if __name__ == '__main__':
                     action='store_true')),
             ],
         },
+        'query_status': {
+            'description': ("Get information about the status of a GitHub "
+                            "reference. This refers to the 'votes' that a "
+                            "commit or pull-request receives"),
+            'function': query_status,
+            'arguments': [
+                (('repo',), dict(
+                    help='target repository path: <repo owner>/<repo>')),
+                (('reference',), dict(
+                    help=("git reference. Either a sha1 or a "
+                          "pull-request number"))),
+                (('context',), dict(
+                    help=("status context to query. This is the 'name' "
+                          "of the status, e.g. 'Pylint'"))),
+                (('--target-url',), dict(
+                    help='URL to the build output', action='store_true')),
+                (('--state',), dict(
+                    help=('pull request state, i.e. success, failure, '
+                          'error, pending'),
+                    action='store_true')),
+            ],
+        }
     }
 
     parser = argparse.ArgumentParser(description='Wrapper to GitHub API')

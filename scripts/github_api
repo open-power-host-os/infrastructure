@@ -216,9 +216,13 @@ def open_pull_request(title, src_branch, repo, dst_branch, body=""):
         repo (str): destination repository. Format: <repo owner>/<repo>
         dst_branch (str): destination branch
         body (str): body text
+
+    Returns:
+        dict: pull-request number
     """
     pr = PullRequest(repo)
     pr.open(title, body, src_branch, dst_branch)
+    return {'pr_number': pr.number}
 
 
 def query_pull_request(repo, number, **kwargs):

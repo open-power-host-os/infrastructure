@@ -71,6 +71,34 @@ def _print_dict(_dict):
         print '%s="%s"' % (k, v)
 
 
+class Comment:
+    """
+    https://developer.github.com/v3/issues/comments/
+    """
+    def __init__(self, repo, issue_number):
+        """
+        Args:
+            repo (str): target repository path. Format
+                <repo owner>/<repo>
+            issue_number (str): number of the issue or pull-request
+        """
+        # for GitHub API, pull-requests are just "issues with code",
+        # so both issues and pull-requests comments fall into this
+        # class scope
+        self._endpoint = os.path.join(
+            API_BASE_URL, "repos/%(repo)s/issues/%(number)s/comments" % dict(
+                repo=repo, number=issue_number))
+
+    def create(self, text):
+        """
+        Creates a new comment
+
+        Args:
+            text (str): comment text
+        """
+        request('POST', self._endpoint, data=json.dumps({"body": text}))
+
+
 class Status:
     """
     https://developer.github.com/v3/repos/statuses/
@@ -247,6 +275,21 @@ def query_status(repo, reference, context, **kwargs):
     return {k:status.latest[context][k] for k, v in kwargs.items() if v}
 
 
+def create_comment(repo, number, text):
+    """
+    Handler for the write_comment command. Writes a comment to a
+    GitHub issue or pull-request
+
+    Args:
+        repo (str): target repository path. Format
+            <repo owner>/<repo>
+        number (str): number of the issue or pull-request
+        text (str): comment text
+    """
+    comment = Comment(repo, number)
+    comment.create(text)
+
+
 if __name__ == '__main__':
     commands = {
         'open_pr': {
@@ -304,7 +347,17 @@ if __name__ == '__main__':
                           'error, pending'),
                     action='store_true')),
             ],
-        }
+        },
+        'write_comment': {
+            'description': ("Write a comment in a GitHub issue or pull-request"),
+            'function': create_comment,
+            'arguments': [
+                (('repo',), dict(
+                    help='target repository path: <repo owner>/<repo>')),
+                (('number',), dict(help='number of the issue or pull-request')),
+                (('text',), dict(help="text of the comment")),
+            ],
+        },
     }
 
     parser = argparse.ArgumentParser(description='Wrapper to GitHub API')

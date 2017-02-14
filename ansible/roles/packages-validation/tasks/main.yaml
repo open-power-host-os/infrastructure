@@ -4,6 +4,10 @@
   with_items:
     # Python package management system
     - python-pip
+    # RPM specification file linter
+    - rpmlint
+    # YAML file linter
+    - yamllint
   tags:
     - setup
 

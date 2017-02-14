@@ -4,7 +4,7 @@
     name={{item.name}} group={{item.group}}
     mode={{item.mode}} state=directory
   with_items:
-    - { name: /var/lib/host-os, group: mock, mode: "0775" }
+    - { name: /var/lib/host-os/repositories, group: mock, mode: "0775" }
     - { name: /var/log/host-os, group: mock, mode: "0775" }
   tags:
     - setup

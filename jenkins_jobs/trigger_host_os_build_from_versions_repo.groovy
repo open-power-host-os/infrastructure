@@ -23,6 +23,7 @@ job('trigger_host_os_build_from_versions_repo') {
       extensions {
 	commitStatus {
 	  context('Build Host OS')
+	  statusUrl('${JENKINS_URL}/job/build_host_os/${TRIGGERED_BUILD_NUMBER_build_host_os}')
 	}
       }
     }

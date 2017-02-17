@@ -44,43 +44,10 @@ job('trigger_weekly_host_os_build') {
   steps {
     shell(readFileFromWorkspace(
 	    'jenkins_jobs/trigger_weekly_host_os_build/pre_build_script.sh'))
-    downstreamParameterized {
-      trigger('build_host_os') {
-	block {
-	  buildStepFailure('UNSTABLE')
-	  failure('UNSTABLE')
-	}
-	parameters {
-	  predefinedProps(
-	    [BUILDS_REPO_URL:
-	     'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
-	     BUILDS_REPO_COMMIT: '$BUILDS_REPOSITORY_BRANCH',
-	     VERSIONS_REPO_URL:
-	     'https://github.com/${GITHUB_BOT_USER_NAME}/versions.git'])
-	  propertiesFile("BUILD_PARAMETERS", true)
-	}
-      }
-    }
     shell(readFileFromWorkspace(
 	    'jenkins_jobs/trigger_weekly_host_os_build/copy_artifacts.sh'))
     shell(readFileFromWorkspace(
 	    'jenkins_jobs/trigger_weekly_host_os_build/post_build_script.sh'))
-    downstreamParameterized {
-      trigger('build_host_os_iso') {
-        block {
-          buildStepFailure('UNSTABLE')
-          failure('UNSTABLE')
-        }
-        parameters {
-          predefinedProps(
-            [BUILDS_REPO_URL:
-             'https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git',
-             BUILDS_REPO_COMMIT: '$BUILDS_REPOSITORY_BRANCH',
-             BUILD_JOB_NUMBER:
-             '${TRIGGERED_BUILD_NUMBER_build_host_os}'])
-        }
-      }
-    }
   }
   wrappers {
     timestamps()

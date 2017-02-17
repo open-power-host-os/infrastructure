@@ -36,22 +36,24 @@ job('build_host_os') {
   }
   steps {
     shell(readFileFromWorkspace('jenkins_jobs/build_host_os/script.sh'))
+    shell(readFileFromWorkspace('jenkins_jobs/build_host_os/archive.sh'))
+    downstreamParameterized {
+      trigger('upload_build_artifacts') {
+        block {
+          buildStepFailure('never')
+          failure('never')
+          unstable('FAILURE')
+        }
+        parameters {
+          predefinedProp('BUILD_JOB_NUMBER', '$BUILD_NUMBER')
+        }
+      }
+    }
   }
   publishers {
-    archiveArtifacts('SUCCESS')
-    archiveArtifacts('BUILD_TIMESTAMP')
-    archiveArtifacts('repository/')
     archiveArtifacts {
       pattern('build/*/*/*.log')
       allowEmpty()
-    }
-    downstreamParameterized {
-      trigger('upload_build_artifacts') {
-	condition('FAILED_OR_BETTER')
-	parameters {
-	  predefinedProp('BUILD_JOB_NUMBER', '$BUILD_NUMBER')
-	}
-      }
     }
   }
   wrappers {

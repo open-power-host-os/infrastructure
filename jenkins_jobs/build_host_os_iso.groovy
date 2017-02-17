@@ -41,13 +41,14 @@ job('build_host_os_iso') {
       includePatterns('repository/')
     }
     shell(readFileFromWorkspace('jenkins_jobs/build_host_os_iso/script.sh'))
-  }
-  publishers {
-    archiveArtifacts('*.iso')
-    archiveArtifacts('*-CHECKSUM')
+    shell(readFileFromWorkspace('jenkins_jobs/build_host_os_iso/archive.sh'))
     downstreamParameterized {
       trigger('upload_iso') {
-        condition('FAILED_OR_BETTER')
+        block {
+          buildStepFailure('never')
+          failure('never')
+          unstable('FAILURE')
+        }
         parameters {
           predefinedProps(['BUILD_JOB_NUMBER': '$BUILD_JOB_NUMBER',
                            'BUILD_ISO_JOB_NUMBER': '$BUILD_NUMBER'])

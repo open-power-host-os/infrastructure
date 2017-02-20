@@ -23,32 +23,36 @@ write_comment() {
 	   "$pr_number" "$comment_text"
 }
 
-# Upgrade versions
-# sudo yum install rpmdevtools
-python host_os.py \
-       --verbose \
-       upgrade-versions \
-           --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
-           --build-version "$VERSIONS_REPOSITORY_BRANCH" \
-           --updater-name "$GITHUB_BOT_NAME" \
-           --updater-email "$GITHUB_BOT_EMAIL" \
-           --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
-           --push-repo-branch "$COMMIT_BRANCH"
+upgrade_versions() {
+    python host_os.py \
+           --verbose \
+           upgrade-versions \
+               --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
+               --build-version "$VERSIONS_REPOSITORY_BRANCH" \
+               --updater-name "$GITHUB_BOT_NAME" \
+               --updater-email "$GITHUB_BOT_EMAIL" \
+               --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
+               --push-repo-branch "$COMMIT_BRANCH"
+}
 
+create_release_notes() {
+    python host_os.py \
+           --verbose \
+           release-notes \
+               --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
+	           --build-version "$COMMIT_BRANCH" \
+	           --updater-name "$GITHUB_BOT_NAME" \
+	           --updater-email "$GITHUB_BOT_EMAIL" \
+	           --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
+	           --push-repo-branch "$COMMIT_BRANCH"
+}
+
+upgrade_versions
 create_pull_request "versions"
 
 write_comment "$BUILD_ISO_TRIGGER_PHRASE"
 
-python host_os.py \
-       --verbose \
-       release-notes \
-           --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
-           --build-version "$COMMIT_BRANCH" \
-           --updater-name "$GITHUB_BOT_NAME" \
-           --updater-email "$GITHUB_BOT_EMAIL" \
-           --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
-           --push-repo-branch "$COMMIT_BRANCH"
-
+create_release_notes
 create_pull_request "${GITHUB_ORGANIZATION_NAME}.github.io"
 
 echo "VERSIONS_REPO_COMMIT=$COMMIT_BRANCH" > BUILD_PARAMETERS

@@ -9,7 +9,7 @@ alias rsync_upload="rsync -e \
 
 # Create remote iso directory
 mkdir iso
-rsync_upload --recursive iso ${BUILD_DIR_RSYNC_URL}
+rsync_upload --recursive iso $BUILD_DIR_RSYNC_URL
 
-rsync_upload *.iso ${ISO_DIR_RSYNC_URL}
-rsync_upload *-CHECKSUM ${ISO_DIR_RSYNC_URL}
+rsync_upload *.iso $ISO_DIR_RSYNC_URL
+rsync_upload *-CHECKSUM $ISO_DIR_RSYNC_URL

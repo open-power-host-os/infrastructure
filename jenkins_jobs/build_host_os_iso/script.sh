@@ -1,6 +1,6 @@
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
 BUILDS_CONFIG_FILE="config.yaml"
-MOCK_CONFIG_FILE="mock_configs/CentOS/7/spin-iso-CentOS-7-ppc64le.cfg"
+MOCK_CONFIG_FILE="mock_configs/CentOS/7/build-iso-CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 MAIN_EPEL_REPO_RELEASE_URL="http://download.fedoraproject.org/pub/epel/7"
 

@@ -31,11 +31,11 @@ fi
 eval python host_os.py \
      --verbose \
      --work-dir $BUILDS_WORKSPACE_DIR \
-     build-package \
+     build-packages \
          --force-rebuild \
-         --keep-builddir \
-         --build-versions-repository-url $VERSIONS_REPO_URL \
-         --build-version $VERSIONS_REPO_COMMIT \
+         --keep-build-dir \
+         --packages-metadata-repo-url $VERSIONS_REPO_URL \
+         --packages-metadata-repo-branch $VERSIONS_REPO_COMMIT \
          $PACKAGES_PARAMETER \
          $EXTRA_PARAMETERS
 

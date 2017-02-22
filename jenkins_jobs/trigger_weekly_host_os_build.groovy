@@ -42,9 +42,8 @@ job('trigger_weekly_host_os_build') {
     downstreamParameterized {
       trigger('build_host_os') {
 	block {
-	  buildStepFailure('FAILURE')
-	  failure('FAILURE')
-	  unstable('UNSTABLE')
+	  buildStepFailure('UNSTABLE')
+	  failure('UNSTABLE')
 	}
 	parameters {
 	  predefinedProps(
@@ -68,9 +67,8 @@ job('trigger_weekly_host_os_build') {
     downstreamParameterized {
       trigger('build_host_os_iso') {
         block {
-          buildStepFailure('FAILURE')
-          failure('FAILURE')
-          unstable('UNSTABLE')
+          buildStepFailure('UNSTABLE')
+          failure('UNSTABLE')
         }
         parameters {
           predefinedProps(

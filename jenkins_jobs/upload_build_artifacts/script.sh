@@ -12,16 +12,19 @@ else
 fi
 echo  "{'REPO': '$REPOSITORY_FILE_URL', 'BUILD_TIMESTAMP': '${BUILD_TIMESTAMP}', 'BUILD_LOG': '$BUILD_URL', 'BUILD_ID': $BUILD_JOB_NUMBER, 'BUILD_STATUS': '$BUILD_STATUS'}" > STATUS
 
-alias rsync_upload="rsync -e \
-    'ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa' \
-    --verbose --compress --stats --times --chmod=a+rwx,g+wx,o-"
+rsync_upload() {
+    rsync -e 'ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa' \
+              --verbose --compress --stats --times --chmod=a+rwx,g+wx,o- \
+              $@ $BUILD_DIR_RSYNC_URL
+}
 
 # Create remote build directory
-mkdir ${BUILD_TIMESTAMP}
-rsync_upload --recursive ./${BUILD_TIMESTAMP} ${BUILD_DIR_RSYNC_URL}
+mkdir $BUILD_TIMESTAMP
+# This needs the "./" because the timestamp format confuses rsync
+rsync_upload --recursive ./$BUILD_TIMESTAMP
 
-rsync_upload STATUS ${BUILD_DIR_RSYNC_URL}
-rsync_upload --recursive repository ${BUILD_DIR_RSYNC_URL}
+rsync_upload STATUS
+rsync_upload --recursive repository
 
 # Create hostos.repo
 echo -e """[hostos]
@@ -31,4 +34,4 @@ enabled=1
 priority=1
 gpgcheck=0""" > hostos.repo
 
-rsync_upload hostos.repo ${BUILD_DIR_RSYNC_URL}
+rsync_upload hostos.repo

@@ -1,0 +1,171 @@
+#!/bin/python2
+from functools import partial
+import argparse
+import json
+import os
+import re
+import requests
+import sys
+
+CLIENT_ERROR = 422
+API_BASE_URL = "https://api.github.com/"
+
+
+def request(*args, **kwargs):
+    raise Exception("The '_setup_auth' function must be called once "
+                    "before a request can be made")
+
+
+def _setup_auth(user, password):
+    """
+    Sets up basic authentication to use with HTTP requests
+
+    Args:
+        user (str): GitHub user name
+        password (str): GitHub user password or token
+    """
+    auth = (user, password)
+    global request
+    request = partial(_request, auth)
+
+
+def _request(auth, method, url, **kwargs):
+    """
+    Makes HTTP requests.
+
+    Args:
+        auth (tuple): user credentials
+        method (str): HTTP method
+        url (str): REST API endpoint URL
+
+    Returns:
+        dict: HTTP response
+    """
+    methods = {
+        'POST': requests.post
+    }
+
+    r = methods[method](url, auth=auth, **kwargs)
+    response = json.loads(r.text)
+
+    try:
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as exc:
+        if r.status_code in [CLIENT_ERROR]:
+            error_msg = response['errors'][0]['message']
+            raise Exception(error_msg)
+        raise
+
+    return response
+
+
+class PullRequest:
+    """
+    https://developer.github.com/v3/pulls/
+    """
+    def __init__(self, repo):
+        """
+        Args:
+            repo (str): git repository path. Format: <repo owner>/<repo>
+        """
+        self.repo = repo
+        self._url = os.path.join(
+            API_BASE_URL, "repos/%(repo)s/pulls" % dict(repo=self.repo))
+
+    def open(self, title, body, src_branch, dst_branch):
+        """
+        Opens a GitHub pull-request
+
+        Args:
+            title (str): title text
+            body (str): body text
+            src_branch (str): source branch. May be a reference to a
+                branch in another user's repo. Format: [user:]<branch>
+            dst_branch (str): destination branch
+        """
+        payload_body = {
+            "title": title,
+            "body": body,
+            "head": src_branch,
+            "base": dst_branch,
+        }
+
+        self._set_attributes(
+            request('POST', self._url, data=json.dumps(payload_body)))
+
+    def _set_attributes(self, pr_info):
+        """
+        Sets this class' attributes
+
+        Args:
+            pr_info (dict): information about a GitHub pull request
+        """
+        for k, v in pr_info.items():
+            # just set the simple types that can later be accessed by
+            # pull_request.attr. Ignore dicts for now because they
+            # represent concepts that will require their own classes
+            if type(v) != dict:
+                setattr(self, k, v)
+
+
+def open_pull_request(title, src_branch, repo, dst_branch, body=""):
+    """
+    Handler for the open_pr command. Opens a GitHub pull-request.
+
+    Args:
+        title (str): title text
+        src_branch (str): source branch. Format: [user:]<branch>
+        repo (str): destination repository. Format: <repo owner>/<repo>
+        dst_branch (str): destination branch
+        body (str): body text
+    """
+    pr = PullRequest(repo)
+    pr.open(title, body, src_branch, dst_branch)
+
+
+if __name__ == '__main__':
+    commands = {
+        'open_pr': {
+            'description': "Opens GitHub pull-requests",
+            'function': open_pull_request,
+            'arguments': [
+                (('title',), dict(help='pull request title text')),
+                (('src_branch',), dict(metavar='src-branch',
+                    help='pull request source branch: [user:]<branch>')),
+                (('repo',), dict(
+                    help='destination repository: <repo owner>/<repo>')),
+                (('dst_branch',), dict(metavar='dst-branch',
+                    help='pull request destination branch: <branch>')),
+                (('--body',), dict(help='pull request body text')),
+            ],
+        },
+    }
+
+    parser = argparse.ArgumentParser(description='Wrapper to GitHub API')
+    parser.add_argument('user', help='github user name')
+    parser.add_argument('password', help='github password or token')
+
+    subparsers = parser.add_subparsers(dest='command')
+
+    for cmd_name, cmd in commands.items():
+        _parser = subparsers.add_parser(cmd_name,
+                                        description=cmd['description'])
+
+        for arg_name, arg_opts in cmd['arguments']:
+            _parser.add_argument(*arg_name, **arg_opts)
+
+    args = parser.parse_args()
+    cmd_parser = subparsers.choices[args.command]
+
+    # just so we can use **cmd_args below. The slicing of argv is to
+    # exclude the positional params in the main parser plus the
+    # program and command names which are not known by the subparser
+    cmd_args = vars(cmd_parser.parse_args(sys.argv[4:]))
+
+    _setup_auth(args.user, args.password)
+
+    for key, value in cmd_args.items():
+        if value is None:
+            cmd_args.pop(key)
+
+    commands[args.command]['function'](**cmd_args)

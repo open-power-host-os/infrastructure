@@ -86,5 +86,8 @@ job('trigger_weekly_host_os_build') {
   wrappers {
     timestamps()
     preBuildCleanup()
+    credentialsBinding {
+      usernamePassword('GITHUB_USER_NAME', 'GITHUB_PASSWORD', 'github-user-pass-credentials')
+    }
   }
 }

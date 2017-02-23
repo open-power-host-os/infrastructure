@@ -1,18 +1,10 @@
 ---
-- name: Get git repository root directory
-  shell: git rev-parse --show-toplevel | tr -d '\n'
-  register: git_repo_root_dir
-  args:
-    chdir: "{{playbook_dir}}"
-  tags:
-    - setup
-
 - name: Install GitHub API wrapper
   copy:
     src={{item.src}} dest={{item.dest}}
     owner={{item.owner}} group={{item.group}} mode={{item.mode}}
   with_items:
-    - { src: "{{git_repo_root_dir.stdout}}/scripts/github_api",
+    - { src: "{{playbook_dir}}/../scripts/github_api",
         dest: "/usr/local/bin",
         owner: jenkins, group: jenkins, mode: "0555" }
   tags:

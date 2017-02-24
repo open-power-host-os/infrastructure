@@ -9,8 +9,14 @@ VERSIONS_PUSH_URL="${PUSH_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
 GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
 GITHUB_IO_PUSH_URL="${PUSH_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
 
+BUILDS_REPO_NAME="builds"
+BUILDS_PUSH_URL="${PUSH_URL_PREFIX}/${BUILDS_REPO_NAME}.git"
+
+REPOSITORIES_PATH="workspace/repositories"
+
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
+
 
 # the GITHUB_USER_NAME and GITHUB_PASSWORD variables below refer to
 # the credentials owner, which is not necessarily the same as the
@@ -118,6 +124,21 @@ create_symlinks() {
           "${UPLOAD_SERVER_USER_NAME}@${UPLOAD_SERVER_HOST_NAME}:${UPLOAD_SERVER_WEEKLY_DIR}/"
 }
 
+tag_git_repos() {
+    local repos_push_urls=$@
+    local version_file="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}/VERSION"
+    local tag_name="$(cat $version_file | tail -1)-${RELEASE_DATE}"
+
+    for push_url in ${repos_push_urls[@]}; do
+        repo_name=$(basename $push_url .git)
+        pushd "${REPOSITORIES_PATH}/${repo_name}"
+        tag_remote="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}/${repo_name}"
+        git tag $tag_name
+        git push $tag_remote --tags
+        popd
+    done
+}
+
 upgrade_versions
 create_pull_request $VERSIONS_REPO_NAME
 VERSIONS_PR_NUMBER=$pr_number
@@ -133,3 +154,4 @@ wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 fetch_build_timestamp
 create_symlinks
+tag_git_repos $VERSIONS_PUSH_URL $GITHUB_IO_PUSH_URL $BUILDS_PUSH_URL

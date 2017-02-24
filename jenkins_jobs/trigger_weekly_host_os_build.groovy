@@ -43,7 +43,7 @@ job('trigger_weekly_host_os_build') {
   }
   steps {
     shell(readFileFromWorkspace(
-	    'jenkins_jobs/trigger_weekly_host_os_build/pre_build_script.sh'))
+	    'jenkins_jobs/trigger_weekly_host_os_build/script.sh'))
   }
   wrappers {
     timestamps()

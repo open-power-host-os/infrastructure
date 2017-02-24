@@ -88,6 +88,28 @@ wait_pull_request_merge() {
     fi
 }
 
+fetch_build_timestamp() {
+    get_build_state
+    local artifacts_src_build_number=$(basename $target_url)
+    local artifacts_url=$(basename $JENKINS_URL):${JENKINS_HOME}/jobs/build_host_os/builds/${artifacts_src_build_number}/archive
+
+    rsync -e "ssh -i ${HOME}/.ssh/jenkins_id_rsa" \
+              --verbose --compress --stats --times --perms \
+              $artifacts_url/BUILD_TIMESTAMP .
+}
+
+create_symlinks() {
+    local build_dir_path="../to_build/$(cat BUILD_TIMESTAMP)"
+
+    ln -s "$build_dir_path" "$RELEASE_DATE"
+    ln -s "$RELEASE_DATE" latest
+
+    rsync -e "ssh -i $HOME/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" \
+          --verbose --compress --links --times --chmod=a+rwx,g+rwx,o- \
+          "$RELEASE_DATE" "latest" \
+          "${UPLOAD_SERVER_USER_NAME}@${UPLOAD_SERVER_HOST_NAME}:${UPLOAD_SERVER_WEEKLY_DIR}/"
+}
+
 upgrade_versions
 create_pull_request "versions"
 VERSIONS_PR_NUMBER=$pr_number
@@ -101,8 +123,5 @@ GITHUB_IO_PR_NUMBER=$pr_number
 wait_pull_request_merge $VERSIONS_PR_NUMBER "versions"
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER "${GITHUB_ORGANIZATION_NAME}.github.io"
 
-get_build_state
-# this will be used by the copy_artifacts script to get the build
-# timestamp file
-echo $(basename $target_url) > BUILD_JOB_NUMBER
-echo "$RELEASE_DATE" > WEEKLY_DIR_NAME
+fetch_build_timestamp
+create_symlinks

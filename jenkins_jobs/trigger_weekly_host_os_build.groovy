@@ -61,12 +61,8 @@ job('trigger_weekly_host_os_build') {
 	}
       }
     }
-    copyArtifacts('build_host_os') {
-      buildSelector {
-        buildNumber('$TRIGGERED_BUILD_NUMBER_build_host_os')
-      }
-      includePatterns('BUILD_TIMESTAMP')
-    }
+    shell(readFileFromWorkspace(
+	    'jenkins_jobs/trigger_weekly_host_os_build/copy_artifacts.sh'))
     shell(readFileFromWorkspace(
 	    'jenkins_jobs/trigger_weekly_host_os_build/post_build_script.sh'))
     downstreamParameterized {

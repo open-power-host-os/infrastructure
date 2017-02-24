@@ -1,6 +1,14 @@
 set -e
 
 VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
+PUSH_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
+
+VERSIONS_REPO_NAME="versions"
+VERSIONS_PUSH_URL="${PUSH_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
+
+GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
+GITHUB_IO_PUSH_URL="${PUSH_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
+
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
 
@@ -21,7 +29,7 @@ create_pull_request() {
 write_comment() {
     local comment_text="$1"
 
-    github write_comment "${GITHUB_ORGANIZATION_NAME}/versions" \
+    github write_comment "${GITHUB_ORGANIZATION_NAME}/$VERSIONS_REPO_NAME" \
        "$pr_number" "$comment_text"
 }
 
@@ -31,7 +39,7 @@ get_build_state(){
     # this will evaluate the queried keys as variables: state=<state>,
     # target_url=<url>
     eval $(github_api "$GITHUB_USER_NAME" "$GITHUB_PASSWORD" \
-                      query_status "${GITHUB_ORGANIZATION_NAME}/versions" \
+                      query_status "${GITHUB_ORGANIZATION_NAME}/$VERSIONS_REPO_NAME" \
                       "$VERSIONS_PR_NUMBER" "$target_context" --state \
                       --target-url || echo "exit 1")
 }
@@ -55,7 +63,7 @@ upgrade_versions() {
                --build-version "$VERSIONS_REPOSITORY_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
-               --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
+               --push-repo-url "$VERSIONS_PUSH_URL" \
                --push-repo-branch "$COMMIT_BRANCH"
 }
 
@@ -63,11 +71,11 @@ create_release_notes() {
     python host_os.py \
            --verbose \
            release-notes \
-               --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
+               --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
                --build-version "$COMMIT_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
-               --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
+               --push-repo-url "$GITHUB_IO_PUSH_URL" \
                --push-repo-branch "$COMMIT_BRANCH"
 }
 
@@ -111,17 +119,17 @@ create_symlinks() {
 }
 
 upgrade_versions
-create_pull_request "versions"
+create_pull_request $VERSIONS_REPO_NAME
 VERSIONS_PR_NUMBER=$pr_number
 
 write_comment "$BUILD_ISO_TRIGGER_PHRASE"
 
 create_release_notes
-create_pull_request "${GITHUB_ORGANIZATION_NAME}.github.io"
+create_pull_request $GITHUB_IO_REPO_NAME
 GITHUB_IO_PR_NUMBER=$pr_number
 
-wait_pull_request_merge $VERSIONS_PR_NUMBER "versions"
-wait_pull_request_merge $GITHUB_IO_PR_NUMBER "${GITHUB_ORGANIZATION_NAME}.github.io"
+wait_pull_request_merge $VERSIONS_PR_NUMBER $VERSIONS_REPO_NAME
+wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 fetch_build_timestamp
 create_symlinks

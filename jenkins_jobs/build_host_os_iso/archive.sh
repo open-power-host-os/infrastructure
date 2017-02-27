@@ -12,5 +12,4 @@ rsync_upload() {
 mkdir $JENKINS_BUILD_ARCHIVE_DIR_NAME
 rsync_upload --recursive $JENKINS_BUILD_ARCHIVE_DIR_NAME
 
-rsync_upload *.iso
-rsync_upload *-CHECKSUM
+rsync_upload result/iso/latest/*

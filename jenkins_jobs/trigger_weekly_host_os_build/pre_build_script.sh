@@ -7,9 +7,9 @@ create_pull_request() {
 
     # the GITHUB_USER_NAME and GITHUB_PASSWORD variables below refer to
     # the credentials owner, which is not necessarily the same as the
-    # source repo owner - GITHUB_BOT_NAME in this case
+    # source repo owner - GITHUB_BOT_USER_NAME in this case
     github_api "$GITHUB_USER_NAME" "$GITHUB_PASSWORD" \
-        open_pr "Weekly build" "${GITHUB_BOT_NAME}:${COMMIT_BRANCH}" \
+        open_pr "Weekly build" "${GITHUB_BOT_USER_NAME}:${COMMIT_BRANCH}" \
 	"${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master"
 }
 

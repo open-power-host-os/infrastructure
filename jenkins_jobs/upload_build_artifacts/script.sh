@@ -13,7 +13,7 @@ fi
 echo  "{'REPO': '$REPOSITORY_FILE_URL', 'BUILD_TIMESTAMP': '${BUILD_TIMESTAMP}', 'BUILD_LOG': '$BUILD_URL', 'BUILD_ID': $BUILD_JOB_NUMBER, 'BUILD_STATUS': '$BUILD_STATUS'}" > STATUS
 
 rsync_upload() {
-    rsync -e 'ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa' \
+    rsync -e "ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" \
               --verbose --compress --stats --times --chmod=a+rwx,g+wx,o- \
               $@ $BUILD_DIR_RSYNC_URL
 }

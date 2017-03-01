@@ -24,6 +24,8 @@ job('trigger_weekly_host_os_build') {
     stringParam('UPLOAD_SERVER_WEEKLY_DIR',
 		"${UPLOAD_SERVER_WEEKLY_DIR}",
 		'Directory in the target server to upload weekly build results.')
+    stringParam('BUILD_ISO_TRIGGER_PHRASE', 'start iso',
+		'Phrase that is recognized as a trigger by the job that starts an ISO build.')
   }
   scm {
     git {

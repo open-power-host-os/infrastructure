@@ -2,15 +2,25 @@ VERSIONS_REPO_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
 
+# the GITHUB_USER_NAME and GITHUB_PASSWORD variables below refer to
+# the credentials owner, which is not necessarily the same as the
+# source repo owner - GITHUB_BOT_USER_NAME in this case
+alias github="github_api $GITHUB_USER_NAME $GITHUB_PASSWORD"
+
 create_pull_request() {
     local dest_repo=$1
 
-    # the GITHUB_USER_NAME and GITHUB_PASSWORD variables below refer to
-    # the credentials owner, which is not necessarily the same as the
-    # source repo owner - GITHUB_BOT_USER_NAME in this case
-    github_api "$GITHUB_USER_NAME" "$GITHUB_PASSWORD" \
-        open_pr "Weekly build" "${GITHUB_BOT_USER_NAME}:${COMMIT_BRANCH}" \
-	"${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master"
+    # the 'eval' sets the variable 'pr_number' to the number of the
+    # new pull-request
+    eval $(github open_pr "Weekly build" "${GITHUB_BOT_USER_NAME}:${COMMIT_BRANCH}" \
+		  "${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master" || echo "exit 1")
+}
+
+write_comment() {
+    local comment_text="$1"
+
+    github write_comment "${GITHUB_ORGANIZATION_NAME}/versions" \
+	   "$pr_number" "$comment_text"
 }
 
 # Upgrade versions
@@ -24,6 +34,8 @@ python host_os.py \
            --push-repo-branch "$COMMIT_BRANCH"
 
 create_pull_request "versions"
+
+write_comment "$BUILD_ISO_TRIGGER_PHRASE"
 
 python host_os.py \
        --verbose \

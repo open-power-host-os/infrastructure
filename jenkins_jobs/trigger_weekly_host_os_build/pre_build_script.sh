@@ -1,4 +1,4 @@
-VERSIONS_REPO_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
+VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
 
@@ -18,6 +18,8 @@ create_pull_request() {
 python host_os.py \
        --verbose \
        upgrade-versions \
+           --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
+           --build-version "$VERSIONS_REPOSITORY_BRANCH" \
            --updater-name "$GITHUB_BOT_NAME" \
            --updater-email "$GITHUB_BOT_EMAIL" \
            --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \

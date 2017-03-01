@@ -10,6 +10,9 @@ job('trigger_nightly_host_os_build') {
     stringParam('BUILDS_REPOSITORY_BRANCH',
 		"master",
 		'Branch of the builds repository to clone and pass to the build jobs.')
+    stringParam('VERSIONS_REPOSITORY_BRANCH',
+		"master",
+		"Branch of the versions repository on which to base the update of packages' versions.")
     stringParam('GITHUB_BOT_NAME', "${GITHUB_BOT_NAME}",
 		'Name of the GitHub user to create commits automatically.')
     stringParam('GITHUB_BOT_USER_NAME', "${GITHUB_BOT_USER_NAME}",

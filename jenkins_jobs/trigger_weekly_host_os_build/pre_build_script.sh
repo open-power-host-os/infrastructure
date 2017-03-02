@@ -15,14 +15,14 @@ create_pull_request() {
     # the 'eval' sets the variable 'pr_number' to the number of the
     # new pull-request
     eval $(github open_pr "Weekly build" "${GITHUB_BOT_USER_NAME}:${COMMIT_BRANCH}" \
-		  "${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master" || echo "exit 1")
+          "${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master" || echo "exit 1")
 }
 
 write_comment() {
     local comment_text="$1"
 
     github write_comment "${GITHUB_ORGANIZATION_NAME}/versions" \
-	   "$pr_number" "$comment_text"
+       "$pr_number" "$comment_text"
 }
 
 get_build_state(){
@@ -64,11 +64,11 @@ create_release_notes() {
            --verbose \
            release-notes \
                --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
-	           --build-version "$COMMIT_BRANCH" \
-	           --updater-name "$GITHUB_BOT_NAME" \
-	           --updater-email "$GITHUB_BOT_EMAIL" \
-	           --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
-	           --push-repo-branch "$COMMIT_BRANCH"
+               --build-version "$COMMIT_BRANCH" \
+               --updater-name "$GITHUB_BOT_NAME" \
+               --updater-email "$GITHUB_BOT_EMAIL" \
+               --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
+               --push-repo-branch "$COMMIT_BRANCH"
 }
 
 wait_pull_request_merge() {

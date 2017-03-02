@@ -29,14 +29,13 @@ eval python host_os.py \
      --verbose \
      build-package \
          --keep-builddir \
-         --result-dir ./repository \
          --build-versions-repository-url $VERSIONS_REPO_URL \
          --build-version $VERSIONS_REPO_COMMIT \
          $PACKAGES_PARAMETER \
          $EXTRA_PARAMETERS
 
 # creating the yum repository locally
-createrepo ./repository
+createrepo result/packages/latest
 
 # Create BUILD_TIMESTAMP file with timestamp information
 echo "${TIMESTAMP}" > ./BUILD_TIMESTAMP

@@ -4,7 +4,7 @@ BUILD_DIR_RSYNC_URL="${UPLOAD_SERVER_USER_NAME}@${UPLOAD_SERVER_HOST_NAME}:${BUI
 ISO_DIR_RSYNC_URL="${BUILD_DIR_RSYNC_URL}/iso"
 
 rsync_upload() {
-    rsync -e 'ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa' \
+    rsync -e "ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" \
               --verbose --compress --stats --times --chmod=a+rwx,g+wx,o- \
               $@ $ISO_DIR_RSYNC_URL
 }

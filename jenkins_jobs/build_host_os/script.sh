@@ -1,13 +1,14 @@
 # ISO 8601 date with nanoseconds precision
 TIMESTAMP=$(date --utc +'%Y-%m-%dT%H:%M:%S.%N')
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
+VERSIONS_REPO_PATH="workspace/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
 
 # Fetch pull requests in case this job was triggered by one
-git clone $VERSIONS_REPO_URL $VERSIONS_REPO_DIR --no-checkout
-pushd $VERSIONS_REPO_DIR
+git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
+pushd $VERSIONS_REPO_PATH
 git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
 popd
 

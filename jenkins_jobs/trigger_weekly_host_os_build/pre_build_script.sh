@@ -1,3 +1,5 @@
+set -e
+
 VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
@@ -13,43 +15,94 @@ create_pull_request() {
     # the 'eval' sets the variable 'pr_number' to the number of the
     # new pull-request
     eval $(github open_pr "Weekly build" "${GITHUB_BOT_USER_NAME}:${COMMIT_BRANCH}" \
-		  "${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master" || echo "exit 1")
+          "${GITHUB_ORGANIZATION_NAME}/${dest_repo}" "master" || echo "exit 1")
 }
 
 write_comment() {
     local comment_text="$1"
 
     github write_comment "${GITHUB_ORGANIZATION_NAME}/versions" \
-	   "$pr_number" "$comment_text"
+       "$pr_number" "$comment_text"
 }
 
-# Upgrade versions
-# sudo yum install rpmdevtools
-python host_os.py \
-       --verbose \
-       upgrade-versions \
-           --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
-           --build-version "$VERSIONS_REPOSITORY_BRANCH" \
-           --updater-name "$GITHUB_BOT_NAME" \
-           --updater-email "$GITHUB_BOT_EMAIL" \
-           --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
-           --push-repo-branch "$COMMIT_BRANCH"
+get_build_state(){
+    local target_context="Build Host OS"
 
+    # this will evaluate the queried keys as variables: state=<state>,
+    # target_url=<url>
+    eval $(github_api "$GITHUB_USER_NAME" "$GITHUB_PASSWORD" \
+                      query_status "${GITHUB_ORGANIZATION_NAME}/versions" \
+                      "$VERSIONS_PR_NUMBER" "$target_context" --state \
+                      --target-url || echo "exit 1")
+}
+
+get_pr_state(){
+    local pr_number=$1
+    local repo=$2
+
+    # this will evaluate the queried keys as variables: state=<state>,
+    # title=<title>
+    eval $(github_api "$GITHUB_USER_NAME" "$GITHUB_PASSWORD" \
+                      query_pr "${GITHUB_ORGANIZATION_NAME}/$repo" \
+                      "$pr_number" --state --title --merged || echo "exit 1")
+}
+
+upgrade_versions() {
+    python host_os.py \
+           --verbose \
+           upgrade-versions \
+               --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
+               --build-version "$VERSIONS_REPOSITORY_BRANCH" \
+               --updater-name "$GITHUB_BOT_NAME" \
+               --updater-email "$GITHUB_BOT_EMAIL" \
+               --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
+               --push-repo-branch "$COMMIT_BRANCH"
+}
+
+create_release_notes() {
+    python host_os.py \
+           --verbose \
+           release-notes \
+               --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
+               --build-version "$COMMIT_BRANCH" \
+               --updater-name "$GITHUB_BOT_NAME" \
+               --updater-email "$GITHUB_BOT_EMAIL" \
+               --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
+               --push-repo-branch "$COMMIT_BRANCH"
+}
+
+wait_pull_request_merge() {
+    local pr_number=$1
+    local repo=$2
+
+    get_pr_state $pr_number $repo
+    while [ $state == "open" ]; do
+        echo "Waiting for pull-request ${pr_number}: $title to be merged..."
+        sleep 1m
+        get_pr_state $pr_number $repo
+    done
+
+    if [ $merged == "False" ]; then
+        echo "Pull-request $pr_number is closed but wasn't merged, aborting..."
+        exit 1
+    fi
+}
+
+upgrade_versions
 create_pull_request "versions"
+VERSIONS_PR_NUMBER=$pr_number
 
 write_comment "$BUILD_ISO_TRIGGER_PHRASE"
 
-python host_os.py \
-       --verbose \
-       release-notes \
-           --build-versions-repository-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
-           --build-version "$COMMIT_BRANCH" \
-           --updater-name "$GITHUB_BOT_NAME" \
-           --updater-email "$GITHUB_BOT_EMAIL" \
-           --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/${GITHUB_ORGANIZATION_NAME}.github.io.git" \
-           --push-repo-branch "$COMMIT_BRANCH"
-
+create_release_notes
 create_pull_request "${GITHUB_ORGANIZATION_NAME}.github.io"
+GITHUB_IO_PR_NUMBER=$pr_number
 
-echo "VERSIONS_REPO_COMMIT=$COMMIT_BRANCH" > BUILD_PARAMETERS
+wait_pull_request_merge $VERSIONS_PR_NUMBER "versions"
+wait_pull_request_merge $GITHUB_IO_PR_NUMBER "${GITHUB_ORGANIZATION_NAME}.github.io"
+
+get_build_state
+# this will be used by the copy_artifacts script to get the build
+# timestamp file
+echo $(basename $target_url) > BUILD_JOB_NUMBER
 echo "$RELEASE_DATE" > WEEKLY_DIR_NAME

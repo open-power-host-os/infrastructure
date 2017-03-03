@@ -27,7 +27,9 @@ if [ -n "$PACKAGES" ]; then
 fi
 eval python host_os.py \
      --verbose \
+     --work-dir /var/lib/host-os \
      build-package \
+         --force-rebuild \
          --keep-builddir \
          --build-versions-repository-url $VERSIONS_REPO_URL \
          --build-version $VERSIONS_REPO_COMMIT \

@@ -1,13 +1,15 @@
 # ISO 8601 date with nanoseconds precision
 TIMESTAMP=$(date --utc +'%Y-%m-%dT%H:%M:%S.%N')
+BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
-VERSIONS_REPO_PATH="workspace/repositories/$VERSIONS_REPO_DIR"
+VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
 
 # Fetch pull requests in case this job was triggered by one
-git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
+test -d $VERSIONS_REPO_PATH/.git \
+    || git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
 pushd $VERSIONS_REPO_PATH
 git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
 popd
@@ -28,7 +30,7 @@ if [ -n "$PACKAGES" ]; then
 fi
 eval python host_os.py \
      --verbose \
-     --work-dir /var/lib/host-os \
+     --work-dir $BUILDS_WORKSPACE_DIR \
      build-package \
          --force-rebuild \
          --keep-builddir \

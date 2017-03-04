@@ -30,6 +30,7 @@ fi
 eval python host_os.py \
      --verbose \
      build-iso \
+         --packages-dir repository \
          $EXTRA_PARAMETERS
 
 # inform status to upload job

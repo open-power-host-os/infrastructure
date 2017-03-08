@@ -61,12 +61,12 @@ get_pr_state(){
                       "$pr_number" --state --title --merged || echo "exit 1")
 }
 
-upgrade_versions() {
+update_versions() {
     python host_os.py \
            --verbose \
-           upgrade-versions \
-               --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
-               --build-version "$VERSIONS_REPOSITORY_BRANCH" \
+           update-versions \
+               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+               --packages-metadata-repo-branch "$VERSIONS_REPOSITORY_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
                --push-repo-url "$VERSIONS_PUSH_URL" \
@@ -76,9 +76,9 @@ upgrade_versions() {
 create_release_notes() {
     python host_os.py \
            --verbose \
-           release-notes \
-               --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
-               --build-version "$COMMIT_BRANCH" \
+           build-release-notes \
+               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+               --packages-metadata-repo-branch "$COMMIT_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
                --push-repo-url "$GITHUB_IO_PUSH_URL" \
@@ -139,7 +139,7 @@ tag_git_repos() {
     done
 }
 
-upgrade_versions
+update_versions
 create_pull_request $VERSIONS_REPO_NAME
 VERSIONS_PR_NUMBER=$pr_number
 

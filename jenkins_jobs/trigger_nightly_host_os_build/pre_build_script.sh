@@ -6,9 +6,9 @@ COMMIT_BRANCH="nightly-${RELEASE_DATE}"
 # sudo yum install rpmdevtools
 python host_os.py \
        --verbose \
-       upgrade-versions \
-           --build-versions-repository-url "$VERSIONS_REPOSITORY_URL" \
-           --build-version "$VERSIONS_REPOSITORY_BRANCH" \
+       update-versions \
+           --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+           --packages-metadata-repo-branch "$VERSIONS_REPOSITORY_BRANCH" \
            --updater-name "$GITHUB_BOT_NAME" \
            --updater-email "$GITHUB_BOT_EMAIL" \
            --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \

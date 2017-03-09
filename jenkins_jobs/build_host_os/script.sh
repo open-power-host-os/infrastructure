@@ -39,9 +39,6 @@ eval python host_os.py \
          $PACKAGES_PARAMETER \
          $EXTRA_PARAMETERS
 
-# creating the yum repository locally
-createrepo result/packages/latest
-
 # Create BUILD_TIMESTAMP file with timestamp information
 echo "${TIMESTAMP}" > ./BUILD_TIMESTAMP
 

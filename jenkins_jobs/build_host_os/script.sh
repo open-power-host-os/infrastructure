@@ -11,7 +11,7 @@ MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 test -d $VERSIONS_REPO_PATH/.git \
     || git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
 pushd $VERSIONS_REPO_PATH
-git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
+git fetch $VERSIONS_REPO_URL +refs/pull/*:refs/remotes/origin/pr/*
 popd
 
 # Tell mock to use a different mirror/repo. This could be used to:

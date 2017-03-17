@@ -131,11 +131,15 @@ tag_git_repos() {
 
     for push_url in ${repos_push_urls[@]}; do
         repo_name=$(basename $push_url .git)
-        pushd "${REPOSITORIES_PATH}/${repo_name}"
+        if [ $repo_name != $BUILDS_REPO_NAME ]; then
+            pushd "${REPOSITORIES_PATH}/${repo_name}"
+        fi
         tag_remote="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}/${repo_name}"
         git tag $tag_name
         git push $tag_remote --tags
-        popd
+        if [ $repo_name != $BUILDS_REPO_NAME ]; then
+            popd
+        fi
     done
 }
 

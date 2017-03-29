@@ -12,7 +12,7 @@ sed -i \
     $MOCK_CONFIG_FILE
 
 sed -i \
-    "s|build_versions_repository_url:.*|build_versions_repository_url: \"$VERSIONS_REPO_URL\"|" \
+    "s|packages_metadata_repo_url:.*|packages_metadata_repo_url: \"$VERSIONS_REPO_URL\"|" \
     $BUILD_CONFIG_FILE
 sed -i \
     "s|distro_version:.*|distro_version: \"7.2\"|" \
@@ -28,15 +28,15 @@ mock --scrub all
 
 # 1.5
 sed -i \
-    "s|build_version:.*|build_version: \"$TAG_1_5\"|" \
+    "s|packages_metadata_repo_branch:.*|packages_metadata_repo_branch: \"$TAG_1_5\"|" \
     $BUILD_CONFIG_FILE
-python host_os.py --verbose build-package
+python host_os.py --verbose build-packages
 
 # 1.0
 sed -i \
-    "s|build_version:.*|build_version: \"$TAG_1_0\"|" \
+    "s|packages_metadata_repo_branch:.*|packages_metadata_repo_branch: \"$TAG_1_0\"|" \
     $BUILD_CONFIG_FILE
-python host_os.py --verbose build-package
+python host_os.py --verbose build-packages
 
 # clean yum repos to avoid that future builds which use newer CentOS versions have conflicts
 mock --scrub all

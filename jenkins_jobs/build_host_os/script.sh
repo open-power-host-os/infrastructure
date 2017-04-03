@@ -6,12 +6,19 @@ VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
+# Set origin remote URL
+# This is the remote name assumed by the GHPRB plugin
+if [ -d $VERSIONS_REPO_PATH/.git ]; then
+    pushd $VERSIONS_REPO_PATH
+    git remote remove origin || true
+    git remote add origin $VERSIONS_REPO_URL
+else
+    git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
+    pushd $VERSIONS_REPO_PATH
+fi
 
 # Fetch pull requests in case this job was triggered by one
-test -d $VERSIONS_REPO_PATH/.git \
-    || git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
-pushd $VERSIONS_REPO_PATH
-git fetch $VERSIONS_REPO_URL +refs/pull/*:refs/remotes/origin/pr/*
+git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
 popd
 
 # Tell mock to use a different mirror/repo. This could be used to:

@@ -6,6 +6,11 @@ VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
+# Resolve the reference name to a commit id. If the value is not a
+# reference, assume it is a commit id.
+builds_repo_commit=$(git show-ref --hash "$BUILDS_REPO_REFERENCE" \
+                         || echo "$BUILDS_REPO_REFERENCE")
+
 # Set origin remote URL
 # This is the remote name assumed by the GHPRB plugin
 if [ -d $VERSIONS_REPO_PATH/.git ]; then
@@ -19,6 +24,9 @@ fi
 
 # Fetch pull requests in case this job was triggered by one
 git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
+
+versions_repo_commit=$(git show-ref --hash "$VERSIONS_REPO_REFERENCE" \
+                           || echo "$VERSIONS_REPO_REFERENCE")
 popd
 
 # Tell mock to use a different mirror/repo. This could be used to:
@@ -48,6 +56,8 @@ eval python host_os.py \
 
 # Create BUILD_TIMESTAMP file with timestamp information
 echo "${TIMESTAMP}" > ./BUILD_TIMESTAMP
+echo "$builds_repo_commit" > ./BUILDS_REPO_COMMIT
+echo "$versions_repo_commit" > ./VERSIONS_REPO_COMMIT
 
 # inform status to upload job
 touch SUCCESS

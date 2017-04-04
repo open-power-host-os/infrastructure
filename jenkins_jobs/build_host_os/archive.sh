@@ -15,5 +15,7 @@ rsync_upload --recursive $JENKINS_BUILD_ARCHIVE_DIR_NAME
 
 rsync_upload SUCCESS
 rsync_upload BUILD_TIMESTAMP
+rsync_upload BUILDS_REPO_COMMIT
+rsync_upload VERSIONS_REPO_COMMIT
 ln -s result/packages/latest repository
 rsync_upload --recursive --copy-links repository

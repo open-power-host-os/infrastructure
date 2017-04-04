@@ -42,7 +42,7 @@ eval python host_os.py \
          --force-rebuild \
          --keep-build-dir \
          --packages-metadata-repo-url $VERSIONS_REPO_URL \
-         --packages-metadata-repo-branch $VERSIONS_REPO_COMMIT \
+         --packages-metadata-repo-branch $VERSIONS_REPO_REFERENCE \
          $PACKAGES_PARAMETER \
          $EXTRA_PARAMETERS
 

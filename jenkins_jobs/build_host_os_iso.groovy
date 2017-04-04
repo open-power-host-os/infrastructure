@@ -11,8 +11,8 @@ job('build_host_os_iso') {
     stringParam('BUILDS_REPO_URL',
                 "https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git",
                 'URL of the builds repository.')
-    stringParam('BUILDS_REPO_COMMIT', 'master',
-                'Commit ID to checkout from the builds repository.')
+    stringParam('BUILDS_REPO_REFERENCE', 'master',
+                'Git reference to checkout from the builds repository.')
     stringParam('BUILD_JOB_NUMBER', '',
                 'Number of the Host OS build job that built the packages.')
     stringParam('EXTRA_PARAMETERS', '', 'Arbitrary extra parameters to pass to the builds script. Arguments containing spaces have to be enclosed in double quotes, e.g. --mock-args "--with tests"')
@@ -30,7 +30,7 @@ job('build_host_os_iso') {
         refspec('+refs/heads/*:refs/remotes/origin/* ' +
                 '+refs/pull/*:refs/remotes/origin/pr/*')
       }
-      branch('$BUILDS_REPO_COMMIT')
+      branch('$BUILDS_REPO_REFERENCE')
     }
   }
   steps {

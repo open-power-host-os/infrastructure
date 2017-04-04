@@ -37,8 +37,8 @@ job('trigger_host_os_build_from_builds_repo') {
 	  unstable('UNSTABLE')
 	}
 	parameters {
-	  predefinedProps([BUILDS_REPO_COMMIT: '$sha1',
-			   VERSIONS_REPO_COMMIT: 'master'])
+	  predefinedProps([BUILDS_REPO_REFERENCE: '$sha1',
+			   VERSIONS_REPO_REFERENCE: 'master'])
 	}
       }
     }

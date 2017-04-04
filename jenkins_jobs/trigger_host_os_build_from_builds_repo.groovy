@@ -38,7 +38,7 @@ job('trigger_host_os_build_from_builds_repo') {
 	}
 	parameters {
 	  predefinedProps([BUILDS_REPO_REFERENCE: '$sha1',
-			   VERSIONS_REPO_REFERENCE: 'master'])
+			   VERSIONS_REPO_REFERENCE: 'origin/master'])
 	}
       }
     }

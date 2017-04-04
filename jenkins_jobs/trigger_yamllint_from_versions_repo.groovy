@@ -5,12 +5,12 @@ job('trigger_yamllint_from_versions_repo') {
     stringParam('BUILDS_REPO_URL',
 		"https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git",
 		'URL of the builds repository.')
-    stringParam('BUILDS_REPO_REFERENCE', 'master',
+    stringParam('BUILDS_REPO_REFERENCE', 'origin/master',
 		'Git reference to checkout from the builds repository.')
     stringParam('VERSIONS_REPO_URL',
 		"https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git",
 		'URL of the versions repository.')
-    stringParam('sha1', 'master',
+    stringParam('sha1', 'origin/master',
 		'Commit ID to checkout from the versions repository.')
   }
   properties {

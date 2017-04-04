@@ -11,7 +11,7 @@ job('build_host_os_iso') {
     stringParam('BUILDS_REPO_URL',
                 "https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git",
                 'URL of the builds repository.')
-    stringParam('BUILDS_REPO_REFERENCE', 'master',
+    stringParam('BUILDS_REPO_REFERENCE', 'origin/master',
                 'Git reference to checkout from the builds repository.')
     stringParam('BUILD_JOB_NUMBER', '',
                 'Number of the Host OS build job that built the packages.')

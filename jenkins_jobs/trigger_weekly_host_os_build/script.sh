@@ -149,11 +149,12 @@ VERSIONS_PR_NUMBER=$pr_number
 
 write_comment "$BUILD_ISO_TRIGGER_PHRASE"
 
+wait_pull_request_merge $VERSIONS_PR_NUMBER $VERSIONS_REPO_NAME
+
 create_release_notes
 create_pull_request $GITHUB_IO_REPO_NAME
 GITHUB_IO_PR_NUMBER=$pr_number
 
-wait_pull_request_merge $VERSIONS_PR_NUMBER $VERSIONS_REPO_NAME
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 fetch_build_timestamp

@@ -14,5 +14,5 @@ python host_os.py \
            --push-repo-url "ssh://git@github.com/${GITHUB_BOT_USER_NAME}/versions.git" \
            --push-repo-branch "$COMMIT_BRANCH"
 
-echo "VERSIONS_REPO_COMMIT=$COMMIT_BRANCH" > BUILD_PARAMETERS
+echo "VERSIONS_REPO_REFERENCE=$COMMIT_BRANCH" > BUILD_PARAMETERS
 echo "$RELEASE_DATE" > NIGHTLY_DIR_NAME

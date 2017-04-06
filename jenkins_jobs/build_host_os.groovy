@@ -11,13 +11,13 @@ job('build_host_os') {
     stringParam('BUILDS_REPO_URL',
 		"https://github.com/${GITHUB_ORGANIZATION_NAME}/builds.git",
 		'URL of the builds repository.')
-    stringParam('BUILDS_REPO_COMMIT', 'master',
-		'Commit ID to checkout from the builds repository.')
+    stringParam('BUILDS_REPO_REFERENCE', 'origin/master',
+		'Git reference to checkout from the builds repository.')
     stringParam('VERSIONS_REPO_URL',
 		"https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git",
 		'URL of the versions repository.')
-    stringParam('VERSIONS_REPO_COMMIT', 'master',
-		'Commit ID to checkout from the versions repository.')
+    stringParam('VERSIONS_REPO_REFERENCE', 'origin/master',
+		'Git reference to checkout from the versions repository.')
     stringParam('PACKAGES', '', 'Packages to build. Leave empty to build all.')
     stringParam('EXTRA_PARAMETERS', '', 'Arbitrary extra parameters to pass to the builds script. Arguments containing spaces have to be enclosed in double quotes, e.g. --mock-args "--with tests"')
     stringParam('CENTOS_ALTERNATE_MIRROR_RELEASE_URL',
@@ -31,7 +31,7 @@ job('build_host_os') {
 	refspec('+refs/heads/*:refs/remotes/origin/* ' +
 		'+refs/pull/*:refs/remotes/origin/pr/*')
       }
-      branch('$BUILDS_REPO_COMMIT')
+      branch('$BUILDS_REPO_REFERENCE')
     }
   }
   steps {

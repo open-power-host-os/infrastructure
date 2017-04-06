@@ -23,6 +23,8 @@ job('upload_build_artifacts') {
       }
 
       includePatterns('BUILD_TIMESTAMP')
+      includePatterns('BUILDS_REPO_COMMIT')
+      includePatterns('VERSIONS_REPO_COMMIT')
       includePatterns('SUCCESS')
       includePatterns('repository/')
       optional()

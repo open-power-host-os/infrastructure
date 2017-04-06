@@ -102,14 +102,15 @@ wait_pull_request_merge() {
     fi
 }
 
-fetch_build_timestamp() {
+fetch_build_info() {
     get_build_state
     local artifacts_src_build_number=$(basename $target_url)
     local artifacts_url=$(basename $JENKINS_URL):${JENKINS_HOME}/jobs/build_host_os/builds/${artifacts_src_build_number}/archive
 
     rsync -e "ssh -i ${HOME}/.ssh/jenkins_id_rsa" \
               --verbose --compress --stats --times --perms \
-              $artifacts_url/BUILD_TIMESTAMP .
+              $artifacts_url/BUILD_TIMESTAMP \
+              $artifacts_url/BUILDS_REPO_COMMIT .
 }
 
 create_symlinks() {
@@ -149,13 +150,20 @@ VERSIONS_PR_NUMBER=$pr_number
 
 write_comment "$BUILD_ISO_TRIGGER_PHRASE"
 
+wait_pull_request_merge $VERSIONS_PR_NUMBER $VERSIONS_REPO_NAME
+
+fetch_build_info
+
+# checkout the builds repo commit that was used by the build job
+# because the branch might have moved during the time it takes to
+# generate the build
+git checkout $(cat BUILDS_REPO_COMMIT)
+
 create_release_notes
 create_pull_request $GITHUB_IO_REPO_NAME
 GITHUB_IO_PR_NUMBER=$pr_number
 
-wait_pull_request_merge $VERSIONS_PR_NUMBER $VERSIONS_REPO_NAME
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
-fetch_build_timestamp
 create_symlinks
 tag_git_repos $VERSIONS_PUSH_URL $GITHUB_IO_PUSH_URL $BUILDS_PUSH_URL

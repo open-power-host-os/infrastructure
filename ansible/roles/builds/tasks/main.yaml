@@ -1,11 +1,17 @@
 ---
 - name: Create Host OS build directories
   file:
-    name={{item.name}} group={{item.group}}
-    mode={{item.mode}} state=directory
-  with_items:
-    - { name: /var/lib/host-os/repositories, group: mock, mode: "0775" }
-    - { name: /var/log/host-os, group: mock, mode: "0775" }
+    name=/var/lib/host-os state=directory
+    owner={{builder_user_name}} group=mock
+  tags:
+    - setup
+
+- name: Create a symbolic link for the mock build directory
+  file:
+    src="{{builder_home_dir}}/workspace/build_host_os"
+    dest=/var/lib/host-os/mock_build
+    state=link force=yes
+    owner={{builder_user_name}} group=mock
   tags:
     - setup
 

@@ -50,12 +50,6 @@ job('build_host_os') {
       }
     }
   }
-  publishers {
-    archiveArtifacts {
-      pattern('workspace/mock_build/*/*/*.log')
-      allowEmpty()
-    }
-  }
   wrappers {
     timestamps()
     preBuildCleanup()

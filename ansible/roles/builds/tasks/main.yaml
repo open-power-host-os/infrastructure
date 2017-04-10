@@ -8,7 +8,7 @@
 
 - name: Create a symbolic link for the mock build directory
   file:
-    src="{{builder_home_dir}}/workspace/build_host_os"
+    src="{{builder_home_dir}}/workspace/build_host_os/mock_build"
     dest=/var/lib/host-os/mock_build
     state=link force=yes
     owner={{builder_user_name}} group=mock

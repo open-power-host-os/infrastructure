@@ -6,6 +6,10 @@ VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
+# There is a symlink from the workdir to this directory. This makes
+# Jenkins handle its cleanup, since it's in the job workspace.
+mkdir mock_build
+
 # Resolve the reference name to a commit id. If the value is not a
 # reference, assume it is a commit id.
 builds_repo_commit=$(git show-ref --hash "$BUILDS_REPO_REFERENCE" \

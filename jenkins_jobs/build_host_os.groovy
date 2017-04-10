@@ -52,7 +52,7 @@ job('build_host_os') {
   }
   publishers {
     archiveArtifacts {
-      pattern('workspace/mock_build/*/*/*.log')
+      pattern('mock_build/*/*/*.log')
       allowEmpty()
     }
   }

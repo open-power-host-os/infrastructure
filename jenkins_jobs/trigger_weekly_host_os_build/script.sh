@@ -77,7 +77,7 @@ create_release_notes() {
     python host_os.py \
            --verbose \
            build-release-notes \
-               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+               --packages-metadata-repo-url "$VERSIONS_PUSH_URL" \
                --packages-metadata-repo-branch "$COMMIT_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \

@@ -12,7 +12,8 @@ GITHUB_IO_PUSH_URL="${PUSH_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
 BUILDS_REPO_NAME="builds"
 BUILDS_PUSH_URL="${PUSH_URL_PREFIX}/${BUILDS_REPO_NAME}.git"
 
-REPOSITORIES_PATH="workspace/repositories"
+BUILDS_WORKSPACE_DIR="/var/lib/host-os"
+REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
 
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
@@ -64,6 +65,7 @@ get_pr_state(){
 update_versions() {
     python host_os.py \
            --verbose \
+           --work-dir $BUILDS_WORKSPACE_DIR \
            update-versions \
                --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
                --packages-metadata-repo-branch "$VERSIONS_REPOSITORY_BRANCH" \
@@ -76,6 +78,7 @@ update_versions() {
 create_release_notes() {
     python host_os.py \
            --verbose \
+           --work-dir $BUILDS_WORKSPACE_DIR \
            build-release-notes \
                --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
                --packages-metadata-repo-branch "$COMMIT_BRANCH" \

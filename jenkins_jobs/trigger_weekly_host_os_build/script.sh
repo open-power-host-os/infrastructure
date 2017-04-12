@@ -81,7 +81,7 @@ create_release_notes() {
            --work-dir $BUILDS_WORKSPACE_DIR \
            build-release-notes \
                --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
-               --packages-metadata-repo-branch "$COMMIT_BRANCH" \
+               --packages-metadata-repo-branch "$VERSIONS_REPO_COMMIT" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
                --push-repo-url "$GITHUB_IO_PUSH_URL" \
@@ -113,10 +113,12 @@ fetch_build_info() {
     rsync -e "ssh -i ${HOME}/.ssh/jenkins_id_rsa" \
               --verbose --compress --stats --times --perms \
               $artifacts_url/BUILD_TIMESTAMP \
-              $artifacts_url/BUILDS_REPO_COMMIT .
+              $artifacts_url/BUILDS_REPO_COMMIT \
+              $artifacts_url/VERSIONS_REPO_COMMIT .
 
     BUILD_TIMESTAMP=$(cat BUILD_TIMESTAMP)
     BUILDS_REPO_COMMIT=$(cat BUILDS_REPO_COMMIT)
+    VERSIONS_REPO_COMMIT=$(cat VERSIONS_REPO_COMMIT)
 }
 
 create_symlinks() {

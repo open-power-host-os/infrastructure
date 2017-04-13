@@ -10,22 +10,6 @@ MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 # Jenkins handle its cleanup, since it's in the job workspace.
 mkdir mock_build
 
-# Set origin remote URL
-# This is the remote name assumed by the GHPRB plugin
-if [ -d $VERSIONS_REPO_PATH/.git ]; then
-    pushd $VERSIONS_REPO_PATH
-    git remote remove origin || true
-    git remote add origin $VERSIONS_REPO_URL
-else
-    git clone $VERSIONS_REPO_URL $VERSIONS_REPO_PATH --no-checkout
-    pushd $VERSIONS_REPO_PATH
-fi
-
-# Fetch pull requests in case this job was triggered by one
-git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
-
-popd
-
 # Tell mock to use a different mirror/repo. This could be used to:
 # - speedup the chroot installation
 # - use a different version of CentOS

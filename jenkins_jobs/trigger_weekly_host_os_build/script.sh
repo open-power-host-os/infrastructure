@@ -9,7 +9,7 @@ REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
 VERSIONS_REPO_NAME="versions"
 VERSIONS_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
 VERSIONS_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
-VERSIONS_REPO_PATH="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}"
+UPDATED_VERSIONS_REPO_PATH="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}_update-versions"
 
 GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
 GITHUB_IO_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
@@ -140,7 +140,7 @@ create_symlinks() {
 
 tag_git_repos() {
     local repos_paths=$@
-    local version_file="${VERSIONS_REPO_PATH}/VERSION"
+    local version_file="${UPDATED_VERSIONS_REPO_PATH}/VERSION"
     local tag_name="$(cat $version_file | tail -1)-${RELEASE_DATE}"
 
     for repo_path in ${repos_paths[@]}; do
@@ -173,4 +173,4 @@ GITHUB_IO_PR_NUMBER=$pr_number
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 create_symlinks
-tag_git_repos $VERSIONS_REPO_PATH $GITHUB_IO_REPO_PATH $BUILDS_REPO_PATH
+tag_git_repos $UPDATED_VERSIONS_REPO_PATH $GITHUB_IO_REPO_PATH $BUILDS_REPO_PATH

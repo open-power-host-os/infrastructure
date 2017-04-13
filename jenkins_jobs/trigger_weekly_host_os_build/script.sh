@@ -114,10 +114,13 @@ fetch_build_info() {
               --verbose --compress --stats --times --perms \
               $artifacts_url/BUILD_TIMESTAMP \
               $artifacts_url/BUILDS_REPO_COMMIT .
+
+    BUILD_TIMESTAMP=$(cat BUILD_TIMESTAMP)
+    BUILDS_REPO_COMMIT=$(cat BUILDS_REPO_COMMIT)
 }
 
 create_symlinks() {
-    local build_dir_path="../to_build/$(cat BUILD_TIMESTAMP)"
+    local build_dir_path="../to_build/$BUILD_TIMESTAMP"
 
     ln -s "$build_dir_path" "$RELEASE_DATE"
     ln -s "$RELEASE_DATE" latest
@@ -160,7 +163,7 @@ fetch_build_info
 # checkout the builds repo commit that was used by the build job
 # because the branch might have moved during the time it takes to
 # generate the build
-git checkout $(cat BUILDS_REPO_COMMIT)
+git checkout $BUILDS_REPO_COMMIT
 
 create_release_notes
 create_pull_request $GITHUB_IO_REPO_NAME

@@ -145,7 +145,7 @@ tag_git_repos() {
         fi
         tag_remote="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}/${repo_name}"
         git tag $tag_name
-        git push $tag_remote --tags
+        git push $tag_remote $tag_name
         if [ $repo_name != $BUILDS_REPO_NAME ]; then
             popd
         fi

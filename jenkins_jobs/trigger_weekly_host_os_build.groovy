@@ -33,7 +33,7 @@ job('trigger_weekly_host_os_build') {
   scm {
     git {
       remote {
-	url('https://github.com/${GITHUB_ORGANIZATION_NAME}/builds/')
+        url('ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}/builds.git')
       }
       branch('$BUILDS_REPOSITORY_BRANCH')
     }

@@ -1,20 +1,23 @@
 set -e
 
-MAIN_REPO_URL_PREFIX="https://github.com/${GITHUB_ORGANIZATION_NAME}"
+MAIN_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}"
 PUSH_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
+
+BUILDS_WORKSPACE_DIR="/var/lib/host-os"
+REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
 
 VERSIONS_REPO_NAME="versions"
 VERSIONS_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
 VERSIONS_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
+VERSIONS_REPO_PATH="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}"
 
 GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
+GITHUB_IO_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
 GITHUB_IO_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
+GITHUB_IO_REPO_PATH="${REPOSITORIES_PATH}/${GITHUB_IO_REPO_NAME}"
 
 BUILDS_REPO_NAME="builds"
-BUILDS_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${BUILDS_REPO_NAME}.git"
-
-BUILDS_WORKSPACE_DIR="/var/lib/host-os"
-REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
+BUILDS_REPO_PATH="."
 
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
@@ -83,6 +86,7 @@ create_release_notes() {
            build-release-notes \
                --packages-metadata-repo-url "$VERSIONS_MAIN_REPO_URL" \
                --packages-metadata-repo-branch "$VERSIONS_REPO_COMMIT" \
+               --release-notes-repo-url "$GITHUB_IO_MAIN_REPO_URL" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
                --push-repo-url "$GITHUB_IO_PUSH_REPO_URL" \
@@ -135,21 +139,15 @@ create_symlinks() {
 }
 
 tag_git_repos() {
-    local repos_push_urls=$@
-    local version_file="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}/VERSION"
+    local repos_paths=$@
+    local version_file="${VERSIONS_REPO_PATH}/VERSION"
     local tag_name="$(cat $version_file | tail -1)-${RELEASE_DATE}"
 
-    for push_url in ${repos_push_urls[@]}; do
-        repo_name=$(basename $push_url .git)
-        if [ $repo_name != $BUILDS_REPO_NAME ]; then
-            pushd "${REPOSITORIES_PATH}/${repo_name}"
-        fi
-        tag_remote="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}/${repo_name}"
+    for repo_path in ${repos_paths[@]}; do
+        pushd $repo_path
         git tag $tag_name
-        git push $tag_remote $tag_name
-        if [ $repo_name != $BUILDS_REPO_NAME ]; then
-            popd
-        fi
+        git push origin $tag_name
+        popd
     done
 }
 
@@ -175,4 +173,4 @@ GITHUB_IO_PR_NUMBER=$pr_number
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 create_symlinks
-tag_git_repos $VERSIONS_PUSH_REPO_URL $GITHUB_IO_PUSH_REPO_URL $BUILDS_PUSH_REPO_URL
+tag_git_repos $VERSIONS_REPO_PATH $GITHUB_IO_REPO_PATH $BUILDS_REPO_PATH

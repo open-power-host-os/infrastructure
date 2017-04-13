@@ -1,4 +1,5 @@
 VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
+BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="nightly-${RELEASE_DATE}"
 
@@ -6,6 +7,7 @@ COMMIT_BRANCH="nightly-${RELEASE_DATE}"
 # sudo yum install rpmdevtools
 python host_os.py \
        --verbose \
+       --work-dir $BUILDS_WORKSPACE_DIR \
        update-versions \
            --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
            --packages-metadata-repo-branch "$VERSIONS_REPOSITORY_BRANCH" \

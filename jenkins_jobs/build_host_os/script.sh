@@ -10,11 +10,6 @@ MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 # Jenkins handle its cleanup, since it's in the job workspace.
 mkdir mock_build
 
-# Resolve the reference name to a commit id. If the value is not a
-# reference, assume it is a commit id.
-builds_repo_commit=$(git show-ref --hash "$BUILDS_REPO_REFERENCE" \
-                         || echo "$BUILDS_REPO_REFERENCE")
-
 # Set origin remote URL
 # This is the remote name assumed by the GHPRB plugin
 if [ -d $VERSIONS_REPO_PATH/.git ]; then
@@ -29,8 +24,6 @@ fi
 # Fetch pull requests in case this job was triggered by one
 git fetch origin +refs/pull/*:refs/remotes/origin/pr/*
 
-versions_repo_commit=$(git show-ref --hash "$VERSIONS_REPO_REFERENCE" \
-                           || echo "$VERSIONS_REPO_REFERENCE")
 popd
 
 # Tell mock to use a different mirror/repo. This could be used to:
@@ -57,6 +50,15 @@ eval python host_os.py \
          --packages-metadata-repo-branch $VERSIONS_REPO_REFERENCE \
          $PACKAGES_PARAMETER \
          $EXTRA_PARAMETERS
+
+# Resolve the reference names to a commit id. If the value is not a
+# reference, assume it is a commit id.
+builds_repo_commit=$(git show-ref --hash "$BUILDS_REPO_REFERENCE" \
+                            || echo "$BUILDS_REPO_REFERENCE")
+pushd $VERSIONS_REPO_PATH
+versions_repo_commit=$(git show-ref --hash "$VERSIONS_REPO_REFERENCE" \
+                              || echo "$VERSIONS_REPO_REFERENCE")
+popd
 
 # Create BUILD_TIMESTAMP file with timestamp information
 echo "${TIMESTAMP}" > ./BUILD_TIMESTAMP

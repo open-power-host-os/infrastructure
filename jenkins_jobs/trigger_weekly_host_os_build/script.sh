@@ -1,16 +1,17 @@
 set -e
 
-VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
-PUSH_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
+MAIN_REPO_URL_PREFIX="https://github.com/${GITHUB_ORGANIZATION_NAME}"
+PUSH_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
 
 VERSIONS_REPO_NAME="versions"
-VERSIONS_PUSH_URL="${PUSH_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
+VERSIONS_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
+VERSIONS_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
 
 GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
-GITHUB_IO_PUSH_URL="${PUSH_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
+GITHUB_IO_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
 
 BUILDS_REPO_NAME="builds"
-BUILDS_PUSH_URL="${PUSH_URL_PREFIX}/${BUILDS_REPO_NAME}.git"
+BUILDS_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${BUILDS_REPO_NAME}.git"
 
 BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
@@ -67,11 +68,11 @@ update_versions() {
            --verbose \
            --work-dir $BUILDS_WORKSPACE_DIR \
            update-versions \
-               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+               --packages-metadata-repo-url "$VERSIONS_MAIN_REPO_URL" \
                --packages-metadata-repo-branch "$VERSIONS_REPOSITORY_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
-               --push-repo-url "$VERSIONS_PUSH_URL" \
+               --push-repo-url "$VERSIONS_PUSH_REPO_URL" \
                --push-repo-branch "$COMMIT_BRANCH"
 }
 
@@ -80,11 +81,11 @@ create_release_notes() {
            --verbose \
            --work-dir $BUILDS_WORKSPACE_DIR \
            build-release-notes \
-               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+               --packages-metadata-repo-url "$VERSIONS_MAIN_REPO_URL" \
                --packages-metadata-repo-branch "$VERSIONS_REPO_COMMIT" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
-               --push-repo-url "$GITHUB_IO_PUSH_URL" \
+               --push-repo-url "$GITHUB_IO_PUSH_REPO_URL" \
                --push-repo-branch "$COMMIT_BRANCH"
 }
 
@@ -174,4 +175,4 @@ GITHUB_IO_PR_NUMBER=$pr_number
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 create_symlinks
-tag_git_repos $VERSIONS_PUSH_URL $GITHUB_IO_PUSH_URL $BUILDS_PUSH_URL
+tag_git_repos $VERSIONS_PUSH_REPO_URL $GITHUB_IO_PUSH_REPO_URL $BUILDS_PUSH_REPO_URL

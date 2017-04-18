@@ -8,7 +8,7 @@ job('trigger_host_os_build_from_versions_repo') {
     maxPerNode(1)
   }
   parameters {
-    stringParam('sha1', '', 'SHA-1 of the commit to build.')
+    stringParam('ghprbActualCommit', '', 'SHA-1 of the commit to build.')
   }
   properties {
     githubProjectUrl("https://github.com/${GITHUB_ORGANIZATION_NAME}/versions/")
@@ -38,7 +38,7 @@ job('trigger_host_os_build_from_versions_repo') {
 	}
 	parameters {
 	  predefinedProps([BUILDS_REPO_REFERENCE: 'origin/master',
-			   VERSIONS_REPO_REFERENCE: '$sha1'])
+			   VERSIONS_REPO_REFERENCE: '$ghprbActualCommit'])
 	}
       }
     }

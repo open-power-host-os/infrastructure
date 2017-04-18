@@ -1,19 +1,23 @@
 set -e
 
-VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
-PUSH_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
-
-VERSIONS_REPO_NAME="versions"
-VERSIONS_PUSH_URL="${PUSH_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
-
-GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
-GITHUB_IO_PUSH_URL="${PUSH_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
-
-BUILDS_REPO_NAME="builds"
-BUILDS_PUSH_URL="${PUSH_URL_PREFIX}/${BUILDS_REPO_NAME}.git"
+MAIN_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}"
+PUSH_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
 
 BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
+
+VERSIONS_REPO_NAME="versions"
+VERSIONS_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
+VERSIONS_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${VERSIONS_REPO_NAME}.git"
+UPDATED_VERSIONS_REPO_PATH="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}_update-versions"
+
+GITHUB_IO_REPO_NAME="${GITHUB_ORGANIZATION_NAME}.github.io"
+GITHUB_IO_MAIN_REPO_URL="${MAIN_REPO_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
+GITHUB_IO_PUSH_REPO_URL="${PUSH_REPO_URL_PREFIX}/${GITHUB_IO_REPO_NAME}.git"
+GITHUB_IO_REPO_PATH="${REPOSITORIES_PATH}/${GITHUB_IO_REPO_NAME}"
+
+BUILDS_REPO_NAME="builds"
+BUILDS_REPO_PATH="."
 
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="weekly-${RELEASE_DATE}"
@@ -67,11 +71,11 @@ update_versions() {
            --verbose \
            --work-dir $BUILDS_WORKSPACE_DIR \
            update-versions \
-               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
+               --packages-metadata-repo-url "$VERSIONS_MAIN_REPO_URL" \
                --packages-metadata-repo-branch "$VERSIONS_REPOSITORY_BRANCH" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
-               --push-repo-url "$VERSIONS_PUSH_URL" \
+               --push-repo-url "$VERSIONS_PUSH_REPO_URL" \
                --push-repo-branch "$COMMIT_BRANCH"
 }
 
@@ -80,11 +84,12 @@ create_release_notes() {
            --verbose \
            --work-dir $BUILDS_WORKSPACE_DIR \
            build-release-notes \
-               --packages-metadata-repo-url "$VERSIONS_REPOSITORY_URL" \
-               --packages-metadata-repo-branch "$COMMIT_BRANCH" \
+               --packages-metadata-repo-url "$VERSIONS_MAIN_REPO_URL" \
+               --packages-metadata-repo-branch "$VERSIONS_REPO_COMMIT" \
+               --release-notes-repo-url "$GITHUB_IO_MAIN_REPO_URL" \
                --updater-name "$GITHUB_BOT_NAME" \
                --updater-email "$GITHUB_BOT_EMAIL" \
-               --push-repo-url "$GITHUB_IO_PUSH_URL" \
+               --push-repo-url "$GITHUB_IO_PUSH_REPO_URL" \
                --push-repo-branch "$COMMIT_BRANCH"
 }
 
@@ -113,11 +118,16 @@ fetch_build_info() {
     rsync -e "ssh -i ${HOME}/.ssh/jenkins_id_rsa" \
               --verbose --compress --stats --times --perms \
               $artifacts_url/BUILD_TIMESTAMP \
-              $artifacts_url/BUILDS_REPO_COMMIT .
+              $artifacts_url/BUILDS_REPO_COMMIT \
+              $artifacts_url/VERSIONS_REPO_COMMIT .
+
+    BUILD_TIMESTAMP=$(cat BUILD_TIMESTAMP)
+    BUILDS_REPO_COMMIT=$(cat BUILDS_REPO_COMMIT)
+    VERSIONS_REPO_COMMIT=$(cat VERSIONS_REPO_COMMIT)
 }
 
 create_symlinks() {
-    local build_dir_path="../to_build/$(cat BUILD_TIMESTAMP)"
+    local build_dir_path="../to_build/$BUILD_TIMESTAMP"
 
     ln -s "$build_dir_path" "$RELEASE_DATE"
     ln -s "$RELEASE_DATE" latest
@@ -129,21 +139,15 @@ create_symlinks() {
 }
 
 tag_git_repos() {
-    local repos_push_urls=$@
-    local version_file="${REPOSITORIES_PATH}/${VERSIONS_REPO_NAME}/VERSION"
+    local repos_paths=$@
+    local version_file="${UPDATED_VERSIONS_REPO_PATH}/VERSION"
     local tag_name="$(cat $version_file | tail -1)-${RELEASE_DATE}"
 
-    for push_url in ${repos_push_urls[@]}; do
-        repo_name=$(basename $push_url .git)
-        if [ $repo_name != $BUILDS_REPO_NAME ]; then
-            pushd "${REPOSITORIES_PATH}/${repo_name}"
-        fi
-        tag_remote="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}/${repo_name}"
+    for repo_path in ${repos_paths[@]}; do
+        pushd $repo_path
         git tag $tag_name
-        git push $tag_remote --tags
-        if [ $repo_name != $BUILDS_REPO_NAME ]; then
-            popd
-        fi
+        git push origin $tag_name
+        popd
     done
 }
 
@@ -160,7 +164,7 @@ fetch_build_info
 # checkout the builds repo commit that was used by the build job
 # because the branch might have moved during the time it takes to
 # generate the build
-git checkout $(cat BUILDS_REPO_COMMIT)
+git checkout $BUILDS_REPO_COMMIT
 
 create_release_notes
 create_pull_request $GITHUB_IO_REPO_NAME
@@ -169,4 +173,4 @@ GITHUB_IO_PR_NUMBER=$pr_number
 wait_pull_request_merge $GITHUB_IO_PR_NUMBER $GITHUB_IO_REPO_NAME
 
 create_symlinks
-tag_git_repos $VERSIONS_PUSH_URL $GITHUB_IO_PUSH_URL $BUILDS_PUSH_URL
+tag_git_repos $UPDATED_VERSIONS_REPO_PATH $GITHUB_IO_REPO_PATH $BUILDS_REPO_PATH

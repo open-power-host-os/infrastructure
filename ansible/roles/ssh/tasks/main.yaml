@@ -5,7 +5,7 @@
     mode={{item.mode}} state=directory
   with_items:
     - { name: "{{jenkins_home_dir}}/.ssh", owner: jenkins, group: jenkins,
-      	mode: "0700" }
+        mode: "0700" }
   tags:
     - setup
 

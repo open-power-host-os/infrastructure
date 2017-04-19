@@ -127,7 +127,7 @@ fetch_build_info() {
 }
 
 create_symlinks() {
-    local build_dir_path="../to_build/$BUILD_TIMESTAMP"
+    local build_dir_path="../builds/$BUILD_TIMESTAMP"
 
     ln -s "$build_dir_path" "$RELEASE_DATE"
     ln -s "$RELEASE_DATE" latest

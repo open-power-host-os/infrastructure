@@ -1,5 +1,5 @@
-MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
-BUILD_CONFIG_FILE="config.yaml"
+MOCK_CONFIG_FILE="config/mock/CentOS/7/CentOS-7-ppc64le.cfg"
+BUILD_CONFIG_FILE="config/host_os.yaml"
 CENTOS_7_YUM_REPO_URL="http://mirror.centos.org/altarch/7"
 CENTOS_7_2_YUM_REPO_URL="http://vault.centos.org/altarch/7.2.1511/"
 VERSIONS_REPO_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
@@ -19,7 +19,7 @@ sed -i \
     $BUILD_CONFIG_FILE
 # -E is to avoid escaping parenthesis
 sed -i -E \
-    "s|  '7': (\"\./mock_configs.*)|  '7.2': \1|" \
+    "s|  '7': (\"\./config/mock.*)|  '7.2': \1|" \
     $BUILD_CONFIG_FILE
 
 # clean yum repos cache to avoid conflict with newer CentOS versions content

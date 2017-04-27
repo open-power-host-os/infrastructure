@@ -164,6 +164,7 @@ fetch_build_info
 # checkout the builds repo commit that was used by the build job
 # because the branch might have moved during the time it takes to
 # generate the build
+git fetch origin
 git checkout $BUILDS_REPO_COMMIT
 
 create_release_notes

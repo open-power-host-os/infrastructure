@@ -3,7 +3,7 @@ TIMESTAMP=$(date --utc +'%Y-%m-%dT%H:%M:%S.%N')
 BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 VERSIONS_REPO_DIR="$(basename $VERSIONS_REPO_URL .git)_build-packages"
 VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
-MOCK_CONFIG_FILE="mock_configs/CentOS/7/CentOS-7-ppc64le.cfg"
+MOCK_CONFIG_FILE="config/mock/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
 # There is a symlink from the workdir to this directory. This makes

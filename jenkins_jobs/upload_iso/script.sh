@@ -14,4 +14,4 @@ mkdir iso
 rsync_upload --recursive iso
 
 rsync_upload *.iso
-rsync_upload *-CHECKSUM
+rsync_upload *.iso.sha256

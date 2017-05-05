@@ -3,7 +3,6 @@ set -e
 MAIN_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_ORGANIZATION_NAME}"
 PUSH_REPO_URL_PREFIX="ssh://git@github.com/${GITHUB_BOT_USER_NAME}"
 
-BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 REPOSITORIES_PATH="${BUILDS_WORKSPACE_DIR}/repositories"
 
 VERSIONS_REPO_NAME="versions"

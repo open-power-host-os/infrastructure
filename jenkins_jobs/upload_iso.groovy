@@ -30,7 +30,7 @@ job('upload_iso') {
         buildNumber('$BUILD_ISO_JOB_NUMBER')
       }
       includePatterns('*.iso')
-      includePatterns('*-CHECKSUM')
+      includePatterns('*.iso.sha256')
     }
     shell(readFileFromWorkspace('jenkins_jobs/upload_iso/script.sh'))
   }

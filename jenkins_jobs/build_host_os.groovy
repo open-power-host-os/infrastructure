@@ -13,6 +13,8 @@ job('build_host_os') {
 		'URL of the builds repository.')
     stringParam('BUILDS_REPO_REFERENCE', 'origin/master',
 		'Git reference to checkout from the builds repository.')
+    stringParam('BUILDS_WORKSPACE_DIR', "${BUILDS_WORKSPACE_DIR}",
+    'Workspace directory where builds will happen.')
     stringParam('VERSIONS_REPO_URL',
 		"https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git",
 		'URL of the versions repository.')

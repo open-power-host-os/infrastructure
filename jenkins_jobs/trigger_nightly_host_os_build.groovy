@@ -10,6 +10,8 @@ job('trigger_nightly_host_os_build') {
     stringParam('BUILDS_REPOSITORY_BRANCH',
 		"master",
 		'Branch of the builds repository to clone and pass to the build jobs.')
+    stringParam('BUILDS_WORKSPACE_DIR', "${BUILDS_WORKSPACE_DIR}",
+    'Workspace directory where builds will happen.')
     stringParam('VERSIONS_REPOSITORY_BRANCH',
 		"master",
 		"Branch of the versions repository on which to base the update of packages' versions.")

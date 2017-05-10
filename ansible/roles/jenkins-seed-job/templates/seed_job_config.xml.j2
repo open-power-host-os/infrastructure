@@ -90,6 +90,11 @@
           <description>Directory in the target server to upload nightly build results.</description>
           <defaultValue>{{upload_server_nightly_dir_path}}</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILDS_WORKSPACE_DIR</name>
+          <description>Workspace directory where builds will happen.</description>
+          <defaultValue>{{builds_workspace_dir}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>

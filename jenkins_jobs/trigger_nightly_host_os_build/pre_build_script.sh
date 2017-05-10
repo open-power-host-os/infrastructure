@@ -1,5 +1,4 @@
 VERSIONS_REPOSITORY_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
-BUILDS_WORKSPACE_DIR="/var/lib/host-os"
 RELEASE_DATE=$(date +%Y-%m-%d)
 COMMIT_BRANCH="nightly-${RELEASE_DATE}"
 

@@ -1,7 +1,7 @@
 ---
 - name: Create Host OS build directories
   file:
-    name=/var/lib/host-os state=directory
+    name={{builds_workspace_dir}} state=directory
     owner={{builder_user_name}} group=mock
   tags:
     - setup
@@ -9,7 +9,7 @@
 - name: Create a symbolic link for the mock build directory
   file:
     src="{{builder_home_dir}}/workspace/build_host_os/mock_build"
-    dest=/var/lib/host-os/mock_build
+    dest={{builds_workspace_dir}}/mock_build
     state=link force=yes
     owner={{builder_user_name}} group=mock
   tags:

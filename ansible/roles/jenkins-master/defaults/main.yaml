@@ -38,3 +38,15 @@ jenkins_plugins:
   - ws-cleanup
   # Allow credentials to be bound to environment variables
   - credentials-binding
+  # Create pipeline jobs
+  - workflow-aggregator
+  # Create more flexible pipeline jobs
+  - workflow-multibranch
+  # Make HTTP requests from Jenkins pipelines
+  - http_request
+  # Small, miscellaneous utility steps for Pipeline Plugin jobs
+  - pipeline-utility-steps
+  # Allows a pipeline job to notify a status for any GitHub commit
+  - pipeline-githubnotify-step
+  # Lock resources which are shared among builds
+  - lockable-resources

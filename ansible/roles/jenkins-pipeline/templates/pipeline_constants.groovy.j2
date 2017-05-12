@@ -1,0 +1,8 @@
+# {{jenkins_config_dir}}/pipeline_constants.groovy
+#
+# Installed by Ansible on {{ansible_date_time.date}} at {{ansible_date_time.time}}.
+# WARNING: Any changes to this file can be lost!
+
+{% for variable_name in pipeline_constants -%}
+{{variable_name}} = {{pipeline_constants[variable_name]}}
+{% endfor -%}

@@ -1,7 +1,7 @@
 ---
 - name: Create Host OS build directories
   file:
-    name={{builds_workspace_dir}} state=directory
+    name={{pipeline_constants.BUILDS_WORKSPACE_DIR}} state=directory
     owner={{builder_user_name}} group=mock
   tags:
     - setup

@@ -13,7 +13,7 @@
         <hudson.model.StringParameterDefinition>
           <name>REPOSITORY_URL</name>
           <description>Repository to download the DSL job descriptors.</description>
-          <defaultValue>https://github.com/{{github_organization_name}}/infrastructure.git</defaultValue>
+          <defaultValue>https://github.com/{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}/infrastructure.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>REPOSITORY_COMMIT</name>
@@ -28,72 +28,72 @@
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_ORGANIZATION_NAME</name>
           <description>GitHub organization from where the Host OS repositories will be checked out.</description>
-          <defaultValue>{{github_organization_name}}</defaultValue>
+          <defaultValue>{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>CENTOS_ALTERNATE_MIRROR_RELEASE_URL</name>
           <description>URL up to the release component of a CentOS YUM repository alternate mirror. Empty to use CentOS latest release official repository.</description>
-          <defaultValue>{{centos_alternate_mirror_release_url}}</defaultValue>
+          <defaultValue>{{pipeline_constants.CENTOS_ALTERNATE_MIRROR_RELEASE_URL}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>EPEL_ALTERNATE_MIRROR_RELEASE_URL</name>
           <description>URL up to the release component of an EPEL YUM repository alternate mirror. Empty to use EPEL latest release official repository.</description>
-          <defaultValue>{{epel_alternate_mirror_release_url}}</defaultValue>
+          <defaultValue>{{pipeline_constants.EPEL_ALTERNATE_MIRROR_RELEASE_URL}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_BOT_NAME</name>
           <description>Name of the GitHub user to create commits automatically.</description>
-          <defaultValue>{{github_bot_name}}</defaultValue>
+          <defaultValue>{{pipeline_constants.GITHUB_BOT_NAME}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_BOT_USER_NAME</name>
           <description>User name of the GitHub user to create commits automatically.</description>
-          <defaultValue>{{github_bot_user_name}}</defaultValue>
+          <defaultValue>{{pipeline_constants.GITHUB_BOT_USER_NAME}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_BOT_EMAIL</name>
           <description>Email of the GitHub user to create commits automatically</description>
-          <defaultValue>{{github_bot_email}}</defaultValue>
+          <defaultValue>{{pipeline_constants.GITHUB_BOT_EMAIL}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GHPRB_ADMIN_USER</name>
           <description>GitHub user allowed to start tests with the Jenkins GitHub Pull Request Builder plugin.</description>
-          <defaultValue>{{ghprb_admin_user}}</defaultValue>
+          <defaultValue>{{pipeline_constants.GHPRB_ADMIN_USER}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GHPRB_ADMIN_ORGANIZATION</name>
           <description>GitHub organization whose users are allowed to start tests with the Jenkins GitHub Pull Request Builder plugin.</description>
-          <defaultValue>{{ghprb_admin_organization}}</defaultValue>
+          <defaultValue>{{pipeline_constants.GHPRB_ADMIN_ORGANIZATION}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>UPLOAD_SERVER_HOST_NAME</name>
           <description>Host name of the target server to upload build results.</description>
-          <defaultValue>{{upload_server_host_name}}</defaultValue>
+          <defaultValue>{{pipeline_constants.UPLOAD_SERVER_HOST_NAME}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>UPLOAD_SERVER_USER_NAME</name>
           <description>User name of the target server to upload build results.</description>
-          <defaultValue>{{upload_server_user_name}}</defaultValue>
+          <defaultValue>{{pipeline_constants.UPLOAD_SERVER_USER_NAME}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>UPLOAD_SERVER_BUILDS_DIR</name>
           <description>Directory in the target server to upload build results.</description>
-          <defaultValue>{{upload_server_builds_dir_path}}</defaultValue>
+          <defaultValue>{{pipeline_constants.UPLOAD_SERVER_BUILDS_DIR_PATH}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>UPLOAD_SERVER_WEEKLY_DIR</name>
           <description>Directory in the target server to upload weekly build results.</description>
-          <defaultValue>{{upload_server_weekly_dir_path}}</defaultValue>
+          <defaultValue>{{pipeline_constants.UPLOAD_SERVER_WEEKLY_DIR_PATH}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>UPLOAD_SERVER_NIGHTLY_DIR</name>
           <description>Directory in the target server to upload nightly build results.</description>
-          <defaultValue>{{upload_server_nightly_dir_path}}</defaultValue>
+          <defaultValue>{{pipeline_constants.UPLOAD_SERVER_NIGHTLY_DIR_PATH}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILDS_WORKSPACE_DIR</name>
           <description>Workspace directory where builds will happen.</description>
-          <defaultValue>{{builds_workspace_dir}}</defaultValue>
+          <defaultValue>{{pipeline_constants.BUILDS_WORKSPACE_DIR}}</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

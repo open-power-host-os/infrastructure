@@ -13,7 +13,6 @@
     - user
     - ssh
     - builds
-    - github-api-wrapper
   vars_files:
     - vars.yaml
     - vars-slave.yaml

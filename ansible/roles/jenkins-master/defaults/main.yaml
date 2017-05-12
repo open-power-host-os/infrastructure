@@ -6,10 +6,6 @@ java_debug: "5"
 
 jenkins_log_file: "/var/log/jenkins/jenkins.log"
 jenkins_plugins:
-  # Copy artifacts from other builds
-  - copyartifact
-  # Automatically build GitHub pull requests
-  - ghprb
   # Checkout git repositories
   - git
   # Support for GitHub repositories
@@ -30,14 +26,8 @@ jenkins_plugins:
   - ssh-credentials
   # Connect to slaves using SSH
   - ssh-slaves
-  # Allow jobs to execute concurrently in different nodes
-  - throttle-concurrents
   # Mark logs with timestamps
   - timestamper
-  # Clean workspace before/after builds
-  - ws-cleanup
-  # Allow credentials to be bound to environment variables
-  - credentials-binding
   # Create pipeline jobs
   - workflow-aggregator
   # Create more flexible pipeline jobs

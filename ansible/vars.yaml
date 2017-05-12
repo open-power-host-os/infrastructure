@@ -6,9 +6,6 @@ pipeline_constants:
   GITHUB_BOT_EMAIL:
   GITHUB_AUTHORIZED_USERS:
 
-  GHPRB_ADMIN_USER:
-  GHPRB_ADMIN_ORGANIZATION:
-
   BUILDS_WORKSPACE_DIR: /var/lib/host-os
   BUILDS_CONFIG_FILE: config/host_os.yaml
   MOCK_CONFIG_FILE: config/mock/CentOS/7/CentOS-7-ppc64le.cfg

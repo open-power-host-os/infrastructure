@@ -1,5 +1,3 @@
-# ISO 8601 date with nanoseconds precision
-TIMESTAMP=$(date --utc +'%Y-%m-%dT%H:%M:%S.%N')
 VERSIONS_REPO_DIR="$(basename $VERSIONS_REPO_URL .git)_build-packages"
 VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="config/mock/CentOS/7/CentOS-7-ppc64le.cfg"
@@ -44,6 +42,7 @@ versions_repo_commit=$(git show-ref --hash "$VERSIONS_REPO_REFERENCE" \
 popd
 
 # Create BUILD_TIMESTAMP file with timestamp information
+TIMESTAMP=$(basename $BUILDS_WORKSPACE_DIR/mock_build/*)
 echo "${TIMESTAMP}" > ./BUILD_TIMESTAMP
 echo "$builds_repo_commit" > ./BUILDS_REPO_COMMIT
 echo "$versions_repo_commit" > ./VERSIONS_REPO_COMMIT

@@ -6,15 +6,6 @@
   tags:
     - setup
 
-- name: Create a symbolic link for the mock build directory
-  file:
-    src="{{builder_home_dir}}/workspace/build_host_os/mock_build"
-    dest={{builds_workspace_dir}}/mock_build
-    state=link force=yes
-    owner={{builder_user_name}} group=mock
-  tags:
-    - setup
-
 - name: Configure SSH key to upload to remote server
   copy:
     src={{upload_server_user_private_ssh_key_file_path}}

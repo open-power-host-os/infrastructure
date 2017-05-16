@@ -3,9 +3,8 @@ VERSIONS_REPO_PATH="$BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 MOCK_CONFIG_FILE="config/mock/CentOS/7/CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 
-# There is a symlink from the workdir to this directory. This makes
-# Jenkins handle its cleanup, since it's in the job workspace.
-mkdir mock_build
+# Clean previous builds files
+rm -rf $BUILDS_WORKSPACE_DIR/mock_build
 
 # Tell mock to use a different mirror/repo. This could be used to:
 # - speedup the chroot installation

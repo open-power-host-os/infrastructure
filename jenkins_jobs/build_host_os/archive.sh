@@ -19,4 +19,5 @@ rsync_upload BUILDS_REPO_COMMIT
 rsync_upload VERSIONS_REPO_COMMIT
 ln -s result/packages/latest repository
 rsync_upload --recursive --copy-links repository
-rsync_upload --relative mock_build/*/*/*.log
+# Only the path suffix after "./" is created at the destination
+rsync_upload --relative $BUILDS_WORKSPACE_DIR/./mock_build/*/*/*.log

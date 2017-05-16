@@ -9,7 +9,7 @@
 - name: Configure SSH key to upload to remote server
   copy:
     src={{upload_server_user_private_ssh_key_file_path}}
-    dest="{{builder_home_dir}}/.ssh/{{upload_server_user_name}}_id_rsa"
+    dest="{{builder_home_dir}}/.ssh/upload_server_id_rsa"
     owner={{builder_user_name}} group={{builder_user_name}} mode=0600
   tags:
     - setup

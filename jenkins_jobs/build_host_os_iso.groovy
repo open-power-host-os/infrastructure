@@ -39,6 +39,7 @@ job('build_host_os_iso') {
         buildNumber('$BUILD_JOB_NUMBER')
       }
       includePatterns('repository/')
+      includePatterns('BUILD_TIMESTAMP')
     }
     shell(readFileFromWorkspace('jenkins_jobs/build_host_os_iso/script.sh'))
     shell(readFileFromWorkspace('jenkins_jobs/build_host_os_iso/archive.sh'))

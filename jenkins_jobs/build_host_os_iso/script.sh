@@ -1,8 +1,16 @@
 VERSIONS_REPO_DIR=$(basename $VERSIONS_REPO_URL .git)
 BUILDS_CONFIG_FILE="config/host_os.yaml"
+BUILD_TIMESTAMP=$(cat BUILD_TIMESTAMP)
+ISO_VERSION=$BUILD_TIMESTAMP
 MOCK_CONFIG_FILE="config/mock/CentOS/7/build-iso-CentOS-7-ppc64le.cfg"
 MAIN_CENTOS_REPO_RELEASE_URL="http://mirror.centos.org/altarch/7"
 MAIN_EPEL_REPO_RELEASE_URL="http://download.fedoraproject.org/pub/epel/7"
+
+# Format iso version.  Example of expected string:
+# 2017-05-10T12:50:29.163138539
+ISO_VERSION=${ISO_VERSION//-/}
+ISO_VERSION=${ISO_VERSION//:/}
+ISO_VERSION=${ISO_VERSION//.*/}
 
 # Tell mock and pungi to use different CentOS and EPEL mirrors/repos.
 # This could be used to:
@@ -31,6 +39,7 @@ eval python host_os.py \
      --verbose \
      build-iso \
          --packages-dir repository \
+         --iso-version $ISO_VERSION \
          $EXTRA_PARAMETERS
 
 # inform status to upload job

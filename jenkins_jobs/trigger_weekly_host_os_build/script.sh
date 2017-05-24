@@ -131,7 +131,7 @@ create_symlinks() {
     ln -s "$build_dir_path" "$RELEASE_DATE"
     ln -s "$RELEASE_DATE" latest
 
-    rsync -e "ssh -i $HOME/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" \
+    rsync -e "ssh -i $HOME/.ssh/upload_server_id_rsa" \
           --verbose --compress --links --times --chmod=a+rwx,g+rwx,o- \
           "$RELEASE_DATE" "latest" \
           "${UPLOAD_SERVER_USER_NAME}@${UPLOAD_SERVER_HOST_NAME}:${UPLOAD_SERVER_WEEKLY_DIR}/"

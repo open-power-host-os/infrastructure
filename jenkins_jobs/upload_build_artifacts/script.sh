@@ -26,7 +26,7 @@ cat <<EOF > STATUS
 EOF
 
 rsync_upload() {
-    rsync -e "ssh -i ${HOME}/.ssh/${UPLOAD_SERVER_USER_NAME}_id_rsa" \
+    rsync -e "ssh -i ${HOME}/.ssh/upload_server_id_rsa" \
               --verbose --compress --stats --times --chmod=a+rwx,g+wx,o- \
               $@ $BUILD_DIR_RSYNC_URL
 }

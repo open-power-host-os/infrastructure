@@ -40,3 +40,7 @@ jenkins_plugins:
   - pipeline-githubnotify-step
   # Lock resources which are shared among builds
   - lockable-resources
+  # Extended visualization of Pipeline build history
+  - pipeline-stage-view
+  # New Jenkins user experience
+  - blueocean

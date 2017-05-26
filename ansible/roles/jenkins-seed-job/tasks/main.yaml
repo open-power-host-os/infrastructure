@@ -1,4 +1,12 @@
 ---
+- name: Allow seed job to run without manual approval
+  copy:
+    src: javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml
+    dest: "{{jenkins_home_dir}}/javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml"
+  notify: restart jenkins
+  tags:
+    - setup
+
 # Based on https://wjoel.com/posts/ansible-jenkins-pipeline-part-2.html
 
 - name: Get Jenkins crumb [seed job]

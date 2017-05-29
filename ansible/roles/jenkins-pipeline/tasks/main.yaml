@@ -1,0 +1,25 @@
+---
+- name: Create Jenkins configuration directory
+  file:
+    name="{{jenkins_config_dir}}" owner=jenkins group=jenkins
+    mode="0755" state=directory
+  tags:
+    - setup
+
+- name: Set pipeline global variables
+  template:
+    src: pipeline_constants.groovy.j2
+    dest: "{{jenkins_config_dir}}/pipeline_constants.groovy"
+    owner: jenkins
+    mode: "0444"
+  tags:
+    - setup
+
+- name: Approve Groovy method signatures used by pipelines
+  template:
+    src: scriptApproval.xml.j2
+    dest: "{{jenkins_home_dir}}/scriptApproval.xml"
+    owner: jenkins
+    mode: "0644"
+  tags:
+    - setup

@@ -1,9 +1,5 @@
 job('build_old_host_os_versions') {
   label('!master')
-  concurrentBuild()
-  throttleConcurrentBuilds {
-    maxPerNode(1)
-  }
   parameters {
     stringParam('GITHUB_ORGANIZATION_NAME',
 		"${GITHUB_ORGANIZATION_NAME}",

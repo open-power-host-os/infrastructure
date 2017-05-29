@@ -7,7 +7,5 @@
     - git
     # Java Runtime Environment. Jenkins slave dependency
     - java-1.8.0-openjdk-headless
-    # Dependency of the github_api script
-    - python-requests
   tags:
     - setup

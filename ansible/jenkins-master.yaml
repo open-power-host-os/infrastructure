@@ -13,6 +13,7 @@
     - systemd
     - jenkins-master
     - jenkins-seed-job
+    - jenkins-pipeline
   vars_files:
     - vars.yaml
     - vars-master.yaml

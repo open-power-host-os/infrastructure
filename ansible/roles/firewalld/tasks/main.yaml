@@ -4,7 +4,6 @@
     port={{item.port}} state={{item.state}}
     permanent={{item.permanent}} immediate={{item.immediate}}
   with_items:
-    - { port: 80/tcp, state: enabled, permanent: True, immediate: True }
     - { port: 443/tcp, state: enabled, permanent: True, immediate: True }
   tags:
     - setup

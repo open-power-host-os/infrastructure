@@ -51,6 +51,13 @@
   tags:
     - setup
 
+- name: Configure web server
+  template:
+    src=jenkins.conf dest=/etc/nginx/conf.d/jenkins.conf
+    owner=root group=root mode=0644
+  notify: restart nginx
+  tags:
+    - setup
 
 # The following steps needed to automatically setup Jenkins without user
 # intervention are based on

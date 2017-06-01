@@ -1,0 +1,7 @@
+---
+nginx_access_log: /var/log/nginx/access.log
+nginx_error_log: /var/log/nginx/error.log
+nginx_server_name: "{{ansible_fqdn}}"
+nginx_ssl_certificate: /etc/nginx/ssl/nginx.crt
+nginx_ssl_certificate_key: /etc/nginx/ssl/nginx.key
+nginx_user: "nginx"

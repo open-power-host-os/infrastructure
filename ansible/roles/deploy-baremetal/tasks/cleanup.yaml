@@ -1,0 +1,27 @@
+---
+- name: Unmount ISO file
+  mount:
+    name: "{{ machine_dir }}/mnt"
+    state: unmounted
+
+- name: Remove ISO file
+  file:
+    path: "{{ deploy.iso }}"
+    state: absent
+  when: deploy.remove_iso
+
+- name: Remove DHCP parameter for target node
+  file:
+    path: /etc/dnsmasq.conf/{{ baremetal.ip_address }}
+    state: absent
+  notify: restart dnsmasq
+
+- name: Remove PXE configuration file
+  file:
+    path: "{{ http_server.root }}/pxelinux.cfg/01-{{ baremetal.mac_address | regex_replace(':', '-') }}"
+    state: absent
+
+- name: Remove machine directory
+  file:
+    path: "{{ machine_dir }}"
+    state: absent

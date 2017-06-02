@@ -1,0 +1,61 @@
+- name: Allow DHCP and HTTP services in the firewall
+  firewalld:
+    service={{item}} state=enabled
+    permanent=False immediate=True
+  with_items:
+    - http
+    - dhcp
+
+- name: Define DHCP parameters for the target node
+  template:
+    src: dhcp-host
+    dest: /etc/dnsmasq.d/{{ baremetal.ip_address }}
+    owner: root
+    group: root
+    mode: 0644
+
+# machines booting via PXE expect configuration files in some standard
+# places like:
+# pxelinux.cfg/01-ma-ca-dd-re-ss
+# pxelinux.cfg/default
+# more info: http://jk.ozlabs.org/blog/post/158/netbooting-petitboot/
+- name: Create PXE configuration file (network boot) for the target node
+  template:
+    src: pxeconfig-network
+    dest: "{{ http_server.root }}/pxelinux.cfg/01-{{ baremetal.mac_address | regex_replace(':', '-') }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create machine-specific directory for deployment
+  file:
+    path: "{{ machine_dir }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: Get SSH public key
+  set_fact:
+    playbook_node_ssh_pub_key: "{{ lookup('file', ansible_user_dir + '/.ssh/id_rsa.pub') }}"
+
+- name: Make kickstart available in HTTP server
+  template:
+    src: kickstart
+    dest: "{{ machine_dir }}/install.ks"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Mount ISO file
+  mount:
+    name: "{{ machine_dir }}/mnt"
+    src: "{{ deploy.iso }}"
+    state: mounted
+    fstype: iso9660
+
+- name: Restart servers to apply configuration
+  service: name={{ item }} state=restarted
+  with_items:
+    - nginx
+    - dnsmasq

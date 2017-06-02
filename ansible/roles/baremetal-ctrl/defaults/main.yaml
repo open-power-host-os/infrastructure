@@ -1,0 +1,11 @@
+---
+http_server:
+  root: /srv/httpboot
+  port: 80
+distro_packages:
+  - python2-pip
+  # pyghmi dependency, pip crashes when installing it.
+  - python2-crypto
+  - rsync
+python_packages:
+  - pyghmi

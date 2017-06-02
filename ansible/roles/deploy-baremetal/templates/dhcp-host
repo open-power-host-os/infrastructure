@@ -1,0 +1,4 @@
+dhcp-range={{ baremetal.ip_address }},static,{{ ansible_default_ipv4.netmask }},infinite
+dhcp-host={{ baremetal.mac_address }},{{ baremetal.ip_address }}
+dhcp-option-force=210,http://{{ ansible_default_ipv4.address }}/
+dhcp-option=3,{{ ansible_default_ipv4.gateway }}

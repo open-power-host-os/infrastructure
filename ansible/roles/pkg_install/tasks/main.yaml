@@ -1,0 +1,14 @@
+---
+- name: Install distro packages
+  package: name={{item}} state=present
+  with_items:
+    "{{ distro_packages }}"
+  when: "{{ distro_packages }}"
+  tags: setup
+
+- name: Install Python packages
+  pip: name={{item}} state=present
+  with_items:
+    "{{ python_packages }}"
+  when: "{{ python_packages }}"
+  tags: setup

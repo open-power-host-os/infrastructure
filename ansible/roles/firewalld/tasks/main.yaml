@@ -1,4 +1,9 @@
 ---
+- name: Install firewalld
+  package: name=firewalld state=present
+  tags:
+    - setup
+
 - name: Configure firewalld
   firewalld:
     port={{item.port}} state={{item.state}}

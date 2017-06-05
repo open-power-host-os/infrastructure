@@ -116,7 +116,6 @@ def buildPackages() {
   }
 
   buildInfo.BUILD_STATUS = 'FAIL'
-  buildInfo.BUILD_ID = currentBuild.getNumber()
   buildInfo.BUILD_LOG = currentBuild.getAbsoluteUrl() + 'consoleFull'
   String VERSIONS_REPO_URL =
     gitRepos['versions'].userRemoteConfigs.get(0).url

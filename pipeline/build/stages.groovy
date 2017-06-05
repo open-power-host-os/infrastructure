@@ -116,6 +116,7 @@ def buildPackages() {
   }
 
   buildInfo.BUILD_STATUS = 'FAIL'
+  buildInfo.BUILD_PACKAGES_FINISHED = false
   buildInfo.BUILD_LOG = currentBuild.getAbsoluteUrl() + 'consoleFull'
   String VERSIONS_REPO_URL =
     gitRepos['versions'].userRemoteConfigs.get(0).url
@@ -178,11 +179,12 @@ python host_os.py \\
            $params.BUILD_ISO_EXTRA_PARAMETERS \\
 """
         buildInfo.BUILD_STATUS = 'PASS'
+        buildInfo.BUILD_PACKAGES_FINISHED = true
       }
     }
   }
 
-  if (buildInfo.BUILD_STATUS == 'PASS') {
+  if (buildInfo.BUILD_PACKAGES_FINISHED) {
     dir('builds/result/packages') {
       File latestBuildDir = new File(pwd(), 'latest')
       String timestamp = sh(script: "readlink $latestBuildDir",
@@ -202,17 +204,17 @@ python host_os.py \\
   utils.archiveAndPrint('logs/build-packages/*.log', true)
   utils.archiveAndPrint('logs/build-packages/mock_build/*/*/*.log', true)
 
-  if (buildInfo.BUILD_STATUS == 'FAIL') {
+  if (!buildInfo.BUILD_PACKAGES_FINISHED) {
     error('Packages build failed')
   }
 }
 
 def buildIso() {
-  if (buildInfo.BUILD_STATUS == 'FAIL') {
+  if (!buildInfo.BUILD_PACKAGES_FINISHED) {
     error('Skipping ISO build because packages build failed')
   }
 
-  buildInfo.BUILD_ISO_STATUS = 'FAIL'
+  buildInfo.BUILD_ISO_FINISHED = false
 
   if (triggeredRepoName) {
     utils.setGithubStatus(
@@ -263,12 +265,12 @@ python host_os.py \\
            --iso-version $ISO_VERSION \\
            $params.BUILD_ISO_EXTRA_PARAMETERS \\
 """
-        buildInfo.BUILD_ISO_STATUS = 'PASS'
+        buildInfo.BUILD_ISO_FINISHED = true
       }
     }
   }
 
-  if (buildInfo.BUILD_ISO_STATUS == 'PASS') {
+  if (buildInfo.BUILD_ISO_FINISHED) {
     sh 'ln -s builds/result/iso/latest iso'
     stash name: 'iso_dir', includes: 'iso/'
     utils.archiveAndPrint('iso/')
@@ -279,7 +281,7 @@ python host_os.py \\
   }
   utils.archiveAndPrint('logs/build-iso/*.log', true)
 
-  if (buildInfo.BUILD_ISO_STATUS == 'FAIL') {
+  if (!buildInfo.BUILD_ISO_FINISHED) {
     error('ISO build failed')
   }
 }
@@ -291,10 +293,10 @@ def uploadArtifacts() {
   }
 
   deleteDir()
-  if (buildInfo.BUILD_STATUS == 'PASS') {
+  if (buildInfo.BUILD_PACKAGES_FINISHED) {
     unstash 'repository_dir'
   }
-  if (buildInfo.BUILD_ISO_STATUS == 'PASS') {
+  if (buildInfo.BUILD_ISO_FINISHED) {
     unstash 'iso_dir'
   }
 
@@ -348,12 +350,12 @@ gpgcheck=0
   // The --ignore-existing prevents a build from being overwritten if some
   // problem occurs and the build is manually replayed, for example
   utils.rsyncUpload('--ignore-existing STATUS', BUILD_DIR_RSYNC_URL)
-  if (buildInfo.BUILD_STATUS == 'PASS') {
+  if (buildInfo.BUILD_PACKAGES_FINISHED) {
     utils.rsyncUpload('--ignore-existing --recursive repository',
                       BUILD_DIR_RSYNC_URL)
     utils.rsyncUpload('hostos.repo', BUILD_DIR_RSYNC_URL)
   }
-  if (buildInfo.BUILD_ISO_STATUS == 'PASS') {
+  if (buildInfo.BUILD_ISO_FINISHED) {
     utils.rsyncUpload('--ignore-existing --recursive iso', BUILD_DIR_RSYNC_URL)
   }
 }

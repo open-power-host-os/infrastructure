@@ -27,15 +27,13 @@ even install only the slave node and use it to build via command line.
 ### GitHub integration
 
 The Jenkins instance polls GitHub for status changes on the corresponding
-repositories' pull requests by using the GitHub Pull Request Builder plugin. It
-will start a batch of tests whenever a new pull request is open in the "builds"
-and "versions" repositories by an authorized user, when those pull requests are
-updated with new commits or when an authorized user comments the phrase
-"start tests". Currently, tests are: building of all packages, Pylint validation
-of Python code, yamllint validation of all package metadata YAML files and rpmlint
-validation of all RPM packages specification files. These tests can be triggered
-independently with the phrases "start build", "start pylint", "start yamllint"
-and "start rpmlint" respectively.
+repositories' pull requests. It will start a batch of tests whenever an
+authorized user opens or updates a pull request containing a
+[Jenkinsfile](https://jenkins.io/doc/book/pipeline/jenkinsfile/) in the
+"infrastructure", "builds" or "versions" repositories. Currently, tests are:
+building all packages, building ISO, Pylint validation of Python code, yamllint
+validation of all package metadata YAML files and rpmlint validation of all RPM
+packages specification files.
 
 ### Periodic builds process
 
@@ -45,17 +43,19 @@ packages' versions in the "versions" git repository, create a build with all
 packages available and create release notes, by executing the corresponding
 commands from the build scripts in the "builds" git repository. Commits will
 be created for the local "versions" and "open-power-host-os.github.io" git
-repositories and pushed to the designated GitHub user's git repository. Ideally,
-this should be a "bot" user. Pull requests for those commits can be created
-manually and merged into the main organization/user git repository, if desired.
+repositories and pushed to the designated GitHub user's git repository.
+Ideally, this should be a "bot" user. The process will then hang, waiting for
+an administrator to check the commits created and confirm the push to the
+organization's repositories. Those commits will also be tagged and the
+resulting build artifacts will be made available in the upload server.
 The default is to execute those periodic builds once a week (every Wednesday
 at 11 AM, Jenkins master's timezone).
 
-There's another periodic job similar to the one above, which differs by executing
-additional testing during the packages builds and by not pushing commits to remote
-git repositories. It allows developers of the packages to have their new commits
-tested and to have a build with those commits as soon as possible. The default
-is to execute those periodic builds nightly (daily at 22 PM, Jenkins master's timezone).
+There's another periodic job similar to the one above, which differs by not
+pushing commits to remote git repositories. It allows developers of the
+packages to have their new commits tested and to have a build with those
+commits as soon as possible. The default is to execute those periodic builds
+nightly (daily at 22 PM, Jenkins master's timezone).
 
 ## Infrastructure setup
 
@@ -169,7 +169,7 @@ Setup the SSH credentials necessary to access the slaves in Jenkins:
 
 ##### Setup credentials used to access GitHub API from Jenkins slave
 
-The GitHub Pull Request Builder plugin needs read access to check out pull
+The Jenkins pipeline GitHub API needs read access to check out pull
 requests for building and validating and write access to update the pull
 requests statuses, informing the developers of the job results.
 
@@ -178,16 +178,10 @@ To create the credentials, you can execute the job at
 user's password or its API token as the "password" parameter.
 
 It is recommended you use an API token instead of the user's password.
-Access https://github.com/settings/tokens/new to create a token, select
+[Create a token](https://github.com/settings/tokens/new), select
 "repo" scope and press the "Generate token" button. Refer to
 https://github.com/blog/1509-personal-api-tokens for more information on
 how to create those tokens.
-
-Next, go to Jenkins home -> "Manage Jenkins" -> "Configure System" and look
-for "GitHub Pull Request Builder". Select the credentials you have created and
-set a meaningful description. The other parameters values do not need to be
-modified. You can use the "Test Credentials" button to make sure the permissions
-to your repository are correct. You will need at least push and pull permissions.
 
 #### Create slaves in Jenkins web UI
 

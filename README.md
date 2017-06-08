@@ -121,6 +121,16 @@ Jenkins slave playbook.
 Note: The Jenkins playbooks may fail due to network errors. If you see HTTP
 request errors, try executing them again.
 
+#### Jenkins LDAP authentication
+
+There's an optional Ansible role that configures Jenkins authentication through
+an LDAP server. You'll first need to enable the `configure_ldap` variable in
+the [Jenkins master variables file](ansible/vars-master.yaml) and set the
+variables in the
+[LDAP configuration file](ansible/roles/jenkins-ldap/defaults/main.yaml),
+making sure there's at least one admin user so you are able to access and
+customize Jenkins using the UI. Execute the master playbook as usual and
+answer with `Y` when prompted if you'd like to configure LDAP.
 
 ### Manually setup Jenkins via web UI
 

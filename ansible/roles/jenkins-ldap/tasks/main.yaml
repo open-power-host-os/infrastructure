@@ -1,0 +1,45 @@
+---
+- name: Configure LDAP server
+  replace:
+    path: "{{jenkins_home_dir}}/config.xml"
+    regexp: '^(\s*)<securityRealm[\w\W]*</securityRealm>\n'
+    replace: |
+      \1<securityRealm class="hudson.security.LDAPSecurityRealm" plugin="ldap@1.15">
+      \1  <server>{{ldap_server}}</server>
+      \1  <rootDN></rootDN>
+      \1  <inhibitInferRootDN>true</inhibitInferRootDN>
+      \1  <userSearchBase>{{ldap_user_search_base}}</userSearchBase>
+      \1  <userSearch>{{ldap_user_search}}</userSearch>
+      \1  <groupMembershipStrategy class="jenkins.security.plugins.ldap.FromGroupSearchLDAPGroupMembershipStrategy">
+      \1    <filter></filter>
+      \1  </groupMembershipStrategy>
+      \1  <managerPasswordSecret>{{ldap_manager_password_secret}}</managerPasswordSecret>
+      \1  <disableMailAddressResolver>false</disableMailAddressResolver>
+      \1  <displayNameAttributeName>displayname</displayNameAttributeName>
+      \1  <mailAddressAttributeName>mail</mailAddressAttributeName>
+      \1  <userIdStrategy class="jenkins.model.IdStrategy$CaseInsensitive"/>
+      \1  <groupIdStrategy class="jenkins.model.IdStrategy$CaseInsensitive"/>
+      \1  <disableRolePrefixing>false</disableRolePrefixing>
+      \1</securityRealm>
+  notify: restart jenkins
+  tags:
+    - setup
+
+- name: Configure LDAP users permissions
+  replace:
+    path: "{{jenkins_home_dir}}/config.xml"
+    regexp: '^(\s*)<authorizationStrategy[\w\W]*</authorizationStrategy>\n'
+    replace: |
+      #jinja2: lstrip_blocks:True
+      \1<authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+        {% for group in jenkins_permissions.values() %}
+        {% for user in group.users %}
+        {% for permission in group.permissions %}
+      \1  <permission>{{permission}}:{{user}}</permission>
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+      \1</authorizationStrategy>
+  notify: restart jenkins
+  tags:
+    - setup

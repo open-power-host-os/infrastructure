@@ -1,19 +1,22 @@
 ---
-github_organization_name:
-github_bot_name:
-github_bot_user_name:
-github_bot_email:
+pipeline_constants:
+  GITHUB_ORGANIZATION_NAME:
+  GITHUB_BOT_NAME:
+  GITHUB_BOT_USER_NAME:
+  GITHUB_BOT_EMAIL:
+  GITHUB_AUTHORIZED_USERS:
 
-ghprb_admin_user:
-ghprb_admin_organization:
+  BUILDS_WORKSPACE_DIR: /var/lib/host-os
+  BUILDS_CONFIG_FILE: config/host_os.yaml
+  MOCK_CONFIG_FILE: config/mock/CentOS/7/CentOS-7-ppc64le.cfg
 
-centos_alternate_mirror_release_url:
-epel_alternate_mirror_release_url:
+  MAIN_CENTOS_REPO_RELEASE_URL: http://mirror.centos.org/altarch/7
+  MAIN_EPEL_REPO_RELEASE_URL: http://download.fedoraproject.org/pub/epel/7
+  CENTOS_ALTERNATE_MIRROR_RELEASE_URL:
+  EPEL_ALTERNATE_MIRROR_RELEASE_URL:
 
-upload_server_host_name:
-upload_server_user_name:
-upload_server_builds_dir_path:
-upload_server_weekly_dir_path:
-upload_server_nightly_dir_path:
-
-builds_workspace_dir: /var/lib/host-os
+  UPLOAD_SERVER_HOST_NAME:
+  UPLOAD_SERVER_USER_NAME:
+  UPLOAD_SERVER_BUILDS_DIR_PATH:
+  UPLOAD_SERVER_WEEKLY_DIR_PATH:
+  UPLOAD_SERVER_NIGHTLY_DIR_PATH:

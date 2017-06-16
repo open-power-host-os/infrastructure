@@ -13,6 +13,7 @@
     - systemd
     - jenkins-master
     - jenkins-seed-job
+    - jenkins-pipeline
     - { role: jenkins-ldap, when: configure_ldap }
   vars_files:
     - vars.yaml

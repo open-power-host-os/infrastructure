@@ -1,4 +1,12 @@
 ---
+- name: Allow seed job to run without manual approval
+  copy:
+    src: javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml
+    dest: "{{jenkins_home_dir}}/javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml"
+  notify: restart jenkins
+  tags:
+    - setup
+
 # Based on https://wjoel.com/posts/ansible-jenkins-pipeline-part-2.html
 
 - name: Get Jenkins crumb [seed job]
@@ -49,7 +57,8 @@
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/createItem?name={{seed_job_name}}&{{jenkins_crumb_token}}"
     method: POST
-    HEADER_Content-Type: application/xml
+    headers:
+      Content-Type: application/xml
     body: "{{ lookup('template', seed_job_template) }}"
   register: jenkins_seed_job_updated
   when: not jenkins_seed_job_exists
@@ -63,7 +72,8 @@
     force_basic_auth: yes
     url: "{{jenkins_local_url}}/job/{{seed_job_name}}/config.xml?{{jenkins_crumb_token}}"
     method: POST
-    HEADER_Content-Type: application/xml
+    headers:
+      Content-Type: application/xml
     body: "{{ lookup('template', seed_job_template) }}"
   register: jenkins_seed_job_updated
   when: jenkins_seed_job_exists

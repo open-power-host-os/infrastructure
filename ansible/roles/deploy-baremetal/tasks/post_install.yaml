@@ -1,0 +1,53 @@
+- name: Gather facts from baremetal host
+  setup:
+  delegate_to: "{{ baremetal.ip_address }}"
+
+- name: Get installed file system UUID
+  set_fact:
+    installed_filesystem_uuid: "{{ item.uuid }}"
+  when: item.mount == "/mnt/sysimage"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Get installed kernel and initramfs names
+  set_fact:
+    installed_kernel: "vmlinuz-{{ ansible_kernel }}"
+    installed_initramfs: "initramfs-{{ ansible_kernel }}.img"
+
+- name: Reset facts gathered
+  setup:
+
+- name: Get controller node SSH public key
+  slurp:
+    src: "{{ ansible_user_dir }}/.ssh/id_rsa.pub"
+  register: ctrl_node_ssh_pub_key
+
+- name: Authorize controller node SSH key in baremetal node
+  authorized_key:
+    user: root
+    manage_dir: yes
+    state: present
+    key: "{{ ctrl_node_ssh_pub_key['content'] | b64decode }}"
+  delegate_to: "{{ baremetal.ip_address }}"
+
+- name: Copy kernel/initramfs to controller node
+  shell: >
+    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+    {{ baremetal.ip_address }}:/mnt/sysimage/boot/{{ item }}
+    {{ machine_dir }}/{{ item }}
+  with_items:
+    - "{{ installed_kernel }}"
+    - "{{ installed_initramfs }}"
+
+- name: Set initramfs permissions
+  file:
+    path: "{{ machine_dir }}/{{ installed_initramfs }}"
+    mode: 0644
+
+- name: Authorize playbook user SSH key in baremetal node
+  authorized_key:
+    user: root
+    manage_dir: yes
+    state: present
+    key: "{{ playbook_node_ssh_pub_key }}"
+    path: /mnt/sysimage/root/.ssh/authorized_keys
+  delegate_to: "{{ baremetal.ip_address }}"

@@ -1,0 +1,5 @@
+---
+machine_dir: "{{ http_server.root }}/{{ baremetal.mac_address }}"
+deploy:
+  iso: /tmp/{{ baremetal.mac_address }}_deploy.iso
+  remove_iso: True

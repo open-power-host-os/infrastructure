@@ -1,0 +1,11 @@
+---
+- name: Deploy baremetal machine
+  hosts: baremetal-ctrl
+  roles:
+    - baremetal-ctrl
+    - deploy-baremetal
+  post_tasks:
+    - shell: echo -e "Node deployed:\n\tssh root@{{ baremetal.ip_address }}"
+      tags: deploy
+  vars_files:
+    - vars-baremetal.yaml

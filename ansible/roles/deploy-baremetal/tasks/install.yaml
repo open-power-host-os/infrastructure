@@ -1,0 +1,34 @@
+---
+- name: Set machine to boot from network
+  ipmi_boot:
+    name: "{{ ipmi.ip_address }}"
+    user: "{{ ipmi.user }}"
+    password: "{{ ipmi.password }}"
+    bootdev: network
+
+- name: Power machine off (pre-deploy)
+  ipmi_power:
+    name: "{{ ipmi.ip_address }}"
+    user: "{{ ipmi.user }}"
+    password: "{{ ipmi.password }}"
+    state: off
+    timeout: 600
+
+- name: Pause for some time while the service processor go on Standby
+  pause:
+    minutes: 1
+
+- name: Power machine on (pre-deploy)
+  ipmi_power:
+    name: "{{ ipmi.ip_address }}"
+    user: "{{ ipmi.user }}"
+    password: "{{ ipmi.password }}"
+    state: on
+    timeout: 600
+
+- name: Wait for installation
+  wait_for:
+    host: "{{ baremetal.ip_address }}"
+    port: 22
+    sleep: 120
+    timeout: 1200

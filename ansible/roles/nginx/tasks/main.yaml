@@ -1,4 +1,10 @@
 ---
+- name: Install nginx
+  package:
+    name=nginx state=present
+  tags:
+    - setup
+
 - name: Create nginx directories
   file:
     path={{item}} state=directory owner=root group=root mode=0755

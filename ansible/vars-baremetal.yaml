@@ -1,0 +1,9 @@
+---
+baremetal:
+  ip_address:
+  mac_address:
+  disk_serial:
+  timezone:
+ipmi:
+  user:
+  ip_address:

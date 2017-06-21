@@ -1,0 +1,26 @@
+---
+- name: Create HTTP server directory
+  file:
+    path: "{{ http_server.root }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  tags: setup
+
+- name: Create PXE directory
+  file:
+    path: "{{ http_server.root }}/pxelinux.cfg"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  tags: setup
+
+# Serves kernel/initrd/pxe files via HTTP
+- name: Configure HTTP server
+  template:
+    src=bm-deploy.conf dest=/etc/nginx/conf.d/bm-deploy.conf
+    owner=root group=root mode=0644
+  notify: restart nginx
+  tags: setup

@@ -1,0 +1,25 @@
+---
+- name: Install dnsmasq
+  package:
+    name=dnsmasq state=present
+  tags:
+    - setup
+
+- name: Create dnsmasq.d
+  file:
+    path=/etc/dnsmasq.d state=directory owner=root group=root mode=0755
+  tags:
+    - setup
+
+- name: Place dnsmasq.conf
+  template:
+    src=dnsmasq.conf dest=/etc/dnsmasq.conf
+    owner=root group=root mode=0644
+  notify: restart dnsmasq
+  tags:
+    - setup
+
+- name: Enable dnsmasq service
+  service: name=dnsmasq enabled=yes
+  tags:
+    - setup

@@ -1,0 +1,40 @@
+# Created by Ansible on {{ansible_date_time.date}} at {{ansible_date_time.time}}.
+text
+
+timezone --utc {{ baremetal.timezone }}
+network --bootproto=dhcp
+rootpw --iscrypted nopassword
+
+ignoredisk --only-use=disk/by-id/{{ baremetal.disk_serial }}
+# bootloader --append="console=tty0" --location=mbr --timeout=1 --boot-drive=disk/by-id/{{ baremetal.disk_serial }}
+zerombr
+clearpart --all --initlabel
+autopart --type=lvm
+
+%packages
+openssh-server
+%end
+
+
+%post --nochroot --erroronfail
+
+# Setup SSH on the livecd so that ansible can gather facts about the
+# installation
+mkdir --mode=700 /root/.ssh/
+echo "{{ playbook_node_ssh_pub_key }}" > /root/.ssh/authorized_keys
+chmod 644 /root/.ssh/authorized_keys
+
+# Create SSH server host keys
+ssh-keygen -A
+
+# Allow network access so that ansible can copy the kernel/initramfs
+# out to the controller node.
+systemctl stop NetworkManager
+echo "nameserver {{ ansible_default_ipv4.gateway }}" >> /etc/resolv.conf
+
+/usr/sbin/sshd -D -f /etc/ssh/sshd_config.anaconda &
+
+# Lock password so that the system is only accessible via SSH keys
+passwd -d root
+passwd -l root
+%end

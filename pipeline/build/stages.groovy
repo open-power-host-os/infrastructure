@@ -163,8 +163,8 @@ def buildPackages() {
     dir('builds') {
       echo 'Building packages'
       String packagesParameter = ''
-      if (params.PACKAGES) {
-        packagesParameter = "--packages $PACKAGES"
+      if (true) {
+        packagesParameter = "--packages libvpd"
       }
       catchError {
         sh """\

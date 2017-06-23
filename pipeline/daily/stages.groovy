@@ -4,6 +4,7 @@ import groovy.transform.Field
 
 buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
+constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
 
 @Field String PERIODIC_BUILDS_DIR_NAME
 @Field String RELEASE_DATE
@@ -17,7 +18,8 @@ pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
 @Field String COMMIT_BRANCH
 
 def initialize(List pipelineParameters = pipelineParameters,
-               String triggerExpression = '0 22 * * *') {
+               String triggerExpression = (
+                 constants.NIGHTLY_BUILDS_CRON_EXPRESSION)) {
   properties([parameters(pipelineParameters),
               pipelineTriggers([cron(triggerExpression)]),
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:

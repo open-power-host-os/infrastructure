@@ -4,6 +4,7 @@ import groovy.transform.Field
 
 dailyStages = load 'infrastructure/pipeline/daily/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/weekly/parameters.groovy'
+constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
 
 @Field String REPOSITORIES_PATH
 @Field String UPDATED_VERSIONS_REPO_PATH
@@ -13,7 +14,7 @@ pipelineParameters = load 'infrastructure/pipeline/weekly/parameters.groovy'
 @Field String GITHUB_IO_REPO_PATH
 
 def initialize() {
-  String triggerExpression = '0 11 * * 3'
+  String triggerExpression = constants.WEEKLY_BUILDS_CRON_EXPRESSION
   dailyStages.initialize(pipelineParameters, triggerExpression)
 
   REPOSITORIES_PATH = "$params.BUILDS_WORKSPACE_DIR/repositories"

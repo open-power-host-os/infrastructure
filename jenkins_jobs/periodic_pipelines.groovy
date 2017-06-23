@@ -1,4 +1,4 @@
-def createPeriodicPipeline(String name) {
+def createPeriodicPipeline(String name, String cronExpression) {
   pipelineJob(name) {
     definition {
       cps {
@@ -16,8 +16,11 @@ pipeline.execute()
         sandbox()
       }
     }
+    triggers {
+      cron(cronExpression)
+    }
   }
 }
 
-createPeriodicPipeline('daily')
-createPeriodicPipeline('weekly')
+createPeriodicPipeline('daily', "$NIGHTLY_BUILDS_CRON_EXPRESSION")
+createPeriodicPipeline('weekly', "$WEEKLY_BUILDS_CRON_EXPRESSION")

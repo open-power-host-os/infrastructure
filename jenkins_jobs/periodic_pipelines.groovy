@@ -6,7 +6,7 @@ def createPeriodicPipeline(String name) {
 node('master') {
   dir('infrastructure') {
     git(url: 'https://github.com/$GITHUB_ORGANIZATION_NAME/infrastructure.git',
-        branch: 'master')
+        branch: '$REPOSITORY_COMMIT')
   }
   pipeline = load 'infrastructure/pipeline/${name}.groovy'
 }

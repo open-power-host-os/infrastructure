@@ -23,3 +23,8 @@ pipeline_constants:
 
   NIGHTLY_BUILDS_CRON_EXPRESSION: '0 22 * * *'
   WEEKLY_BUILDS_CRON_EXPRESSION: '0 11 * * 3'
+
+  SLACK_NOTIFICATION_RECIPIENT:
+  SLACK_TEAM_DOMAIN:
+  # Generate at https://my.slack.com/services/new/jenkins-ci
+  SLACK_TOKEN:

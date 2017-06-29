@@ -19,10 +19,23 @@ sed -i \
     "s|${CENTOS_7_YUM_REPO_URL}|${CENTOS_7_2_YUM_REPO_URL}|" \
     $LEGACY_MOCK_CONFIG_FILE
 
-# clean yum repos cache to avoid conflict with newer CentOS versions content
-# which may be already in the cache
-mock --scrub all
-mock -r $LEGACY_MOCK_CONFIG_FILE --scrub all
+# Disable caches and bind mounts so there are no conflicts with concurrent
+# builds and to make sure the packages are installed from the correct
+# repositories
+sed -i \
+    "/config_opts\['plugin_conf'\]\['root_cache_enable'\]/d" \
+    $LEGACY_MOCK_CONFIG_FILE
+sed -i \
+    "/config_opts\['plugin_conf'\]\['yum_cache_enable'\]/d" \
+    $LEGACY_MOCK_CONFIG_FILE
+sed -i \
+    "/config_opts\['plugin_conf'\]\['bind_mount_enable'\]/d" \
+    $LEGACY_MOCK_CONFIG_FILE
+echo "\
+config_opts['plugin_conf']['root_cache_enable'] = False
+config_opts['plugin_conf']['yum_cache_enable'] = False
+config_opts['plugin_conf']['bind_mount_enable'] = False
+" >> $LEGACY_MOCK_CONFIG_FILE
 
 # 1.5
 python host_os.py \
@@ -39,7 +52,3 @@ python host_os.py \
        --distro-version 7.2 \
        build-packages \
        --packages-metadata-repo-branch $TAG_1_0
-
-# clean yum repos to avoid that future builds which use newer CentOS versions have conflicts
-mock --scrub all
-mock -r $LEGACY_MOCK_CONFIG_FILE --scrub all

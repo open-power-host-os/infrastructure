@@ -5,6 +5,7 @@ import groovy.transform.Field
 buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
 constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
+utils = load 'infrastructure/pipeline/lib/utils.groovy'
 
 @Field String PERIODIC_BUILDS_DIR_NAME
 @Field String RELEASE_DATE
@@ -106,6 +107,37 @@ def createSymlinks() {
   echo "Uploading $PERIODIC_BUILDS_DIR_NAME builds symlinks"
   utils.rsyncUpload("--links $RELEASE_DATE", PERIODIC_BUILDS_DIR_RSYNC_URL)
   utils.rsyncUpload('--links latest', PERIODIC_BUILDS_DIR_RSYNC_URL)
+}
+
+def shouldNotifyOnFailure() {
+  shouldNotify = true
+
+  for (param in params) {
+    if (param.key.startsWith("SLACK") && !param.value) {
+      shouldNotify = false
+      break
+    }
+  }
+
+  return shouldNotify
+}
+
+def notifyFailure() {
+  String teamDomain = params.SLACK_TEAM_DOMAIN
+  String recipient = params.SLACK_NOTIFICATION_RECIPIENT
+  String failureMsg = "Daily build failed. ${BUILD_URL}console"
+
+  String tokenId = utils.addSecretString(
+    params.SLACK_TOKEN, "Slack token for $recipient @ $teamDomain")
+
+  try {
+    withCredentials([string(credentialsId: tokenId, variable: 'token')]){
+      slackSend(channel: recipient, teamDomain: teamDomain, token: token,
+		color: 'danger', message: failureMsg)
+    }
+  } finally {
+    utils.removeCredentials(tokenId)
+  }
 }
 
 return this

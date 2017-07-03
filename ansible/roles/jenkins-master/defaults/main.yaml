@@ -44,3 +44,5 @@ jenkins_plugins:
   - pipeline-stage-view
   # New Jenkins user experience
   - blueocean
+  # Slack notifications
+  - slack

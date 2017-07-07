@@ -12,6 +12,17 @@
     <string>new java.io.File java.lang.String java.lang.String</string>
     <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods first java.util.List</string>
     <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods readLines java.lang.String</string>
+    <string>new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl</string>
+    <string>staticMethod com.cloudbees.plugins.credentials.SystemCredentialsProvider getInstance</string>
+    <string>method com.cloudbees.plugins.credentials.SystemCredentialsProvider getStore</string>
+    <string>staticMethod com.cloudbees.plugins.credentials.domains.Domain global</string>
+    <string>method com.cloudbees.plugins.credentials.CredentialsStore addCredentials com.cloudbees.plugins.credentials.domains.Domain com.cloudbees.plugins.credentials.Credentials</string>
+    <string>staticField com.cloudbees.plugins.credentials.CredentialsScope GLOBAL</string>
+    <string>new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl com.cloudbees.plugins.credentials.CredentialsScope java.lang.String java.lang.String hudson.util.Secret</string>
+    <string>method com.cloudbees.plugins.credentials.CredentialsStore getCredentials com.cloudbees.plugins.credentials.domains.Domain</string>
+    <string>staticMethod com.cloudbees.plugins.credentials.CredentialsMatchers withId java.lang.String</string>
+    <string>staticMethod com.cloudbees.plugins.credentials.CredentialsMatchers filter java.util.List com.cloudbees.plugins.credentials.CredentialsMatcher</string>
+    <string>method com.cloudbees.plugins.credentials.CredentialsStore removeCredentials com.cloudbees.plugins.credentials.domains.Domain com.cloudbees.plugins.credentials.Credentials</string>
   </approvedSignatures>
   <aclApprovedSignatures/>
   <approvedClasspathEntries/>

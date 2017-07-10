@@ -5,14 +5,18 @@ files required to setup services automatically.
 
 ## Installing Ansible
 
-If you still do not have Ansible installed in your system, setup EPEL yum
+If you still do not have Ansible installed in your local system, setup EPEL yum
 repository and run:
 
+### In CentOS:
 `yum install -y ansible`
+
+### In Ubuntu:
+`pip install ansible`
 
 ## Running Ansible playbooks
 
-First, update all the hosts in the hosts.ini file, paying attention to the groups they belong to. 
+First, in your source host, update all the hosts in the hosts.ini file, paying attention to the groups they belong to. 
 When executing a playbook, only the hosts in the corresponding group will be updated (eg if you 
 execute the jenkins-master playbook, a Jenkins master instance will be installed to all
 hosts in [jenkins-master] section in hosts.ini).

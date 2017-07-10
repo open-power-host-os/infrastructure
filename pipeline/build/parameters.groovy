@@ -1,5 +1,3 @@
-Map constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
-
 List pipelineParameters = [
   string(name: 'GITHUB_ORGANIZATION_NAME',
          defaultValue: constants.GITHUB_ORGANIZATION_NAME,

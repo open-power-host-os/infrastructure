@@ -322,9 +322,10 @@ def uploadArtifacts() {
 
   String jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
   echo "Writing build status file:\n" + jsonString
-  writeFile file: 'STATUS', text: jsonString
-  utils.archiveAndPrint('STATUS')
-
+  dir(constants.BUILD_INFORMATION_DIR) {
+    writeFile file: 'STATUS', text: jsonString
+    utils.archiveAndPrint('STATUS')
+  }
   if (!buildInfo.BUILD_TIMESTAMP) {
     error('Aborting upload, no timestamp to create the remote directory name')
   }
@@ -348,7 +349,8 @@ gpgcheck=0
   echo 'Uploading artifacts'
   // The --ignore-existing prevents a build from being overwritten if some
   // problem occurs and the build is manually replayed, for example
-  utils.rsyncUpload('--ignore-existing STATUS', BUILD_DIR_RSYNC_URL)
+  utils.rsyncUpload('--ignore-existing --recursive ' +
+      constants.BUILD_INFORMATION_DIR, BUILD_DIR_RSYNC_URL)
   if (buildInfo.BUILD_PACKAGES_FINISHED) {
     utils.rsyncUpload('--ignore-existing --recursive repository',
                       BUILD_DIR_RSYNC_URL)

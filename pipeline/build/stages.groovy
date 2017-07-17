@@ -3,7 +3,6 @@
 import groovy.json.*
 import groovy.transform.Field
 
-utils = load 'infrastructure/pipeline/lib/utils.groovy'
 pipelineParameters = load 'infrastructure/pipeline/build/parameters.groovy'
 
 @Field String triggeredRepoName

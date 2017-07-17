@@ -1,6 +1,10 @@
 #!groovy
 
+constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
+utils = load 'infrastructure/pipeline/lib/utils.groovy'
+
 pipelineStages = load 'infrastructure/pipeline/build/stages.groovy'
+
 
 def execute() {
   timestamps {

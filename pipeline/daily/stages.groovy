@@ -16,11 +16,12 @@ buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 @Field String BUILDS_REPO_NAME
 @Field String COMMIT_BRANCH
 
-def initialize(List pipelineParameters = pipelineParameters,
+def initialize(Map pipelineParameters = pipelineParameters,
                String triggerExpression = (
                  constants.NIGHTLY_BUILDS_CRON_EXPRESSION),
                  numToKeepStr = '7') {
-  properties([parameters(pipelineParameters),
+
+  properties([parameters(utils.convertToJenkinsParameters(pipelineParameters)),
               pipelineTriggers([cron(triggerExpression)]),
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:
                [$class: 'LogRotator', numToKeepStr: numToKeepStr]]])

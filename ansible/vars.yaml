@@ -28,3 +28,5 @@ pipeline_constants:
   SLACK_TEAM_DOMAIN:
   # Generate at https://my.slack.com/services/new/jenkins-ci
   SLACK_TOKEN:
+
+  BUILD_INFORMATION_DIR: 'info'

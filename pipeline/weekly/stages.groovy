@@ -4,7 +4,6 @@ import groovy.transform.Field
 
 dailyStages = load 'infrastructure/pipeline/daily/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/weekly/parameters.groovy'
-constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
 
 @Field String REPOSITORIES_PATH
 @Field String UPDATED_VERSIONS_REPO_PATH

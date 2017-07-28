@@ -292,6 +292,10 @@ def uploadArtifacts() {
   deleteDir()
   if (buildInfo.build_packages_finished) {
     unstash 'repository_dir'
+
+    dir(constants.BUILD_INFORMATION_DIR) {
+      sh 'mv ../repository/packages.json ./'
+    }
   }
   if (buildInfo.build_iso_finished) {
     unstash 'iso_dir'

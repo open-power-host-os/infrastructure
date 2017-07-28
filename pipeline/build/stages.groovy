@@ -114,9 +114,9 @@ def buildPackages() {
       triggeredRepoName, 'Building packages', 'PENDING')
   }
 
-  buildInfo.BUILD_STATUS = 'FAIL'
-  buildInfo.BUILD_PACKAGES_FINISHED = false
-  buildInfo.BUILD_LOG = currentBuild.getAbsoluteUrl() + 'consoleFull'
+  buildInfo.build_status = 'FAIL'
+  buildInfo.build_packages_finished = false
+  buildInfo.log_url = currentBuild.getAbsoluteUrl() + 'consoleFull'
   String VERSIONS_REPO_URL =
     gitRepos['versions'].userRemoteConfigs.get(0).url
   String VERSIONS_REPO_DIR = "versions_build-packages"
@@ -139,18 +139,18 @@ def buildPackages() {
 
     // The commit hashes should be accessible from the GitSCM object
     // https://issues.jenkins-ci.org/browse/JENKINS-34455
-    buildInfo.BUILDS_REPO_COMMIT = sh(
+    buildInfo.builds_repo_commit_id = sh(
       script:"git rev-parse HEAD", returnStdout: true).trim()
-    echo buildInfo.BUILDS_REPO_COMMIT
+    echo buildInfo.builds_repo_commit_id
   }
 
   utils.checkoutRepo('versions', gitRepos)
   dir('versions') {
     // The commit hashes should be accessible from the GitSCM object
     // https://issues.jenkins-ci.org/browse/JENKINS-34455
-    buildInfo.VERSIONS_REPO_COMMIT = sh(
+    buildInfo.versions_repo_commit_id = sh(
       script:"git rev-parse HEAD", returnStdout: true).trim()
-    echo buildInfo.VERSIONS_REPO_COMMIT
+    echo buildInfo.versions_repo_commit_id
   }
 
   lock(resource: "build-packages_workspace_$env.NODE_NAME") {
@@ -173,23 +173,23 @@ python host_os.py \\
            --force-rebuild \\
            --keep-build-dir \\
            --packages-metadata-repo-url $VERSIONS_REPO_URL \\
-           --packages-metadata-repo-branch $buildInfo.VERSIONS_REPO_COMMIT \\
+           --packages-metadata-repo-branch $buildInfo.versions_repo_commit_id \\
            $packagesParameter \\
            $params.BUILD_PACKAGES_EXTRA_PARAMETERS \\
 """
-        buildInfo.BUILD_STATUS = 'PASS'
-        buildInfo.BUILD_PACKAGES_FINISHED = true
+        buildInfo.build_status = 'PASS'
+        buildInfo.build_packages_finished = true
       }
     }
   }
 
-  if (buildInfo.BUILD_PACKAGES_FINISHED) {
+  if (buildInfo.build_packages_finished) {
     dir('builds/result/packages') {
       File latestBuildDir = new File(pwd(), 'latest')
       String timestamp = sh(script: "readlink $latestBuildDir",
                             returnStdout: true).trim()
       echo "Build timestamp: $timestamp"
-      buildInfo.BUILD_TIMESTAMP = timestamp
+      buildInfo.timestamp = timestamp
     }
 
     sh 'ln -s builds/result/packages/latest repository'
@@ -203,17 +203,17 @@ python host_os.py \\
   utils.archiveAndPrint('logs/build-packages/*.log', true)
   utils.archiveAndPrint('logs/build-packages/mock_build/*/*/*.log', true)
 
-  if (!buildInfo.BUILD_PACKAGES_FINISHED) {
+  if (!buildInfo.build_packages_finished) {
     error('Packages build failed')
   }
 }
 
 def buildIso() {
-  if (!buildInfo.BUILD_PACKAGES_FINISHED) {
+  if (!buildInfo.build_packages_finished) {
     error('Skipping ISO build because packages build failed')
   }
 
-  buildInfo.BUILD_ISO_FINISHED = false
+  buildInfo.build_iso_finished = false
 
   if (triggeredRepoName) {
     utils.setGithubStatus(
@@ -222,7 +222,7 @@ def buildIso() {
 
   // Convert timestamp from format YYYY-MM-DDThh:mm:ss.ssssss
   // to YYYYMMDDThhmmss
-  String ISO_VERSION = buildInfo.BUILD_TIMESTAMP
+  String ISO_VERSION = buildInfo.timestamp
   ISO_VERSION = ISO_VERSION.replaceAll(/-/, '')
   ISO_VERSION = ISO_VERSION.replaceAll(/:/, '')
   ISO_VERSION = ISO_VERSION.replaceFirst(/[.].*/, '')
@@ -264,12 +264,12 @@ python host_os.py \\
            --iso-version $ISO_VERSION \\
            $params.BUILD_ISO_EXTRA_PARAMETERS \\
 """
-        buildInfo.BUILD_ISO_FINISHED = true
+        buildInfo.build_iso_finished = true
       }
     }
   }
 
-  if (buildInfo.BUILD_ISO_FINISHED) {
+  if (buildInfo.build_iso_finished) {
     sh 'ln -s builds/result/iso/latest iso'
     stash name: 'iso_dir', includes: 'iso/'
     utils.archiveAndPrint('iso/')
@@ -280,7 +280,7 @@ python host_os.py \\
   }
   utils.archiveAndPrint('logs/build-iso/*.log', true)
 
-  if (!buildInfo.BUILD_ISO_FINISHED) {
+  if (!buildInfo.build_iso_finished) {
     error('ISO build failed')
   }
 }
@@ -292,10 +292,10 @@ def uploadArtifacts() {
   }
 
   deleteDir()
-  if (buildInfo.BUILD_PACKAGES_FINISHED) {
+  if (buildInfo.build_packages_finished) {
     unstash 'repository_dir'
   }
-  if (buildInfo.BUILD_ISO_FINISHED) {
+  if (buildInfo.build_iso_finished) {
     unstash 'iso_dir'
   }
 
@@ -304,20 +304,20 @@ def uploadArtifacts() {
   String BUILD_DIR_HTTP_URL
   String BUILD_DIR_RSYNC_URL
 
-  if (buildInfo.BUILD_TIMESTAMP) {
+  if (buildInfo.timestamp) {
     String HTTP_URL_PREFIX = "http://$params.UPLOAD_SERVER_HOST_NAME"
     String RSYNC_URL_PREFIX =
       "$params.UPLOAD_SERVER_USER_NAME@$params.UPLOAD_SERVER_HOST_NAME:"
     BUILDS_DIR_NAME = (
       params.UPLOAD_SERVER_BUILDS_DIR_PATH.tokenize('/').last())
     String BUILD_DIR_PATH =
-      "$params.UPLOAD_SERVER_BUILDS_DIR_PATH/$buildInfo.BUILD_TIMESTAMP"
+      "$params.UPLOAD_SERVER_BUILDS_DIR_PATH/$buildInfo.timestamp"
     BUILDS_DIR_RSYNC_URL =
       "${RSYNC_URL_PREFIX}$params.UPLOAD_SERVER_BUILDS_DIR_PATH"
     BUILD_DIR_HTTP_URL = "${HTTP_URL_PREFIX}$BUILD_DIR_PATH"
     BUILD_DIR_RSYNC_URL = "${RSYNC_URL_PREFIX}$BUILD_DIR_PATH"
 
-    buildInfo.REPOSITORY_FILE_URL = "$BUILD_DIR_HTTP_URL/hostos.repo"
+    buildInfo.repository_file_url = "$BUILD_DIR_HTTP_URL/hostos.repo"
   }
 
   String jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
@@ -326,7 +326,7 @@ def uploadArtifacts() {
     writeFile file: 'STATUS', text: jsonString
     utils.archiveAndPrint('STATUS')
   }
-  if (!buildInfo.BUILD_TIMESTAMP) {
+  if (!buildInfo.timestamp) {
     error('Aborting upload, no timestamp to create the remote directory name')
   }
 
@@ -343,7 +343,7 @@ gpgcheck=0
   utils.archiveAndPrint('hostos.repo')
 
   echo 'Creating remote build directory hierarchy'
-  sh "mkdir -p $BUILDS_DIR_NAME/$buildInfo.BUILD_TIMESTAMP"
+  sh "mkdir -p $BUILDS_DIR_NAME/$buildInfo.timestamp"
   utils.rsyncUpload("--recursive $BUILDS_DIR_NAME/", BUILDS_DIR_RSYNC_URL)
 
   echo 'Uploading artifacts'
@@ -351,12 +351,12 @@ gpgcheck=0
   // problem occurs and the build is manually replayed, for example
   utils.rsyncUpload('--ignore-existing --recursive ' +
       constants.BUILD_INFORMATION_DIR, BUILD_DIR_RSYNC_URL)
-  if (buildInfo.BUILD_PACKAGES_FINISHED) {
+  if (buildInfo.build_packages_finished) {
     utils.rsyncUpload('--ignore-existing --recursive repository',
                       BUILD_DIR_RSYNC_URL)
     utils.rsyncUpload('hostos.repo', BUILD_DIR_RSYNC_URL)
   }
-  if (buildInfo.BUILD_ISO_FINISHED) {
+  if (buildInfo.build_iso_finished) {
     utils.rsyncUpload('--ignore-existing --recursive iso', BUILD_DIR_RSYNC_URL)
   }
 }

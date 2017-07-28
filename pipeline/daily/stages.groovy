@@ -90,7 +90,7 @@ def createSymlinks() {
 
   File periodicBuildsDir = new File(params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH)
   File buildDir = new File(params.UPLOAD_SERVER_BUILDS_DIR_PATH,
-                           buildStages.buildInfo.BUILD_TIMESTAMP)
+                           buildStages.buildInfo.timestamp)
   String RELATIVE_BUILD_DIR_PATH =
     periodicBuildsDir.toPath().relativize(buildDir.toPath()).toString()
 

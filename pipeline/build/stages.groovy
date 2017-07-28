@@ -321,8 +321,8 @@ def uploadArtifacts() {
   String jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
   echo "Writing build status file:\n" + jsonString
   dir(constants.BUILD_INFORMATION_DIR) {
-    writeFile file: 'STATUS', text: jsonString
-    utils.archiveAndPrint('STATUS')
+    writeFile file: 'build.json', text: jsonString
+    utils.archiveAndPrint('build.json')
   }
   if (!buildInfo.timestamp) {
     error('Aborting upload, no timestamp to create the remote directory name')

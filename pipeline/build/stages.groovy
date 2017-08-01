@@ -114,7 +114,6 @@ def buildPackages() {
       triggeredRepoName, 'Building packages', 'PENDING')
   }
 
-  buildInfo.build_status = 'FAIL'
   buildInfo.build_packages_finished = false
   buildInfo.log_url = currentBuild.getAbsoluteUrl() + 'consoleFull'
   String VERSIONS_REPO_URL =
@@ -177,7 +176,6 @@ python host_os.py \\
            $packagesParameter \\
            $params.BUILD_PACKAGES_EXTRA_PARAMETERS \\
 """
-        buildInfo.build_status = 'PASS'
         buildInfo.build_packages_finished = true
       }
     }

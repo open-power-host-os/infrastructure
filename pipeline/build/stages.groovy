@@ -175,7 +175,7 @@ python host_os.py \\
            --packages-metadata-repo-url $VERSIONS_REPO_URL \\
            --packages-metadata-repo-branch $buildInfo.VERSIONS_REPO_COMMIT \\
            $packagesParameter \\
-           $params.BUILD_ISO_EXTRA_PARAMETERS \\
+           $params.BUILD_PACKAGES_EXTRA_PARAMETERS \\
 """
         buildInfo.BUILD_STATUS = 'PASS'
         buildInfo.BUILD_PACKAGES_FINISHED = true

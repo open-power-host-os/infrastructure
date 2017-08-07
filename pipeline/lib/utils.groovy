@@ -64,7 +64,7 @@ def setGithubStatus(String repositoryName, String description, String status) {
                description: description,
                targetUrl: "$env.JOB_URL/workflow-stage/",
                repo: repositoryName,
-               sha: env.CHANGE_BRANCH,
+               sha: env.CHANGE_REFSPEC,
                status: status)
 }
 

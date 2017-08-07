@@ -4,6 +4,7 @@ constants = readProperties file: '/etc/jenkins/pipeline_constants.groovy'
 utils = load 'infrastructure/pipeline/lib/utils.groovy'
 
 pipelineStages = load 'infrastructure/pipeline/daily/stages.groovy'
+pipelineParameters = load 'infrastructure/pipeline/devel/parameters.groovy'
 
 
 def execute() {

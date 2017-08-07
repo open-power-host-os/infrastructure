@@ -3,7 +3,6 @@
 import groovy.transform.Field
 
 buildStages = load 'infrastructure/pipeline/build/stages.groovy'
-pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
 
 
 @Field String PERIODIC_BUILDS_DIR_NAME

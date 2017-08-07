@@ -13,7 +13,7 @@ pipelineParameters += [
          'Email of the GitHub user to create commits automatically.'),
 
   string(name: 'UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH',
-         defaultValue: constants.UPLOAD_SERVER_NIGHTLY_DIR_PATH,
+         defaultValue: constants.UPLOAD_SERVER_DEVEL_DIR_PATH,
          description:
          'Directory in the target server to upload periodic builds results.'),
 

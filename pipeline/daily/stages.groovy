@@ -125,7 +125,7 @@ def shouldNotifyOnFailure() {
 def notifyFailure() {
   String teamDomain = params.SLACK_TEAM_DOMAIN
   String recipient = params.SLACK_NOTIFICATION_RECIPIENT
-  String failureMsg = "Daily build failed. ${BUILD_URL}console"
+  String failureMsg = "${JOB_BASE_NAME} build failed. ${BUILD_URL}console"
 
   String tokenId = utils.addSecretString(
     params.SLACK_TOKEN, "Slack token for $recipient @ $teamDomain")

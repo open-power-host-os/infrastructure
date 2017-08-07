@@ -30,6 +30,11 @@ pipelineParameters += [
     description:
       'Access token from the Jenkins integration app in Slack. ' +
       'More info at: https://my.slack.com/services/new/jenkins-ci'],
+  BUILD_PACKAGES_EXTRA_PARAMETERS: [
+    defaultValue: '--mock-args "--define \'extraver .dev\'"',
+    description: 'Arbitrary extra parameters to pass to the build-packages ' +
+      'command. Arguments containing spaces have to be enclosed in double ' +
+      'quotes, e.g. --mock-args "--with tests"'],
 ]
 
 return pipelineParameters

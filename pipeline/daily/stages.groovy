@@ -19,11 +19,12 @@ pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
 
 def initialize(List pipelineParameters = pipelineParameters,
                String triggerExpression = (
-                 constants.NIGHTLY_BUILDS_CRON_EXPRESSION)) {
+                 constants.NIGHTLY_BUILDS_CRON_EXPRESSION),
+                 numToKeepStr = '7') {
   properties([parameters(pipelineParameters),
               pipelineTriggers([cron(triggerExpression)]),
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:
-               [$class: 'LogRotator', numToKeepStr: '10']]])
+               [$class: 'LogRotator', numToKeepStr: numToKeepStr]]])
 
   MAIN_REPO_URL_PREFIX = "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME"
   PUSH_REPO_URL_PREFIX = "ssh://git@github.com/$params.GITHUB_BOT_USER_NAME"

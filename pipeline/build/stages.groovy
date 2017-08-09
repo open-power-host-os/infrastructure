@@ -12,7 +12,7 @@ pipelineParameters = load 'infrastructure/pipeline/build/parameters.groovy'
 def initialize() {
   properties([parameters(pipelineParameters),
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:
-               [$class: 'LogRotator', numToKeepStr: '10']]])
+               [$class: 'LogRotator', numToKeepStr: '2']]])
 
   String triggeredRepoURL = scm.userRemoteConfigs.get(0).url
   triggeredRepoName =

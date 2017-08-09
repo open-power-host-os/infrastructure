@@ -14,7 +14,8 @@ pipelineParameters = load 'infrastructure/pipeline/weekly/parameters.groovy'
 
 def initialize() {
   String triggerExpression = constants.WEEKLY_BUILDS_CRON_EXPRESSION
-  dailyStages.initialize(pipelineParameters, triggerExpression)
+  String numToKeepStr = '4'
+  dailyStages.initialize(pipelineParameters, triggerExpression, numToKeepStr)
 
   REPOSITORIES_PATH = "$params.BUILDS_WORKSPACE_DIR/repositories"
   UPDATED_VERSIONS_REPO_PATH =

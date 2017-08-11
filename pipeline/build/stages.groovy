@@ -10,7 +10,7 @@ pipelineParameters = load 'infrastructure/pipeline/build/parameters.groovy'
 @Field Map buildInfo
 
 def initialize() {
-  properties([parameters(pipelineParameters),
+  properties([parameters(utils.convertToJenkinsParameters(pipelineParameters)),
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:
                [$class: 'LogRotator', numToKeepStr: '2']]])
 

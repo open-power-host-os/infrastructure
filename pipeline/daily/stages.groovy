@@ -3,7 +3,6 @@
 import groovy.transform.Field
 
 buildStages = load 'infrastructure/pipeline/build/stages.groovy'
-pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
 
 
 @Field String PERIODIC_BUILDS_DIR_NAME
@@ -17,11 +16,12 @@ pipelineParameters = load 'infrastructure/pipeline/daily/parameters.groovy'
 @Field String BUILDS_REPO_NAME
 @Field String COMMIT_BRANCH
 
-def initialize(List pipelineParameters = pipelineParameters,
+def initialize(Map pipelineParameters = pipelineParameters,
                String triggerExpression = (
                  constants.NIGHTLY_BUILDS_CRON_EXPRESSION),
                  numToKeepStr = '7') {
-  properties([parameters(pipelineParameters),
+
+  properties([parameters(utils.convertToJenkinsParameters(pipelineParameters)),
               pipelineTriggers([cron(triggerExpression)]),
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:
                [$class: 'LogRotator', numToKeepStr: numToKeepStr]]])
@@ -125,7 +125,7 @@ def shouldNotifyOnFailure() {
 def notifyFailure() {
   String teamDomain = params.SLACK_TEAM_DOMAIN
   String recipient = params.SLACK_NOTIFICATION_RECIPIENT
-  String failureMsg = "Daily build failed. ${BUILD_URL}console"
+  String failureMsg = "${JOB_BASE_NAME} build failed. ${BUILD_URL}console"
 
   String tokenId = utils.addSecretString(
     params.SLACK_TOKEN, "Slack token for $recipient @ $teamDomain")

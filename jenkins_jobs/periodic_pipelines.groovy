@@ -22,5 +22,7 @@ pipeline.execute()
   }
 }
 
-createPeriodicPipeline('daily', "$NIGHTLY_BUILDS_CRON_EXPRESSION")
+createPeriodicPipeline('devel', "$NIGHTLY_BUILDS_CRON_EXPRESSION")
+createPeriodicPipeline('release', "$NIGHTLY_BUILDS_CRON_EXPRESSION")
+
 createPeriodicPipeline('weekly', "$WEEKLY_BUILDS_CRON_EXPRESSION")

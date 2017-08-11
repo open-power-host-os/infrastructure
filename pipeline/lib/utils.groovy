@@ -104,4 +104,25 @@ rsync -e 'ssh -i $env.HOME/.ssh/upload_server_id_rsa' \\
 """
 }
 
+def convertToJenkinsParameters(Map parameters) {
+  List jenkinsParams = []
+
+  for (param in parameters) {
+    jenkinsParam = null
+
+    if (!param.value.type) {
+      jenkinsParam = string(name: param.key,
+                            defaultValue: param.value.defaultValue,
+	                    description: param.value.description)
+    } else if (param.value.type == "password") {
+      jenkinsParam = password(name: param.key,
+                              defaultValue: param.value.defaultValue,
+                              description: param.value.description)
+    }
+    jenkinsParams.add(jenkinsParam)
+  }
+  return jenkinsParams
+}
+
+
 return this

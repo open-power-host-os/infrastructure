@@ -7,7 +7,7 @@ pipelineStages = load 'infrastructure/pipeline/daily/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/devel/parameters.groovy'
 
 
-def execute() {
+def execute(Boolean skipIfNoUpdates = false) {
   timestamps {
     try {
       stage('Initialize') {
@@ -18,6 +18,11 @@ def execute() {
         lock(resource: "update-versions_workspace_$env.NODE_NAME") {
           stage('Update packages versions') {
             pipelineStages.updateVersions()
+          }
+
+          if (skipIfNoUpdates && !pipelineStages.hasUpdates) {
+            echo 'No updates, skipping build'
+            return
           }
 
           stage('Build packages') {

@@ -16,6 +16,8 @@ buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 @Field String BUILDS_REPO_NAME
 @Field String COMMIT_BRANCH
 
+@Field Boolean hasUpdates = false
+
 def initialize(Map pipelineParameters = pipelineParameters,
                String triggerExpression = (
                  constants.NIGHTLY_BUILDS_CRON_EXPRESSION),
@@ -53,7 +55,7 @@ def updateVersions() {
   dir('builds') {
     git(url: "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME/builds.git",
         branch: params.BUILDS_REPO_REFERENCE)
-    sh """\
+    exitCode = sh(script: """\
 python host_os.py    \
        --verbose \
        --work-dir $params.BUILDS_WORKSPACE_DIR \
@@ -64,7 +66,15 @@ python host_os.py    \
            --updater-email $params.GITHUB_BOT_EMAIL \
            --push-repo-url $VERSIONS_PUSH_REPO_URL \
            --push-repo-branch $COMMIT_BRANCH \
-"""
+""", returnStatus: true)
+
+    Integer SUCCESS_EXIT_CODE = 0
+    Integer NO_UPDATES_EXIT_CODE = 56
+    if (exitCode == SUCCESS_EXIT_CODE) {
+      hasUpdates = true
+    } else if (exitCode != NO_UPDATES_EXIT_CODE) {
+      error('Packages update failed')
+    }
   }
 }
 

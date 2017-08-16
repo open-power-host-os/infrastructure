@@ -1,0 +1,6 @@
+---
+- name: vt-bootstrap
+  command: avocado vt-bootstrap --vt-type {{item}} --vt-no-downloads --yes-to-all
+  with_items:
+    - qemu
+    - libvirt

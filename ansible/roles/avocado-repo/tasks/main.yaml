@@ -1,0 +1,9 @@
+- name: Setup avocado repository
+  copy:
+    src: avocado.repo
+    dest: /etc/yum.repos.d/avocado.repo
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - setup

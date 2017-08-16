@@ -1,0 +1,9 @@
+---
+distro_packages:
+  - attr
+  - avocado
+  - avocado-plugins-vt
+  - libvirt
+  - policycoreutils-python
+  - qemu-kvm
+  - wget

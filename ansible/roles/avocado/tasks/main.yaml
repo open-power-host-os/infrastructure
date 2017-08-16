@@ -1,0 +1,59 @@
+- name: Setup avocado-vt configuration
+  copy:
+    src: vt.conf
+    dest: /etc/avocado/conf.d/vt.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: vt-bootstrap
+  tags:
+    - setup
+
+# This is necessary to create virbr0 interface. You can create it
+# manually, but libvirt does the job for you.
+- name: Start libvirtd service
+  service:
+    name: libvirtd
+    state: started
+    enabled: yes
+  tags:
+    - setup
+
+- name: Creating avocado directories
+  file:
+    path: "{{item}}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{avocado_conf_dir}}"
+    - "{{avocado_data_dir}}"
+    - "{{avocado_iso_dir}}"
+    - "{{avocado_log_dir}}"
+    - "{{avocado_test_dir}}"
+    - "{{test_providers_dir}}"
+  tags:
+    - setup
+
+- name: Setup avocado configuration
+  template:
+    src: avocado.conf.j2
+    dest: "{{avocado_conf}}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: vt-bootstrap
+  tags:
+    - setup
+
+- name: Cloning test providers
+  git:
+    repo: "{{item.repo}}"
+    dest: "{{item.dest}}"
+    update: yes
+  notify: vt-bootstrap
+  with_items:
+    - "{{avocado_repos}}"
+  tags:
+    - setup

@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: epel
+  - role: pkg_install

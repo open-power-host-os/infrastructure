@@ -3,6 +3,7 @@
 import groovy.transform.Field
 
 dailyStages = load 'infrastructure/pipeline/daily/stages.groovy'
+pipelineParameters = load 'infrastructure/pipeline/devel/parameters.groovy'
 pipelineParameters = load 'infrastructure/pipeline/weekly/parameters.groovy'
 
 @Field String REPOSITORIES_PATH

@@ -39,6 +39,10 @@ def execute(Boolean skipIfNoUpdates = false) {
             pipelineStages.uploadBuildArtifacts()
           }
 
+          stage('Commit to Git repository') {
+            pipelineStages.commitToGitRepo()
+          }
+
           stage('Create symlinks') {
             pipelineStages.createSymlinks()
           }

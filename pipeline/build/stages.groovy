@@ -8,6 +8,7 @@ pipelineParameters = load 'infrastructure/pipeline/build/parameters.groovy'
 @Field String triggeredRepoName
 @Field Map gitRepos
 @Field Map buildInfo
+@Field String buildTimestamp
 
 def initialize() {
   properties([parameters(utils.convertToJenkinsParameters(pipelineParameters)),
@@ -135,21 +136,15 @@ def buildPackages() {
                           params.MAIN_CENTOS_REPO_RELEASE_URL,
                           params.CENTOS_ALTERNATE_MIRROR_RELEASE_URL)
     }
-
-    // The commit hashes should be accessible from the GitSCM object
-    // https://issues.jenkins-ci.org/browse/JENKINS-34455
-    buildInfo.builds_repo_commit_id = sh(
-      script:"git rev-parse HEAD", returnStdout: true).trim()
-    echo buildInfo.builds_repo_commit_id
   }
 
   utils.checkoutRepo('versions', gitRepos)
   dir('versions') {
     // The commit hashes should be accessible from the GitSCM object
     // https://issues.jenkins-ci.org/browse/JENKINS-34455
-    buildInfo.versions_repo_commit_id = sh(
+    versions_repo_commit_id = sh(
       script:"git rev-parse HEAD", returnStdout: true).trim()
-    echo buildInfo.versions_repo_commit_id
+    echo versions_repo_commit_id
   }
 
   lock(resource: "build-packages_workspace_$env.NODE_NAME") {
@@ -172,7 +167,7 @@ python host_os.py \\
            --force-rebuild \\
            --keep-build-dir \\
            --packages-metadata-repo-url $VERSIONS_REPO_URL \\
-           --packages-metadata-repo-branch $buildInfo.versions_repo_commit_id \\
+           --packages-metadata-repo-branch $versions_repo_commit_id \\
            $packagesParameter \\
            $params.BUILD_PACKAGES_EXTRA_PARAMETERS \\
 """
@@ -184,10 +179,9 @@ python host_os.py \\
   if (buildInfo.build_packages_finished) {
     dir('builds/result/packages') {
       File latestBuildDir = new File(pwd(), 'latest')
-      String timestamp = sh(script: "readlink $latestBuildDir",
-                            returnStdout: true).trim()
-      echo "Build timestamp: $timestamp"
-      buildInfo.timestamp = timestamp
+      buildTimestamp = sh(script: "readlink $latestBuildDir",
+        returnStdout: true).trim()
+      echo "Build timestamp: $buildTimestamp"
     }
 
     sh 'ln -s builds/result/packages/latest repository'
@@ -220,7 +214,7 @@ def buildIso() {
 
   // Convert timestamp from format YYYY-MM-DDThh:mm:ss.ssssss
   // to YYYYMMDDThhmmss
-  String ISO_VERSION = buildInfo.timestamp
+  String ISO_VERSION = buildTimestamp
   ISO_VERSION = ISO_VERSION.replaceAll(/-/, '')
   ISO_VERSION = ISO_VERSION.replaceAll(/:/, '')
   ISO_VERSION = ISO_VERSION.replaceFirst(/[.].*/, '')
@@ -294,7 +288,7 @@ def uploadArtifacts() {
     unstash 'repository_dir'
 
     dir(constants.BUILD_INFORMATION_DIR) {
-      sh 'mv ../repository/packages.json ./'
+      sh 'mv ../repository/*.json ./'
     }
   }
   if (buildInfo.build_iso_finished) {
@@ -306,14 +300,14 @@ def uploadArtifacts() {
   String BUILD_DIR_HTTP_URL
   String BUILD_DIR_RSYNC_URL
 
-  if (buildInfo.timestamp) {
+  if (buildTimestamp) {
     String HTTP_URL_PREFIX = "http://$params.UPLOAD_SERVER_HOST_NAME"
     String RSYNC_URL_PREFIX =
       "$params.UPLOAD_SERVER_USER_NAME@$params.UPLOAD_SERVER_HOST_NAME:"
     BUILDS_DIR_NAME = (
       params.UPLOAD_SERVER_BUILDS_DIR_PATH.tokenize('/').last())
     String BUILD_DIR_PATH =
-      "$params.UPLOAD_SERVER_BUILDS_DIR_PATH/$buildInfo.timestamp"
+      "$params.UPLOAD_SERVER_BUILDS_DIR_PATH/$buildTimestamp"
     BUILDS_DIR_RSYNC_URL =
       "${RSYNC_URL_PREFIX}$params.UPLOAD_SERVER_BUILDS_DIR_PATH"
     BUILD_DIR_HTTP_URL = "${HTTP_URL_PREFIX}$BUILD_DIR_PATH"
@@ -325,10 +319,10 @@ def uploadArtifacts() {
   String jsonString = JsonOutput.prettyPrint(JsonOutput.toJson(buildInfo))
   echo "Writing build status file:\n" + jsonString
   dir(constants.BUILD_INFORMATION_DIR) {
-    writeFile file: 'build.json', text: jsonString
-    utils.archiveAndPrint('build.json')
+    writeFile file: 'pipeline.json', text: jsonString
+    utils.archiveAndPrint('pipeline.json')
   }
-  if (!buildInfo.timestamp) {
+  if (!buildTimestamp) {
     error('Aborting upload, no timestamp to create the remote directory name')
   }
 
@@ -345,7 +339,7 @@ gpgcheck=0
   utils.archiveAndPrint('hostos.repo')
 
   echo 'Creating remote build directory hierarchy'
-  sh "mkdir -p $BUILDS_DIR_NAME/$buildInfo.timestamp"
+  sh "mkdir -p $BUILDS_DIR_NAME/$buildTimestamp"
   utils.rsyncUpload("--recursive $BUILDS_DIR_NAME/", BUILDS_DIR_RSYNC_URL)
 
   echo 'Uploading artifacts'

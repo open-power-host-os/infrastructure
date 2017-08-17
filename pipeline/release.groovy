@@ -5,7 +5,8 @@ develPipeline = load 'infrastructure/pipeline/devel.groovy'
 pipelineParameters = load 'infrastructure/pipeline/release/parameters.groovy'
 
 def execute() {
-  develPipeline.execute()
+  Boolean skipIfNoUpdates = true
+  develPipeline.execute(skipIfNoUpdates)
 }
 
 return this

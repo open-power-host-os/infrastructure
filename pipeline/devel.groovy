@@ -7,41 +7,46 @@ pipelineStages = load 'infrastructure/pipeline/daily/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/devel/parameters.groovy'
 
 
-def execute() {
+def execute(Boolean skipIfNoUpdates = false) {
   timestamps {
     try {
       stage('Initialize') {
-	pipelineStages.initialize()
+        pipelineStages.initialize()
       }
 
       node('builds_slave_label') {
-	lock(resource: "update-versions_workspace_$env.NODE_NAME") {
-	  stage('Update packages versions') {
-	    pipelineStages.updateVersions()
-	  }
+        lock(resource: "update-versions_workspace_$env.NODE_NAME") {
+          stage('Update packages versions') {
+            pipelineStages.updateVersions()
+          }
 
-	  stage('Build packages') {
-	    pipelineStages.buildPackages()
-	  }
+          if (skipIfNoUpdates && !pipelineStages.hasUpdates) {
+            echo 'No updates, skipping build'
+            return
+          }
 
-	  if (currentBuild.result != 'FAILURE') {
-	    stage('Build ISO') {
-	      pipelineStages.buildIso()
-	    }
-	  }
+          stage('Build packages') {
+            pipelineStages.buildPackages()
+          }
 
-	  stage('Upload build artifacts') {
-	    pipelineStages.uploadBuildArtifacts()
-	  }
+          if (currentBuild.result != 'FAILURE') {
+            stage('Build ISO') {
+              pipelineStages.buildIso()
+            }
+          }
 
-	  stage('Create symlinks') {
-	    pipelineStages.createSymlinks()
-	  }
-	}
+          stage('Upload build artifacts') {
+            pipelineStages.uploadBuildArtifacts()
+          }
+
+          stage('Create symlinks') {
+            pipelineStages.createSymlinks()
+          }
+        }
       }
     } catch (Exception exception) {
       if (pipelineStages.shouldNotifyOnFailure()) {
-	pipelineStages.notifyFailure()
+        pipelineStages.notifyFailure()
       }
       throw exception
     }

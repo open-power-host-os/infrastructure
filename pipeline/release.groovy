@@ -6,7 +6,8 @@ pipelineParameters = load 'infrastructure/pipeline/release/parameters.groovy'
 
 def execute() {
   Boolean skipIfNoUpdates = true
-  develPipeline.execute(skipIfNoUpdates)
+  String releaseCategory = 'release'
+  develPipeline.execute(skipIfNoUpdates, releaseCategory)
 }
 
 return this

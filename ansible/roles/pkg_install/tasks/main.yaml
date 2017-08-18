@@ -3,7 +3,7 @@
   package: name={{item}} state=present
   with_items:
     "{{ distro_packages }}"
-  when: distro_packages
+  when: distro_packages is defined
   tags: setup
 
 - name: Upgrade pip
@@ -11,12 +11,12 @@
     name: pip
     state: present
     extra_args: --upgrade
-  when: python_packages
+  when: python_packages is defined
   tags: setup
 
 - name: Install Python packages
   pip: name={{item}} state=present
   with_items:
     "{{ python_packages }}"
-  when: python_packages
+  when: python_packages is defined
   tags: setup

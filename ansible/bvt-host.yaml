@@ -1,0 +1,9 @@
+---
+- name: Setup host for Build Verification Tests
+  hosts: bvt-host
+  remote_user: root
+  roles:
+    - avocado-repo
+    - avocado
+  vars_files:
+    - vars-bvt.yaml

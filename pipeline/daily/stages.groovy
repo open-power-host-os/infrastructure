@@ -13,6 +13,7 @@ buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 @Field String VERSIONS_REPO_NAME
 @Field String VERSIONS_MAIN_REPO_URL
 @Field String VERSIONS_PUSH_REPO_URL
+@Field String UPDATED_VERSIONS_REPO_PATH
 @Field String BUILDS_REPO_NAME
 @Field String COMMIT_BRANCH
 
@@ -36,6 +37,8 @@ def initialize(Map pipelineParameters = pipelineParameters,
   VERSIONS_REPO_NAME = 'versions'
   VERSIONS_MAIN_REPO_URL = "$MAIN_REPO_URL_PREFIX/${VERSIONS_REPO_NAME}.git"
   VERSIONS_PUSH_REPO_URL = "$PUSH_REPO_URL_PREFIX/${VERSIONS_REPO_NAME}.git"
+  UPDATED_VERSIONS_REPO_PATH =
+    "$REPOSITORIES_PATH/${VERSIONS_REPO_NAME}_update-versions"
 
   BUILDS_REPO_NAME = 'builds'
 
@@ -90,6 +93,23 @@ def uploadBuildArtifacts() {
   buildStages.uploadArtifacts()
   if (currentBuild.result == 'FAILURE') {
     error('Build failed, aborting')
+  }
+}
+
+def commitToGitRepo() {
+  String GITHUB_BOT_HTTP_URL =
+    "https://github.com/$params.GITHUB_BOT_USER_NAME"
+  String VERSIONS_BRANCH_HTTP_URL = (
+    "$GITHUB_BOT_HTTP_URL/$VERSIONS_REPO_NAME/commit/" +
+    "$COMMIT_BRANCH")
+
+  echo("Committing changes to branch $params.VERSIONS_REPO_REFERENCE in " +
+        "repository $VERSIONS_REPO_NAME:" +
+        "$VERSIONS_BRANCH_HTTP_URL")
+
+  dir(UPDATED_VERSIONS_REPO_PATH) {
+    sh("git push $VERSIONS_MAIN_REPO_URL " +
+       "HEAD:refs/heads/$params.VERSIONS_REPO_REFERENCE")
   }
 }
 

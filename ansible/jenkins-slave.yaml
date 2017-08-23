@@ -33,3 +33,7 @@
       prompt: "Enter GitHub user's private SSH key file path"
       default: "~/.ssh/open-power-host-os-builds-bot_id_rsa"
       private: no
+    - name: "known_hosts_file_path"
+      prompt: "Enter path to file containing known keys for GitHub and upload server hosts"
+      default: "~/.ssh/known_hosts"
+      private: no

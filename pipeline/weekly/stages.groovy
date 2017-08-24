@@ -55,8 +55,7 @@ python host_os.py \
        --verbose \
        --work-dir $params.BUILDS_WORKSPACE_DIR \
        build-release-notes \
-           --packages-metadata-repo-url $dailyStages.VERSIONS_PUSH_REPO_URL \
-           --packages-metadata-repo-branch $dailyStages.COMMIT_BRANCH \
+           --info-files-dir '../../repository' \
            --release-notes-repo-url $GITHUB_IO_MAIN_REPO_URL \
            --updater-name '$params.GITHUB_BOT_NAME' \
            --updater-email $params.GITHUB_BOT_EMAIL \

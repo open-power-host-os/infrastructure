@@ -94,16 +94,16 @@ After the SSH proxy is configured, simply use the following to connect to the sy
 
 To automate SSH authentication between 2 hosts, it is necessary to:
  - create an SSH key pair if you still do not have one
- - add the target host to ~/.ssh/known_hosts in the source host. It is also
-   possible to do it by executing a simple SSH command from the source host to
-   the target host. Alternatively, you could disable "StrictHostKeyChecking"
-   for all SSH connections in the source host, but that may be a security hazard.
  - add the SSH private key to ~/.ssh/ in the source host
  - add the SSH public key to ~/.ssh/authorized_keys file in the target host
 
 To be able to upload the results of builds to a server and push commits to
 GitHub automatically, you must automate SSH authentication from Jenkins slaves
-to those two servers. The private SSH key is already installed in Jenkins nodes
+to those two servers. To have this being done automatically at the setup, make sure you have 
+both upload server and GitHub host keys stored in a local `~/.ssh/known_hosts` file. For 
+production servers, it is recommended that you provide a separate file with only 
+those two keys.
+The private SSH key is already installed in Jenkins nodes
 by Jenkins Ansible playbooks, so you do not need to do it manually.
 
 ### Automatically setup Jenkins master and slave(s) using Ansible playbooks

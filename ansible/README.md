@@ -43,5 +43,23 @@ to enter the SSH password:
 The `--tags` option tells Ansible to only execute tasks with the specified tag.
 In the previous examples, only tasks with the `setup` tag would be executed.
 
-Provide the data requested by the playbook (eg Jenkins admin user name/password
-and SSH keys locations) and wait automatic setup finish.
+### List of manual input data
+
+Some Ansible playbooks will prompt you to input data to setup Jenkins master and slave nodes.
+
+- `jenkins-master.yaml` playbook
+
+	- Username and password to access Jenkins web UI with administrative privileges. Note that
+a passwordless `jenkins` user will also be created in master and slave nodes.
+	- Paths to SSH private and public keys used to communicate between master and slave nodes.
+
+- `jenkins-slave.yaml` playbook
+
+	- Paths to SSH private and public keys used to communicate between master and slave nodes.
+	- Path to the SSH private key used to upload 
+artifacts to the configured remote server.
+	- Path to the SSH private key used to push commits to GitHub.
+	- Path to the SSH known keys for remote hosts, usually `~/.ssh/known_hosts`. 
+The local file is just copied to remote target.
+
+Provide the data requested by the playbooks and wait automatic setup to finish.

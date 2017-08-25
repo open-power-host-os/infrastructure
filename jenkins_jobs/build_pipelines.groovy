@@ -16,6 +16,9 @@ def createPipeline(String repositoryName) {
     triggers {
       periodic(1)
     }
+    orphanedItemStrategy {
+      discardOldItems()
+    }
   }
 }
 

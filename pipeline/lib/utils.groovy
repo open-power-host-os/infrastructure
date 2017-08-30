@@ -39,7 +39,7 @@ def getCredentialsStore() {
 }
 
 def getGitRepos(String triggeredRepoName) {
-  String githubOrgPath = "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME"
+  String githubOrgPath = "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME"
   gitRepos = [:]
   for (String repoName : ['builds', 'versions']) {
     if (repoName == triggeredRepoName) {

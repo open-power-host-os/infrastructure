@@ -1,5 +1,6 @@
 ---
 pipeline_constants:
+  GITHUB_DOMAIN: github.com
   GITHUB_ORGANIZATION_NAME:
   GITHUB_BOT_NAME:
   GITHUB_BOT_USER_NAME:

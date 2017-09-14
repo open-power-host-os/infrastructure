@@ -16,14 +16,14 @@ repository and run:
 
 ## Running Ansible playbooks
 
-First, in your source host, update all the hosts in the hosts.ini file, paying attention to the groups they belong to. 
-When executing a playbook, only the hosts in the corresponding group will be updated (eg if you 
+First, in your source host, update all the hosts in the hosts.ini file, paying attention to the groups they belong to.
+When executing a playbook, only the hosts in the corresponding group will be updated (eg if you
 execute the jenkins-master playbook, a Jenkins master instance will be installed to all
 hosts in [jenkins-master] section in hosts.ini).
 
 Then, update the variables values in vars.yaml. If you are creating a production
 Jenkins server, provide the production GitHub organization in github_organization_name
-and ghprb_admin_organization variables and leave ghprb_admin_user empty. If you 
+and ghprb_admin_organization variables and leave ghprb_admin_user empty. If you
 are creating a test Jenkins server, provide your user name in github_organization_name
 and ghprb_admin_user variables and leave ghprb_admin_organization empty.
 

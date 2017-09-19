@@ -29,3 +29,10 @@
     owner={{builder_user_name}} group={{builder_user_name}} mode=0600
   tags:
     - setup
+
+- name: Add known keys for remote hosts
+  copy:
+    src={{known_hosts_file_path}} dest="{{jenkins_home_dir}}/.ssh/known_hosts"
+    owner={{builder_user_name}} group={{builder_user_name}}
+  tags:
+    - setup

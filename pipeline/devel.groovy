@@ -7,7 +7,7 @@ pipelineStages = load 'infrastructure/pipeline/daily/stages.groovy'
 pipelineParameters = load 'infrastructure/pipeline/devel/parameters.groovy'
 
 
-def execute(Boolean skipIfNoUpdates = false) {
+def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
   timestamps {
     try {
       stage('Initialize') {
@@ -37,6 +37,10 @@ def execute(Boolean skipIfNoUpdates = false) {
 
           stage('Upload build artifacts') {
             pipelineStages.uploadBuildArtifacts()
+          }
+
+          stage('Build release notes') {
+            pipelineStages.createReleaseNotes(releaseCategory)
           }
 
           stage('Commit to Git repository') {

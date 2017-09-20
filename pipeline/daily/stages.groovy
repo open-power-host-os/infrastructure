@@ -14,6 +14,10 @@ buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 @Field String VERSIONS_MAIN_REPO_URL
 @Field String VERSIONS_PUSH_REPO_URL
 @Field String UPDATED_VERSIONS_REPO_PATH
+@Field String GITHUB_IO_REPO_NAME
+@Field String GITHUB_IO_MAIN_REPO_URL
+@Field String GITHUB_IO_PUSH_REPO_URL
+@Field String GITHUB_IO_REPO_PATH
 @Field String BUILDS_REPO_NAME
 @Field String COMMIT_BRANCH
 
@@ -39,6 +43,13 @@ def initialize(Map pipelineParameters = pipelineParameters,
   VERSIONS_PUSH_REPO_URL = "$PUSH_REPO_URL_PREFIX/${VERSIONS_REPO_NAME}.git"
   UPDATED_VERSIONS_REPO_PATH =
     "$REPOSITORIES_PATH/${VERSIONS_REPO_NAME}_update-versions"
+
+  GITHUB_IO_REPO_NAME = "${params.GITHUB_ORGANIZATION_NAME}.github.io"
+  GITHUB_IO_MAIN_REPO_URL =
+    "$MAIN_REPO_URL_PREFIX/${GITHUB_IO_REPO_NAME}.git"
+  GITHUB_IO_PUSH_REPO_URL =
+    "$PUSH_REPO_URL_PREFIX/${GITHUB_IO_REPO_NAME}.git"
+  GITHUB_IO_REPO_PATH = "$REPOSITORIES_PATH/$GITHUB_IO_REPO_NAME"
 
   BUILDS_REPO_NAME = 'builds'
 
@@ -96,19 +107,50 @@ def uploadBuildArtifacts() {
   }
 }
 
+def createReleaseNotes(String releaseCategory) {
+  deleteDir()
+  unstash 'repository_dir'
+  dir('builds') {
+    git(url: "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME/builds.git",
+        branch: params.BUILDS_REPO_REFERENCE)
+    sh """\
+python host_os.py \
+       --verbose \
+       --work-dir $params.BUILDS_WORKSPACE_DIR \
+       build-release-notes \
+           --info-files-dir '../repository' \
+           --release-notes-repo-url $GITHUB_IO_MAIN_REPO_URL \
+           --updater-name '$params.GITHUB_BOT_NAME' \
+           --updater-email $params.GITHUB_BOT_EMAIL \
+           --push-repo-url $GITHUB_IO_PUSH_REPO_URL \
+           --push-repo-branch $COMMIT_BRANCH \
+           --release-category $releaseCategory
+"""
+  }
+}
+
 def commitToGitRepo() {
   String GITHUB_BOT_HTTP_URL =
     "https://github.com/$params.GITHUB_BOT_USER_NAME"
   String VERSIONS_BRANCH_HTTP_URL = (
     "$GITHUB_BOT_HTTP_URL/$VERSIONS_REPO_NAME/commit/" +
     "$COMMIT_BRANCH")
+  String GITHUB_IO_BRANCH_HTTP_URL = (
+    "$GITHUB_BOT_HTTP_URL/$GITHUB_IO_REPO_NAME/commit/" +
+    "$COMMIT_BRANCH")
 
   echo("Committing changes to branch $params.VERSIONS_REPO_REFERENCE in " +
-        "repository $VERSIONS_REPO_NAME:" +
-        "$VERSIONS_BRANCH_HTTP_URL")
+       "repositories $VERSIONS_REPO_NAME and " +
+       "$GITHUB_IO_REPO_NAME:\n" +
+       "$VERSIONS_BRANCH_HTTP_URL\n" +
+       "$GITHUB_IO_BRANCH_HTTP_URL")
 
   dir(UPDATED_VERSIONS_REPO_PATH) {
     sh("git push $VERSIONS_MAIN_REPO_URL " +
+       "HEAD:refs/heads/$params.VERSIONS_REPO_REFERENCE")
+  }
+  dir(GITHUB_IO_REPO_PATH) {
+    sh("git push $GITHUB_IO_MAIN_REPO_URL " +
        "HEAD:refs/heads/$params.VERSIONS_REPO_REFERENCE")
   }
 }

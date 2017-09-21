@@ -120,6 +120,7 @@ python host_os.py \
        build-release-notes \
            --info-files-dir '../repository' \
            --release-notes-repo-url $GITHUB_IO_MAIN_REPO_URL \
+           --release-notes-repo-url $params.GITHUB_IO_REPO_REFERENCE \
            --updater-name '$params.GITHUB_BOT_NAME' \
            --updater-email $params.GITHUB_BOT_EMAIL \
            --push-repo-url $GITHUB_IO_PUSH_REPO_URL \
@@ -139,9 +140,10 @@ def commitToGitRepo() {
     "$GITHUB_BOT_HTTP_URL/$GITHUB_IO_REPO_NAME/commit/" +
     "$COMMIT_BRANCH")
 
-  echo("Committing changes to branch $params.VERSIONS_REPO_REFERENCE in " +
-       "repositories $VERSIONS_REPO_NAME and " +
-       "$GITHUB_IO_REPO_NAME:\n" +
+  echo("Committing changes to branch $params.VERSIONS_REPO_REFERENCE " +
+       "in repository $VERSIONS_REPO_NAME " +
+       "and branch $params.GITHUB_IO_REPO_REFERENCE" +
+       "in repository $GITHUB_IO_REPO_NAME:\n" +
        "$VERSIONS_BRANCH_HTTP_URL\n" +
        "$GITHUB_IO_BRANCH_HTTP_URL")
 
@@ -151,7 +153,7 @@ def commitToGitRepo() {
   }
   dir(GITHUB_IO_REPO_PATH) {
     sh("git push $GITHUB_IO_MAIN_REPO_URL " +
-       "HEAD:refs/heads/$params.VERSIONS_REPO_REFERENCE")
+       "HEAD:refs/heads/$params.GITHUB_IO_REPO_REFERENCE")
   }
 }
 

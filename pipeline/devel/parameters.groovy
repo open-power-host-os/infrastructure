@@ -15,6 +15,10 @@ pipelineParameters += [
     defaultValue: constants.UPLOAD_SERVER_DEVEL_DIR_PATH,
     description:
       'Directory in the target server to upload periodic builds results.'],
+  GITHUB_IO_REPO_REFERENCE: [
+    defaultValue: 'master',
+    description:
+      'Git reference to checkout from the github.io repository.'],
   SLACK_NOTIFICATION_RECIPIENT: [
     defaultValue: constants.SLACK_NOTIFICATION_RECIPIENT,
     description:

@@ -16,7 +16,7 @@ They will prepare a Jenkins instance capable of:
 - manually start a build
 - automatically start a build when there are pull requests to the "builds" and
 "versions" git repositories in GitHub
-- create weekly and nightly builds, which must have some extra artifacts
+- create nightly builds, which must have some extra artifacts
 
 The Jenkins instance is composed of at least two nodes: a master one which
 centralizes administrative tasks, builds queuing, build execution status and

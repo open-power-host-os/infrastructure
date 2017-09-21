@@ -5,8 +5,6 @@ listView('Pipelines') {
         name('builds')
         name('versions')
         name('daily')
-        name('weekly')
-
     }
     columns {
         status()

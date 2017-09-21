@@ -20,6 +20,7 @@ buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 @Field String GITHUB_IO_REPO_PATH
 @Field String BUILDS_REPO_NAME
 @Field String COMMIT_BRANCH
+@Field String COMMIT_MESSAGE
 
 @Field Boolean hasUpdates = false
 
@@ -55,8 +56,10 @@ def initialize(Map pipelineParameters = pipelineParameters,
 
   PERIODIC_BUILDS_DIR_NAME = (
     params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH.tokenize('/').last())
-  RELEASE_DATE = new Date().format('yyyy-MM-dd')
-  COMMIT_BRANCH = "$PERIODIC_BUILDS_DIR_NAME-$RELEASE_DATE"
+  RELEASE_TIMESTAMP = new Date().format("yyyy-MM-dd'T'HH-mm-ss")
+  RELEASE_DATE = RELEASE_TIMESTAMP.take(10)
+  COMMIT_BRANCH = "$PERIODIC_BUILDS_DIR_NAME-$RELEASE_TIMESTAMP"
+  COMMIT_MESSAGE = "Build from $PERIODIC_BUILDS_DIR_NAME pipeline on $RELEASE_DATE"
 
   buildStages.gitRepos = utils.getGitRepos(null)
   buildStages.buildInfo = [:]
@@ -80,6 +83,7 @@ python host_os.py    \
            --updater-email $params.GITHUB_BOT_EMAIL \
            --push-repo-url $VERSIONS_PUSH_REPO_URL \
            --push-repo-branch $COMMIT_BRANCH \
+           --commit-message '$COMMIT_MESSAGE' \
 """, returnStatus: true)
 
     Integer SUCCESS_EXIT_CODE = 0
@@ -120,10 +124,12 @@ python host_os.py \
        build-release-notes \
            --info-files-dir '../repository' \
            --release-notes-repo-url $GITHUB_IO_MAIN_REPO_URL \
+           --release-notes-repo-branch $params.GITHUB_IO_REPO_REFERENCE \
            --updater-name '$params.GITHUB_BOT_NAME' \
            --updater-email $params.GITHUB_BOT_EMAIL \
            --push-repo-url $GITHUB_IO_PUSH_REPO_URL \
            --push-repo-branch $COMMIT_BRANCH \
+           --commit-message '$COMMIT_MESSAGE' \
            --release-category $releaseCategory
 """
   }
@@ -139,9 +145,10 @@ def commitToGitRepo() {
     "$GITHUB_BOT_HTTP_URL/$GITHUB_IO_REPO_NAME/commit/" +
     "$COMMIT_BRANCH")
 
-  echo("Committing changes to branch $params.VERSIONS_REPO_REFERENCE in " +
-       "repositories $VERSIONS_REPO_NAME and " +
-       "$GITHUB_IO_REPO_NAME:\n" +
+  echo("Committing changes to branch $params.VERSIONS_REPO_REFERENCE " +
+       "in repository $VERSIONS_REPO_NAME " +
+       "and branch $params.GITHUB_IO_REPO_REFERENCE" +
+       "in repository $GITHUB_IO_REPO_NAME:\n" +
        "$VERSIONS_BRANCH_HTTP_URL\n" +
        "$GITHUB_IO_BRANCH_HTTP_URL")
 
@@ -151,7 +158,7 @@ def commitToGitRepo() {
   }
   dir(GITHUB_IO_REPO_PATH) {
     sh("git push $GITHUB_IO_MAIN_REPO_URL " +
-       "HEAD:refs/heads/$params.VERSIONS_REPO_REFERENCE")
+       "HEAD:refs/heads/$params.GITHUB_IO_REPO_REFERENCE")
   }
 }
 

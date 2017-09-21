@@ -55,8 +55,9 @@ def initialize(Map pipelineParameters = pipelineParameters,
 
   PERIODIC_BUILDS_DIR_NAME = (
     params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH.tokenize('/').last())
-  RELEASE_DATE = new Date().format('yyyy-MM-dd')
-  COMMIT_BRANCH = "$PERIODIC_BUILDS_DIR_NAME-$RELEASE_DATE"
+  RELEASE_TIMESTAMP = new Date().format("yyyy-MM-dd'T'HH:mm:ss")
+  RELEASE_DATE = RELEASE_TIMESTAMP.take(10)
+  COMMIT_BRANCH = "$PERIODIC_BUILDS_DIR_NAME-$RELEASE_TIMESTAMP"
 
   buildStages.gitRepos = utils.getGitRepos(null)
   buildStages.buildInfo = [:]

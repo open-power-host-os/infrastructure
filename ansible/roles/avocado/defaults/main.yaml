@@ -6,4 +6,5 @@ distro_packages:
   - libvirt
   - policycoreutils-python
   - qemu-kvm
+  - virt-install
   - wget

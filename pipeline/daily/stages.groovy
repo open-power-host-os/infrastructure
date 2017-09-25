@@ -137,7 +137,7 @@ python host_os.py \
 
 def commitToGitRepo() {
   String GITHUB_BOT_HTTP_URL =
-    "https://github.com/$params.GITHUB_BOT_USER_NAME"
+    "ssh://git@github.com/$params.GITHUB_BOT_USER_NAME"
   String VERSIONS_BRANCH_HTTP_URL = (
     "$GITHUB_BOT_HTTP_URL/$VERSIONS_REPO_NAME/commit/" +
     "$COMMIT_BRANCH")

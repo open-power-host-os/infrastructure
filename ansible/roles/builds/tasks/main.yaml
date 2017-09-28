@@ -23,10 +23,13 @@
     - setup
 
 - name: Configure SSH to push to GitHub repository
-  template:
-    src=github_ssh_config.j2
-    dest="{{builder_home_dir}}/.ssh/config"
-    owner={{builder_user_name}} group={{builder_user_name}} mode=0600
+  blockinfile:
+    path: "{{builder_home_dir}}/.ssh/config"
+    block: "{{ lookup('template', 'github_ssh_config.j2') }}"
+    create: yes
+    owner: "{{builder_user_name}}"
+    group: "{{builder_user_name}}"
+    mode: 0600
   tags:
     - setup
 

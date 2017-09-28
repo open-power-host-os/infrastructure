@@ -4,7 +4,7 @@ LEGACY_MOCK_CONFIG_FILE="${LEGACY_MOCK_DIR}/centOS-7.2-ppc64le.cfg"
 BUILD_CONFIG_FILE="config/host_os.yaml"
 CENTOS_7_YUM_REPO_URL="http://mirror.centos.org/altarch/7"
 CENTOS_7_2_YUM_REPO_URL="http://vault.centos.org/altarch/7.2.1511"
-VERSIONS_REPO_URL="https://github.com/${GITHUB_ORGANIZATION_NAME}/versions.git"
+VERSIONS_REPO_URL="ssh://git@github/${GITHUB_ORGANIZATION_NAME}/versions.git"
 TAG_1_0="hostos-1.0"
 TAG_1_5="hostos-1.5"
 

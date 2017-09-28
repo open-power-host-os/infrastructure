@@ -34,8 +34,8 @@ def initialize(Map pipelineParameters = pipelineParameters,
               [$class: 'jenkins.model.BuildDiscarderProperty', strategy:
                [$class: 'LogRotator', numToKeepStr: numToKeepStr]]])
 
-  MAIN_REPO_URL_PREFIX = "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME"
-  PUSH_REPO_URL_PREFIX = "ssh://git@github.com/$params.GITHUB_BOT_USER_NAME"
+  MAIN_REPO_URL_PREFIX = "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME"
+  PUSH_REPO_URL_PREFIX = "ssh://git@github/$params.GITHUB_BOT_USER_NAME"
 
   String REPOSITORIES_PATH = "$params.BUILDS_WORKSPACE_DIR/repositories"
 
@@ -70,7 +70,7 @@ def initialize(Map pipelineParameters = pipelineParameters,
 def updateVersions() {
   deleteDir()
   dir('builds') {
-    git(url: "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME/builds.git",
+    git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",
         branch: params.BUILDS_REPO_REFERENCE)
     exitCode = sh(script: """\
 python host_os.py    \
@@ -115,7 +115,7 @@ def createReleaseNotes(String releaseCategory) {
   deleteDir()
   unstash 'repository_dir'
   dir('builds') {
-    git(url: "ssh://git@github.com/$params.GITHUB_ORGANIZATION_NAME/builds.git",
+    git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",
         branch: params.BUILDS_REPO_REFERENCE)
     sh """\
 python host_os.py \
@@ -137,7 +137,7 @@ python host_os.py \
 
 def commitToGitRepo() {
   String GITHUB_BOT_HTTP_URL =
-    "https://github.com/$params.GITHUB_BOT_USER_NAME"
+    "ssh://git@github/$params.GITHUB_BOT_USER_NAME"
   String VERSIONS_BRANCH_HTTP_URL = (
     "$GITHUB_BOT_HTTP_URL/$VERSIONS_REPO_NAME/commit/" +
     "$COMMIT_BRANCH")

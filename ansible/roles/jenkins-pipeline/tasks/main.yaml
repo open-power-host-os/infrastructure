@@ -15,6 +15,17 @@
   tags:
     - setup
 
+- name: Add custom GitHub domain configuration
+  template:
+    src: org.jenkinsci.plugins.github_branch_source.GitHubConfiguration.xml.j2
+    dest: "{{jenkins_home_dir}}/org.jenkinsci.plugins.github_branch_source.GitHubConfiguration.xml"
+    owner: jenkins
+    group: jenkins
+    mode: "0644"
+  notify: restart jenkins
+  tags:
+    - setup
+
 - name: Approve Groovy method signatures used by pipelines
   copy:
     src: scriptApproval.xml

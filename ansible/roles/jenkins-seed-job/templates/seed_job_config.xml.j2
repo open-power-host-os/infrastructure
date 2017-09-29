@@ -26,6 +26,11 @@
           <defaultValue>jenkins_jobs/*.groovy</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>GITHUB_DOMAIN</name>
+          <description>GitHub domain.</description>
+          <defaultValue>{{pipeline_constants.GITHUB_DOMAIN}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>GITHUB_ORGANIZATION_NAME</name>
           <description>GitHub organization from where the Host OS repositories will be checked out.</description>
           <defaultValue>{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}</defaultValue>

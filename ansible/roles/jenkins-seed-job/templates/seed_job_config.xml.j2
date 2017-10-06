@@ -13,7 +13,7 @@
         <hudson.model.StringParameterDefinition>
           <name>REPOSITORY_URL</name>
           <description>Repository to download the DSL job descriptors.</description>
-          <defaultValue>ssh://git@github/{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}/infrastructure.git</defaultValue>
+          <defaultValue>https://{{pipeline_constants.GITHUB_DOMAIN}}/{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}/infrastructure.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>REPOSITORY_COMMIT</name>
@@ -58,6 +58,7 @@
     <branches>
       <hudson.plugins.git.BranchSpec>
         <name>$REPOSITORY_COMMIT</name>
+        <credentialsId>github-user-pass-credentials</credentialsId>
       </hudson.plugins.git.BranchSpec>
     </branches>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>

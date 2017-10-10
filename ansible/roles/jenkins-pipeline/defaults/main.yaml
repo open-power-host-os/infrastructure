@@ -1,3 +1,15 @@
+credentials_job_name: create_credentials
+credentials_job_script_path: "{{credentials_job_name}}.groovy"
+credentials_job_script: "{{ lookup('file', credentials_job_script_path) }}"
+# Calculate the script hash as done by Jenkins in ScriptApproval.hash function
+# https://github.com/jenkinsci/script-security-plugin/blob/8f1c25b678073ec0caac62c8200f930b85743c66/src/main/java/org/jenkinsci/plugins/scriptsecurity/scripts/ScriptApproval.java#L357
+credentials_job_script_hash: "{{ ('groovy:' + credentials_job_script) | hash('sha1') }}"
+credentials_job_script_xml: "{{ credentials_job_script | escape_to_xml }}"
+credentials_job_template: "{{credentials_job_name}}_config.xml.j2"
+credentials_job_target_dir: "{{jenkins_home_dir}}/jobs/{{credentials_job_name}}"
+
+approved_script_hashes:
+  - "{{credentials_job_script_hash}}"
 approved_signatures:
   - method hudson.plugins.git.BranchSpec getName
   - method hudson.plugins.git.GitSCM getBranches

@@ -1,3 +1,4 @@
 ---
 seed_job_name: seed_job
 seed_job_template: "{{seed_job_name}}_config.xml.j2"
+seed_job_target_dir: "{{jenkins_home_dir}}/jobs/{{seed_job_name}}"

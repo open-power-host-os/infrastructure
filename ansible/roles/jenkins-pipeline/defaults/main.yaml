@@ -1,0 +1,22 @@
+approved_signatures:
+  - method hudson.plugins.git.BranchSpec getName
+  - method hudson.plugins.git.GitSCM getBranches
+  - method hudson.plugins.git.GitSCM getUserRemoteConfigs
+  - method hudson.plugins.git.UserRemoteConfig getUrl
+  - method java.io.File toPath
+  - method java.nio.file.Path relativize java.nio.file.Path
+  - new java.io.File java.lang.String
+  - new java.io.File java.lang.String java.lang.String
+  - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods first java.util.List
+  - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods readLines java.lang.String
+  - new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl
+  - staticMethod com.cloudbees.plugins.credentials.SystemCredentialsProvider getInstance
+  - method com.cloudbees.plugins.credentials.SystemCredentialsProvider getStore
+  - staticMethod com.cloudbees.plugins.credentials.domains.Domain global
+  - method com.cloudbees.plugins.credentials.CredentialsStore addCredentials com.cloudbees.plugins.credentials.domains.Domain com.cloudbees.plugins.credentials.Credentials
+  - staticField com.cloudbees.plugins.credentials.CredentialsScope GLOBAL
+  - new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl com.cloudbees.plugins.credentials.CredentialsScope java.lang.String java.lang.String hudson.util.Secret
+  - method com.cloudbees.plugins.credentials.CredentialsStore getCredentials com.cloudbees.plugins.credentials.domains.Domain
+  - staticMethod com.cloudbees.plugins.credentials.CredentialsMatchers withId java.lang.String
+  - staticMethod com.cloudbees.plugins.credentials.CredentialsMatchers filter java.util.List com.cloudbees.plugins.credentials.CredentialsMatcher
+  - method com.cloudbees.plugins.credentials.CredentialsStore removeCredentials com.cloudbees.plugins.credentials.domains.Domain com.cloudbees.plugins.credentials.Credentials

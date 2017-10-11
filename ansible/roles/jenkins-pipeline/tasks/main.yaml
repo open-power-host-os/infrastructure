@@ -27,8 +27,8 @@
     - setup
 
 - name: Approve Groovy method signatures used by pipelines
-  copy:
-    src: scriptApproval.xml
+  template:
+    src: scriptApproval.xml.j2
     dest: "{{jenkins_home_dir}}/scriptApproval.xml"
     owner: jenkins
     mode: "0644"

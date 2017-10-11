@@ -7,29 +7,6 @@
   tags:
     - setup
 
-# Based on https://wjoel.com/posts/ansible-jenkins-pipeline-part-2.html
-
-- name: Get Jenkins crumb [seed job]
-  uri:
-    user: "{{jenkins_admin_user}}"
-    password: "{{jenkins_admin_password}}"
-    force_basic_auth: yes
-    url: "{{jenkins_local_url}}/crumbIssuer/api/json"
-    return_content: yes
-  register: jenkins_crumb
-  until:
-    jenkins_crumb.content.find('Please wait while Jenkins is getting ready') == -1
-  retries: 10
-  delay: 5
-  tags:
-    - setup
-
-- name: Set Jenkins crumb token [seed job]
-  set_fact:
-    jenkins_crumb_token: "{{jenkins_crumb.json.crumbRequestField}}={{jenkins_crumb.json.crumb}}"
-  tags:
-    - setup
-
 - name: Get list of jobs
   uri:
     user: "{{jenkins_admin_user}}"

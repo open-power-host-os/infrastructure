@@ -58,13 +58,7 @@
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.41">
-    <script>
-node (&apos;master&apos;) {
-      git credentialsId: &apos;github-user-pass-credentials&apos;,
-          url: REPOSITORY_URL,
-          branch: REPOSITORY_COMMIT
-      jobDsl targets: JOB_DESCRIPTORS_FILES
-}</script>
+    <script>{{seed_job_script_xml}}</script>
     <sandbox>true</sandbox>
   </definition>
   <triggers/>

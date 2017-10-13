@@ -2,7 +2,7 @@ listView('Admin') {
     description('Administrative jobs')
     jobs {
         name('create_credentials')
-        name('create_node')
+        name('create_slave_node')
         name('seed_job')
     }
     columns {

@@ -169,21 +169,20 @@ To create the credentials, you can execute the job at
 `https://<jenkins_server>/job/create_credentials`, filling the necessary
 parameters.
 
-#### Create builds jobs
-
-When the credentials are configured, execute the seed job at
-`https://<jenkins_server>/job/seed_job` with the default
-"JOB_DESCRIPTORS_FILES" parameter. This will create all the build jobs
-configured to check out from the GitHub organization/user repositories and
-a helper job that can be used to create Jenkins slave nodes.
-
 #### Create slaves in Jenkins web UI
 
 The default behavior is for administrative Jenkins jobs to execute only on the
 master node, and remaining jobs to execute only on slave nodes labeled
 "builds_slave_label" or "validation_slave_label". You will then need to add at
 least one slave node to execute the non-administrative jobs. To do this, you can execute
-the job at `https://<jenkins-server>/job/create_node`. Set the IP address or hostname
+the job at `https://<jenkins-server>/job/create_slave_node`. Set the IP address or hostname
 of the slave in IP_ADDRESS job parameter. The other job parameters values do not
 need to be modified. You should have already executed the Jenkins slave playbook(s)
 on those slaves.
+
+#### Create builds jobs
+
+When the credentials are configured, execute the seed job at
+`https://<jenkins_server>/job/seed_job` with the default
+"JOB_DESCRIPTORS_FILES" parameter. This will create all the build jobs
+configured to check out from the GitHub organization/user repositories.

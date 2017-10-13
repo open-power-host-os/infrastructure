@@ -48,6 +48,28 @@
   tags:
     - setup
 
+- name: Create slave node job directory
+  file:
+    state: directory
+    dest: "{{slave_node_job_target_dir}}"
+    owner: jenkins
+    group: jenkins
+    mode: "0755"
+  notify: restart jenkins
+  tags:
+    - setup
+
+- name: Create slave node job
+  template:
+    src: "{{slave_node_job_template}}"
+    dest: "{{slave_node_job_target_dir}}/config.xml"
+    owner: jenkins
+    group: jenkins
+    mode: "0644"
+  notify: restart jenkins
+  tags:
+    - setup
+
 - name: Approve Groovy method signatures used by pipelines
   template:
     src: scriptApproval.xml.j2

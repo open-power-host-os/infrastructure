@@ -91,9 +91,17 @@
   tags:
     - setup
 
+- name: Set Jenkins URL
+  template:
+    src: jenkins.model.JenkinsLocationConfiguration.xml.j2
+    dest: "{{jenkins_home_dir}}/jenkins.model.JenkinsLocationConfiguration.xml"
+  register: jenkins_url_config
+  tags:
+    - setup
+
 - name: Restart Jenkins if necessary
   service: name=jenkins state=restarted
-  when: jenkins_admin_config|changed or jenkins_config|changed
+  when: jenkins_admin_config|changed or jenkins_config|changed or jenkins_url_config|changed
   tags:
     - setup
 

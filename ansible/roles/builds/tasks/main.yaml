@@ -2,7 +2,7 @@
 - name: Create Host OS build directories
   file:
     name={{pipeline_constants.BUILDS_WORKSPACE_DIR}} state=directory
-    owner={{builder_user_name}} group=mock
+    owner={{user_name}} group=mock
   tags:
     - setup
 
@@ -10,7 +10,7 @@
   copy:
     src={{upload_server_user_private_ssh_key_file_path}}
     dest="{{builder_home_dir}}/.ssh/upload_server_id_rsa"
-    owner={{builder_user_name}} group={{builder_user_name}} mode=0600
+    owner={{user_name}} group={{user_name}} mode=0600
   tags:
     - setup
 
@@ -18,7 +18,7 @@
   copy:
     src={{github_user_private_ssh_key_file_path}}
     dest="{{builder_home_dir}}/.ssh/github_id_rsa"
-    owner={{builder_user_name}} group={{builder_user_name}} mode=0600
+    owner={{user_name}} group={{user_name}} mode=0600
   tags:
     - setup
 
@@ -27,8 +27,8 @@
     path: "{{builder_home_dir}}/.ssh/config"
     block: "{{ lookup('template', 'github_ssh_config.j2') }}"
     create: yes
-    owner: "{{builder_user_name}}"
-    group: "{{builder_user_name}}"
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: 0600
   tags:
     - setup
@@ -36,6 +36,6 @@
 - name: Add known keys for remote hosts
   copy:
     src={{known_hosts_file_path}} dest="{{jenkins_home_dir}}/.ssh/known_hosts"
-    owner={{builder_user_name}} group={{builder_user_name}}
+    owner={{user_name}} group={{user_name}}
   tags:
     - setup

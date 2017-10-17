@@ -1,6 +1,7 @@
 ---
 user_groups:
 
+user_name: jenkins-master
 nginx_jenkins_access_log: /var/log/nginx/jenkins.access.log
 
 jenkins_home_dir: /var/lib/jenkins

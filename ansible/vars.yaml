@@ -1,5 +1,6 @@
 ---
 github_domain: github.com
+jenkins_slave_user_name: jenkins-slave
 
 pipeline_constants:
   GITHUB_ORGANIZATION_NAME:

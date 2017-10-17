@@ -4,16 +4,16 @@
     name={{item.name}} owner={{item.owner}} group={{item.group}}
     mode={{item.mode}} state=directory
   with_items:
-    - { name: "{{jenkins_bin_dir}}/bin", owner: jenkins, group: jenkins,
+    - { name: "{{jenkins_bin_dir}}/bin", owner: "{{user_name}}", group: "{{user_name}}",
         mode: "0755" }
-    - { name: /var/log/jenkins, owner: jenkins, group: jenkins, mode: "0755" }
+    - { name: /var/log/jenkins, owner: "{{user_name}}", group: "{{user_name}}", mode: "0755" }
   tags:
     - setup
 
 - name: Install {{jenkins_bin_dir}}/bin/jenkinsd
   template:
     src=jenkinsd dest="{{jenkins_bin_dir}}/bin/jenkinsd"
-    owner=jenkins group=root mode=0755
+    owner={{user_name}} group=root mode=0755
   notify: restart jenkins
   tags:
     - setup
@@ -45,7 +45,7 @@
 
 - name: Ensure jenkins.war permissions
   file:
-    path="{{jenkins_bin_dir}}/jenkins.war" owner=jenkins group=root mode=0644
+    path="{{jenkins_bin_dir}}/jenkins.war" owner={{user_name}} group=root mode=0644
   when: jenkinswar.changed
   notify: restart jenkins
   tags:
@@ -73,7 +73,7 @@
 - name: Create Jenkins admin user directory
   file:
     path="{{jenkins_home_dir}}/users/{{jenkins_admin_user}}"
-    owner=jenkins group=jenkins mode=0755 state=directory recurse=yes
+    owner={{user_name}} group={{user_name}} mode=0755 state=directory recurse=yes
   tags:
     - setup
 

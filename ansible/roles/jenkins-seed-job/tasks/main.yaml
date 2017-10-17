@@ -11,8 +11,8 @@
   file:
     state: directory
     dest: "{{seed_job_target_dir}}"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0755"
   notify: restart jenkins
   tags:
@@ -22,8 +22,8 @@
   template:
     src: "{{seed_job_template}}"
     dest: "{{seed_job_target_dir}}/config.xml"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0644"
   notify: restart jenkins
   tags:

@@ -70,7 +70,7 @@ def setGithubStatus(String repositoryName, String description, String status) {
 
 def checkoutRepo(String repoName, Map gitRepos) {
   dir(repoName) {
-    checkout(gitRepos[repoName])
+    return checkout(gitRepos[repoName])
   }
 }
 

@@ -138,14 +138,9 @@ def buildPackages() {
     }
   }
 
-  utils.checkoutRepo('versions', gitRepos)
-  dir('versions') {
-    // The commit hashes should be accessible from the GitSCM object
-    // https://issues.jenkins-ci.org/browse/JENKINS-34455
-    versions_repo_commit_id = sh(
-      script:"git rev-parse HEAD", returnStdout: true).trim()
-    echo versions_repo_commit_id
-  }
+  checkoutResult = utils.checkoutRepo('versions', gitRepos)
+  versionsRepoCommitId = checkoutResult['GIT_COMMIT']
+  echo(versionsRepoCommitId)
 
   lock(resource: "build-packages_workspace_$env.NODE_NAME") {
     dir("$params.BUILDS_WORKSPACE_DIR/mock_build") {
@@ -167,7 +162,7 @@ python host_os.py \\
            --force-rebuild \\
            --keep-build-dir \\
            --packages-metadata-repo-url $VERSIONS_REPO_URL \\
-           --packages-metadata-repo-branch $versions_repo_commit_id \\
+           --packages-metadata-repo-branch $versionsRepoCommitId \\
            $packagesParameter \\
            $params.BUILD_PACKAGES_EXTRA_PARAMETERS \\
 """

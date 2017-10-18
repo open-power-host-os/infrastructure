@@ -145,43 +145,29 @@ intermediate (proxy) between you and the Jenkins server. While this connection
 is alive, you can access then Jenkins web UI at https://localhost using a web
 browser.
 
-#### Create administrative jobs
-
-The administrative jobs will help you set up your Jenkins instance, providing a
-simplified way of creating jobs, credentials and slaves.
-
-Execute the single Jenkins job by accessing `https://<jenkins_server>/job/seed_job/build`.
-Update the JOB_DESCRIPTORS_FILES parameter with "jenkins_jobs/create_*.groovy".
-This will prevent the creation of jobs which are executed automatically ("trigger"
-jobs), since they would fail if executed automatically without properly configured
-credentials.
-
 #### Create credentials in Jenkins
 
 The Credentials plugin allows you to store and manage credentials in Jenkins.
-In the case of SSH credentials, the SSH key pair must have been created beforehand.
-The following credentials must be created in Jenkins:
+There are two credentials required to run the build scripts: a pair of user and
+SSH key to access Jenkins slaves from the master node; and a pair of user and
+token to access GitHub.
 
-##### Setup SSH credentials used to access Jenkins slaves from master
-
-Setup the SSH credentials necessary to access the slaves in Jenkins:
-`https://<jenkins_server>/job/create_ssh_credentials`
-
-##### Setup credentials used to access GitHub API from Jenkins slave
+The SSH key pair for master-slaves access must have been created beforehand. It
+is recommended that this key pair be used exclusively for this purpose.
 
 The Jenkins pipeline GitHub API needs read access to check out pull
 requests for building and validating and write access to update the pull
 requests statuses, informing the developers of the job results.
 
-To create the credentials, you can execute the job at
-`https://<jenkins_server>/job/create_user_pass_credentials`, passing either the
-user's password or its API token as the "password" parameter.
-
-It is recommended you use an API token instead of the user's password.
+To create an API token, go to
 [Create a token](https://github.com/settings/tokens/new), select
 "repo" scope and press the "Generate token" button. Refer to
 https://github.com/blog/1509-personal-api-tokens for more information on
 how to create those tokens.
+
+To create the credentials, you can execute the job at
+`https://<jenkins_server>/job/create_credentials`, filling the necessary
+parameters.
 
 #### Create slaves in Jenkins web UI
 
@@ -189,13 +175,14 @@ The default behavior is for administrative Jenkins jobs to execute only on the
 master node, and remaining jobs to execute only on slave nodes labeled
 "builds_slave_label" or "validation_slave_label". You will then need to add at
 least one slave node to execute the non-administrative jobs. To do this, you can execute
-the job at `https://<jenkins-server>/job/create_node`. Set the IP address or hostname
+the job at `https://<jenkins-server>/job/create_slave_node`. Set the IP address or hostname
 of the slave in IP_ADDRESS job parameter. The other job parameters values do not
 need to be modified. You should have already executed the Jenkins slave playbook(s)
 on those slaves.
 
 #### Create builds jobs
 
-When the credentials are configured, reexecute the seed job with the default
-"JOB_DESCRIPTORS_FILES" parameter. This will create all the other jobs
+When the credentials are configured, execute the seed job at
+`https://<jenkins_server>/job/seed_job` with the default
+"JOB_DESCRIPTORS_FILES" parameter. This will create all the build jobs
 configured to check out from the GitHub organization/user repositories.

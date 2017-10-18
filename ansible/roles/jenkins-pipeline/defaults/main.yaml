@@ -1,0 +1,45 @@
+credentials_job_name: create_credentials
+credentials_job_script_path: "{{credentials_job_name}}.groovy"
+credentials_job_script: "{{ lookup('file', credentials_job_script_path) }}"
+# Calculate the script hash as done by Jenkins in ScriptApproval.hash function
+# https://github.com/jenkinsci/script-security-plugin/blob/8f1c25b678073ec0caac62c8200f930b85743c66/src/main/java/org/jenkinsci/plugins/scriptsecurity/scripts/ScriptApproval.java#L357
+credentials_job_script_hash: "{{ ('groovy:' + credentials_job_script) | hash('sha1') }}"
+credentials_job_script_xml: "{{ credentials_job_script | escape_to_xml }}"
+credentials_job_template: "{{credentials_job_name}}_config.xml.j2"
+credentials_job_target_dir: "{{jenkins_home_dir}}/jobs/{{credentials_job_name}}"
+
+slave_node_job_name: create_slave_node
+slave_node_job_script_path: "{{slave_node_job_name}}.groovy"
+slave_node_job_script: "{{ lookup('file', slave_node_job_script_path) }}"
+# Calculate the script hash as done by Jenkins in ScriptApproval.hash function
+# https://github.com/jenkinsci/script-security-plugin/blob/8f1c25b678073ec0caac62c8200f930b85743c66/src/main/java/org/jenkinsci/plugins/scriptsecurity/scripts/ScriptApproval.java#L357
+slave_node_job_script_hash: "{{ ('groovy:' + slave_node_job_script) | hash('sha1') }}"
+slave_node_job_script_xml: "{{ slave_node_job_script | escape_to_xml }}"
+slave_node_job_template: "{{slave_node_job_name}}_config.xml.j2"
+slave_node_job_target_dir: "{{jenkins_home_dir}}/jobs/{{slave_node_job_name}}"
+
+approved_script_hashes:
+  - "{{credentials_job_script_hash}}"
+  - "{{slave_node_job_script_hash}}"
+approved_signatures:
+  - method hudson.plugins.git.BranchSpec getName
+  - method hudson.plugins.git.GitSCM getBranches
+  - method hudson.plugins.git.GitSCM getUserRemoteConfigs
+  - method hudson.plugins.git.UserRemoteConfig getUrl
+  - method java.io.File toPath
+  - method java.nio.file.Path relativize java.nio.file.Path
+  - new java.io.File java.lang.String
+  - new java.io.File java.lang.String java.lang.String
+  - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods first java.util.List
+  - staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods readLines java.lang.String
+  - new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl
+  - staticMethod com.cloudbees.plugins.credentials.SystemCredentialsProvider getInstance
+  - method com.cloudbees.plugins.credentials.SystemCredentialsProvider getStore
+  - staticMethod com.cloudbees.plugins.credentials.domains.Domain global
+  - method com.cloudbees.plugins.credentials.CredentialsStore addCredentials com.cloudbees.plugins.credentials.domains.Domain com.cloudbees.plugins.credentials.Credentials
+  - staticField com.cloudbees.plugins.credentials.CredentialsScope GLOBAL
+  - new org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl com.cloudbees.plugins.credentials.CredentialsScope java.lang.String java.lang.String hudson.util.Secret
+  - method com.cloudbees.plugins.credentials.CredentialsStore getCredentials com.cloudbees.plugins.credentials.domains.Domain
+  - staticMethod com.cloudbees.plugins.credentials.CredentialsMatchers withId java.lang.String
+  - staticMethod com.cloudbees.plugins.credentials.CredentialsMatchers filter java.util.List com.cloudbees.plugins.credentials.CredentialsMatcher
+  - method com.cloudbees.plugins.credentials.CredentialsStore removeCredentials com.cloudbees.plugins.credentials.domains.Domain com.cloudbees.plugins.credentials.Credentials

@@ -3,7 +3,7 @@
   <actions>
     <io.jenkins.blueocean.service.embedded.BlueOceanUrlAction plugin="blueocean-rest-impl@1.2.4">
       <blueOceanUrlObject class="io.jenkins.blueocean.service.embedded.BlueOceanUrlObjectImpl">
-        <mappedUrl>blue/organizations/jenkins/seed_job</mappedUrl>
+        <mappedUrl>blue/organizations/jenkins/create_slave_node</mappedUrl>
       </blueOceanUrlObject>
     </io.jenkins.blueocean.service.embedded.BlueOceanUrlAction>
   </actions>
@@ -17,39 +17,39 @@
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>REPOSITORY_URL</name>
-          <description>Repository to download the DSL job descriptors.</description>
-          <defaultValue>https://{{pipeline_constants.GITHUB_DOMAIN}}/{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}/infrastructure.git</defaultValue>
+          <name>NODE_NAME</name>
+          <description>Name of the slave node.</description>
+          <defaultValue>builds_slave</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>REPOSITORY_COMMIT</name>
-          <description>Commit ID from where to get the jobs definitions. This is also propagated to the periodic pipelines jobs and used to fetch the pipelines steps.</description>
-          <defaultValue>master</defaultValue>
+          <name>NODE_DESCRIPTION</name>
+          <description>Node description.</description>
+          <defaultValue>Slave used to build OpenPOWER Host OS.</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>JOB_DESCRIPTORS_FILES</name>
-          <description>Path to DSL job descriptors.</description>
-          <defaultValue>jenkins_jobs/*.groovy</defaultValue>
+          <name>NODE_USER_HOME</name>
+          <description>Path to the user`s home directory in the slave node.</description>
+          <defaultValue>/home/jenkins/</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GITHUB_DOMAIN</name>
-          <description>GitHub domain.</description>
-          <defaultValue>{{pipeline_constants.GITHUB_DOMAIN}}</defaultValue>
+          <name>NUMBER_OF_EXECUTORS</name>
+          <description>Number of executors.</description>
+          <defaultValue>5</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GITHUB_ORGANIZATION_NAME</name>
-          <description>GitHub organization from where the Host OS repositories will be checked out.</description>
-          <defaultValue>{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}</defaultValue>
+          <name>NODE_LABEL</name>
+          <description>Label(s) of the slave node.</description>
+          <defaultValue>builds_slave_label validation_slave_label</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>GITHUB_BOT_USER_NAME</name>
-          <description>User name of the GitHub user to create commits automatically.</description>
-          <defaultValue>{{pipeline_constants.GITHUB_BOT_USER_NAME}}</defaultValue>
+          <name>IP_ADDRESS</name>
+          <description>IP address to the slave node.</description>
+          <defaultValue></defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>NIGHTLY_BUILDS_CRON_EXPRESSION</name>
-          <description>Cron expression to trigger nightly builds.</description>
-          <defaultValue>{{pipeline_constants.NIGHTLY_BUILDS_CRON_EXPRESSION}}</defaultValue>
+          <name>CREDENTIALS_ID</name>
+          <description>ID of the credentials used to access this node.</description>
+          <defaultValue>jenkins-user-ssh-credentials</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
@@ -58,8 +58,8 @@
     </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
   </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.41">
-    <script>{{seed_job_script_xml}}</script>
-    <sandbox>true</sandbox>
+    <script>{{slave_node_job_script_xml}}</script>
+    <sandbox>false</sandbox>
   </definition>
   <triggers/>
   <disabled>false</disabled>

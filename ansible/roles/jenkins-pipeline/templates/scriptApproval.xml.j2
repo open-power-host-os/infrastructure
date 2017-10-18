@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scriptApproval plugin="script-security@1.27">
+  <approvedScriptHashes>
+{% for hash in approved_script_hashes %}
+    <string>{{hash}}</string>
+{% endfor %}
+  </approvedScriptHashes>
+  <approvedSignatures>
+{% for signature in approved_signatures %}
+    <string>{{signature}}</string>
+{% endfor %}
+  </approvedSignatures>
+  <aclApprovedSignatures/>
+  <approvedClasspathEntries/>
+  <pendingScripts/>
+  <pendingSignatures/>
+  <pendingClasspathEntries/>
+</scriptApproval>

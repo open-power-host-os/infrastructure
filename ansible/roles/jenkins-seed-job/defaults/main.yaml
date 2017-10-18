@@ -1,3 +1,7 @@
 ---
 seed_job_name: seed_job
+seed_job_script_path: "{{seed_job_name}}.groovy"
+seed_job_script: "{{ lookup('file', seed_job_script_path) }}"
+seed_job_script_xml: "{{ seed_job_script | escape_to_xml }}"
 seed_job_template: "{{seed_job_name}}_config.xml.j2"
+seed_job_target_dir: "{{jenkins_home_dir}}/jobs/{{seed_job_name}}"

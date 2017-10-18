@@ -5,7 +5,8 @@ def createPeriodicPipeline(String name, String cronExpression) {
         script("""\
 node('master') {
   dir('infrastructure') {
-    git(url: 'ssh://git@github/$GITHUB_ORGANIZATION_NAME/infrastructure.git',
+    git(credentialsId: 'github-user-pass-credentials',
+        url: 'https://$GITHUB_DOMAIN/$GITHUB_ORGANIZATION_NAME/infrastructure.git',
         branch: '$REPOSITORY_COMMIT')
   }
   pipeline = load 'infrastructure/pipeline/${name}.groovy'

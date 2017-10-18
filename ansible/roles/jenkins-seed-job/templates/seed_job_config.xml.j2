@@ -19,7 +19,7 @@
         <hudson.model.StringParameterDefinition>
           <name>REPOSITORY_URL</name>
           <description>Repository to download the DSL job descriptors.</description>
-          <defaultValue>https://{{pipeline_constants.GITHUB_DOMAIN}}/{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}/infrastructure.git</defaultValue>
+          <defaultValue>https://{{github_domain}}/{{pipeline_constants.GITHUB_ORGANIZATION_NAME}}/infrastructure.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>REPOSITORY_COMMIT</name>
@@ -34,7 +34,12 @@
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_DOMAIN</name>
           <description>GitHub domain.</description>
-          <defaultValue>{{pipeline_constants.GITHUB_DOMAIN}}</defaultValue>
+          <defaultValue>{{github_domain}}</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>GITHUB_API_URI</name>
+          <description>GitHub API URI.</description>
+          <defaultValue>{{github_api_uri}}</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GITHUB_ORGANIZATION_NAME</name>

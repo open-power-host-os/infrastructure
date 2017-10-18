@@ -2,7 +2,7 @@ def createPipeline(String repositoryName) {
   multibranchPipelineJob(repositoryName) {
     branchSources {
       github {
-        apiUri("https://$GITHUB_DOMAIN/api/v3")
+        apiUri(GITHUB_API_URI)
         scanCredentialsId('github-user-pass-credentials')
         repoOwner(GITHUB_ORGANIZATION_NAME)
         repository(repositoryName)

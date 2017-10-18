@@ -10,3 +10,9 @@ jenkins_port: 8080
 jenkins_local_url: "http://127.0.0.1:{{jenkins_port}}"
 
 configure_ldap: no
+
+# Public and Enterprise GitHub API URIs are different
+public_github_api_uri: "https://api.{{github_domain}}"
+enterprise_github_api_uri: "https://{{github_domain}}/api/v3"
+using_public_github_domain: "{{github_domain == 'github.com'}}"
+github_api_uri: "{{public_github_api_uri if using_public_github_domain else enterprise_github_api_uri}}"

@@ -21,6 +21,7 @@
     -keyout {{nginx_ssl_certificate_key}}
     -out {{nginx_ssl_certificate}}
     creates="{{nginx_ssl_certificate}}"
+    owner=root group=root
   tags:
     - setup
 

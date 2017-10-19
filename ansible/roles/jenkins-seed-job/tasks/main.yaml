@@ -3,6 +3,8 @@
   copy:
     src: javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml
     dest: "{{jenkins_home_dir}}/javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration.xml"
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
   notify: restart jenkins
   tags:
     - setup

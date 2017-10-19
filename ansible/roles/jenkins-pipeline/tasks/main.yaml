@@ -11,6 +11,7 @@
     src: pipeline_constants.groovy.j2
     dest: "{{jenkins_config_dir}}/pipeline_constants.groovy"
     owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0444"
   tags:
     - setup
@@ -75,6 +76,7 @@
     src: scriptApproval.xml.j2
     dest: "{{jenkins_home_dir}}/scriptApproval.xml"
     owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0644"
   notify: restart jenkins
   tags:

@@ -136,22 +136,21 @@ python host_os.py    \
 }
 
 def buildPackages() {
-  buildStages.buildPackages()
+  buildStages.buildPackages(false)
 }
 
 def buildIso() {
-  buildStages.buildIso()
+  buildStages.buildIso(false)
 }
 
 def uploadBuildArtifacts() {
-  buildStages.uploadArtifacts()
+  buildStages.uploadArtifacts(false)
   if (currentBuild.result == 'FAILURE') {
     error('Build failed, aborting')
   }
 }
 
 def createReleaseNotes(String releaseCategory) {
-  deleteDir()
   unstash 'repository_dir'
   dir('builds') {
     git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",

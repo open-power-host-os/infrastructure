@@ -4,6 +4,8 @@ import groovy.transform.Field
 
 buildStages = load 'infrastructure/pipeline/build/stages.groovy'
 
+@Field String RSYNC_URL_PREFIX
+@Field String PERIODIC_BUILDS_DIR_RSYNC_URL
 
 @Field String PERIODIC_BUILDS_DIR_NAME
 @Field String RELEASE_DATE
@@ -54,6 +56,11 @@ def initialize(Map pipelineParameters = pipelineParameters,
 
   BUILDS_REPO_NAME = 'builds'
 
+  RSYNC_URL_PREFIX =
+    "$params.UPLOAD_SERVER_USER_NAME@$params.UPLOAD_SERVER_HOST_NAME:"
+  PERIODIC_BUILDS_DIR_RSYNC_URL =
+    "${RSYNC_URL_PREFIX}$params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH"
+
   PERIODIC_BUILDS_DIR_NAME = (
     params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH.tokenize('/').last())
   RELEASE_TIMESTAMP = new Date().format("yyyy-MM-dd'T'HH-mm-ss")
@@ -92,6 +99,32 @@ python host_os.py    \
       hasUpdates = true
     } else if (exitCode != NO_UPDATES_EXIT_CODE) {
       error('Packages update failed')
+    }
+  }
+
+  if (!hasUpdates) {
+    String PREVIOUS_BUILD_INFO_URL =
+      "$PERIODIC_BUILDS_DIR_RSYNC_URL/latest/info/build.json"
+    String PREVIOUS_BUILD_INFO_FILE_NAME = 'previous_build.json'
+
+    try {
+      utils.rsyncDownload(PREVIOUS_BUILD_INFO_URL, PREVIOUS_BUILD_INFO_FILE_NAME)
+    } catch (hudson.AbortException exception) {
+      echo('Previous build not found, forcing new build.')
+      hasUpdates = true
+      return
+    }
+
+    previousBuildInfo = readJSON(file: PREVIOUS_BUILD_INFO_FILE_NAME)
+    previousVersionsRepoCommitId = previousBuildInfo.versions_repo_commit_id
+    echo("Previous build`s versions repository commit: $previousVersionsRepoCommitId")
+
+    checkoutResult = utils.checkoutRepo('versions', gitRepos)
+    currentVersionsRepoCommitId = checkoutResult['GIT_COMMIT']
+    echo("Current versions repository commit: $currentVersionsRepoCommitId")
+
+    if (previousVersionsRepoCommitId != currentVersionsRepoCommitId) {
+      hasUpdates = true
     }
   }
 }
@@ -163,11 +196,6 @@ def commitToGitRepo() {
 }
 
 def createSymlinks() {
-  String RSYNC_URL_PREFIX =
-    "$params.UPLOAD_SERVER_USER_NAME@$params.UPLOAD_SERVER_HOST_NAME:"
-  String PERIODIC_BUILDS_DIR_RSYNC_URL =
-    "${RSYNC_URL_PREFIX}$params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH"
-
   File periodicBuildsDir = new File(params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH)
   File buildDir = new File(params.UPLOAD_SERVER_BUILDS_DIR_PATH,
                            buildStages.buildTimestamp)

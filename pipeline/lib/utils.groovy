@@ -70,7 +70,7 @@ def setGithubStatus(String repositoryName, String description, String status) {
 
 def checkoutRepo(String repoName, Map gitRepos) {
   dir(repoName) {
-    checkout(gitRepos[repoName])
+    return checkout(gitRepos[repoName])
   }
 }
 
@@ -94,6 +94,14 @@ def archiveAndPrint(String pattern, boolean allowEmpty = false) {
       throw(exception)
     }
   }
+}
+
+def rsyncDownload(String srcFileURL, String destFilePath) {
+  sh """\
+rsync -e 'ssh -i $env.HOME/.ssh/upload_server_id_rsa' \\
+      --verbose --compress --stats --times --chmod=a+rwx,g+rwx,o- \\
+      $srcFileURL $destFilePath\
+"""
 }
 
 def rsyncUpload(String args, String buildDirRsyncURL) {

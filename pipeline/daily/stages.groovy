@@ -74,11 +74,23 @@ def initialize(Map pipelineParameters = pipelineParameters,
   buildStages.gitRepos['versions'].branches = [[name: COMMIT_BRANCH]]
 }
 
-def updateVersions() {
+def updateVersions(String releaseCategory) {
   deleteDir()
   dir('builds') {
     git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",
         branch: params.BUILDS_REPO_REFERENCE)
+
+    // Dict parameters can't be passed via command line.
+    // The same YAML file is used for other commands, so it must be moved
+    // outside of the builds directory.
+    String shortReleaseCategory = releaseCategory.take(3)
+    sh('cp config/host_os.yaml ../host_os.yaml')
+    utils.replaceInFile('../host_os.yaml', /rpm_macros:.*/,
+                        "rpm_macros: {'extraver': '.$shortReleaseCategory'}")
+  }
+  utils.archiveAndPrint('host_os.yaml')
+
+  dir('builds') {
     String packagesParameter = ''
     if (params.PACKAGES) {
       packagesParameter = "--packages $PACKAGES"

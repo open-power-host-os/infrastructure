@@ -158,6 +158,7 @@ def buildPackages() {
         sh """\
 python host_os.py \\
        --work-dir $params.BUILDS_WORKSPACE_DIR \\
+       $params.HOST_OS_EXTRA_PARAMETERS \\
        build-packages \\
            --force-rebuild \\
            --keep-build-dir \\
@@ -246,6 +247,7 @@ def buildIso() {
       catchError {
         sh """\
 python host_os.py \\
+       $params.HOST_OS_EXTRA_PARAMETERS \\
        build-iso \\
            --packages-dir ../repository \\
            --iso-version $ISO_VERSION \\

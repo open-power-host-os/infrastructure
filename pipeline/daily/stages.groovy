@@ -87,6 +87,7 @@ def updateVersions() {
 python host_os.py    \
        --verbose \
        --work-dir $params.BUILDS_WORKSPACE_DIR \
+       $params.HOST_OS_EXTRA_PARAMETERS \
        update-versions \
            --packages-metadata-repo-url $VERSIONS_MAIN_REPO_URL \
            --packages-metadata-repo-branch $params.VERSIONS_REPO_REFERENCE \
@@ -159,6 +160,7 @@ def createReleaseNotes(String releaseCategory) {
 python host_os.py \
        --verbose \
        --work-dir $params.BUILDS_WORKSPACE_DIR \
+       $params.HOST_OS_EXTRA_PARAMETERS \
        build-release-notes \
            --info-files-dir '../repository' \
            --release-notes-repo-url $GITHUB_IO_MAIN_REPO_URL \

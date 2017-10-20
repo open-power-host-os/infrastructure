@@ -79,6 +79,10 @@ def updateVersions() {
   dir('builds') {
     git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",
         branch: params.BUILDS_REPO_REFERENCE)
+    String packagesParameter = ''
+    if (params.PACKAGES) {
+      packagesParameter = "--packages $PACKAGES"
+    }
     exitCode = sh(script: """\
 python host_os.py    \
        --verbose \
@@ -91,6 +95,7 @@ python host_os.py    \
            --push-repo-url $VERSIONS_PUSH_REPO_URL \
            --push-repo-branch $COMMIT_BRANCH \
            --commit-message '$COMMIT_MESSAGE' \
+           $packagesParameter
 """, returnStatus: true)
 
     Integer SUCCESS_EXIT_CODE = 0

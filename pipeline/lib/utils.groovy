@@ -76,7 +76,7 @@ def checkoutRepo(String repoName, Map gitRepos) {
 
 def replaceInFile(String fileName, String token, String value) {
   String content = readFile fileName
-  content.replaceAll(token, value)
+  content = content.replaceAll(token, value)
   writeFile file: fileName, text: content
 }
 

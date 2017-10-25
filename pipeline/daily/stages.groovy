@@ -74,15 +74,32 @@ def initialize(Map pipelineParameters = pipelineParameters,
   buildStages.gitRepos['versions'].branches = [[name: COMMIT_BRANCH]]
 }
 
-def updateVersions() {
+def updateVersions(String releaseCategory) {
   deleteDir()
   dir('builds') {
     git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",
         branch: params.BUILDS_REPO_REFERENCE)
+
+    // Dict parameters can't be passed via command line.
+    // The same YAML file is used for other commands, so it must be moved
+    // outside of the builds directory.
+    String shortReleaseCategory = releaseCategory.take(3)
+    sh('cp config/host_os.yaml ../host_os.yaml')
+    utils.replaceInFile('../host_os.yaml', /rpm_macros:.*/,
+                        "rpm_macros: {'extraver': '.$shortReleaseCategory'}")
+  }
+  utils.archiveAndPrint('host_os.yaml')
+
+  dir('builds') {
+    String packagesParameter = ''
+    if (params.PACKAGES) {
+      packagesParameter = "--packages $PACKAGES"
+    }
     exitCode = sh(script: """\
 python host_os.py    \
        --verbose \
        --work-dir $params.BUILDS_WORKSPACE_DIR \
+       $params.HOST_OS_EXTRA_PARAMETERS \
        update-versions \
            --packages-metadata-repo-url $VERSIONS_MAIN_REPO_URL \
            --packages-metadata-repo-branch $params.VERSIONS_REPO_REFERENCE \
@@ -91,6 +108,7 @@ python host_os.py    \
            --push-repo-url $VERSIONS_PUSH_REPO_URL \
            --push-repo-branch $COMMIT_BRANCH \
            --commit-message '$COMMIT_MESSAGE' \
+           $packagesParameter
 """, returnStatus: true)
 
     Integer SUCCESS_EXIT_CODE = 0
@@ -130,22 +148,21 @@ python host_os.py    \
 }
 
 def buildPackages() {
-  buildStages.buildPackages()
+  buildStages.buildPackages(false)
 }
 
 def buildIso() {
-  buildStages.buildIso()
+  buildStages.buildIso(false)
 }
 
 def uploadBuildArtifacts() {
-  buildStages.uploadArtifacts()
+  buildStages.uploadArtifacts(false)
   if (currentBuild.result == 'FAILURE') {
     error('Build failed, aborting')
   }
 }
 
 def createReleaseNotes(String releaseCategory) {
-  deleteDir()
   unstash 'repository_dir'
   dir('builds') {
     git(url: "ssh://git@github/$params.GITHUB_ORGANIZATION_NAME/builds.git",
@@ -154,6 +171,7 @@ def createReleaseNotes(String releaseCategory) {
 python host_os.py \
        --verbose \
        --work-dir $params.BUILDS_WORKSPACE_DIR \
+       $params.HOST_OS_EXTRA_PARAMETERS \
        build-release-notes \
            --info-files-dir '../repository' \
            --release-notes-repo-url $GITHUB_IO_MAIN_REPO_URL \

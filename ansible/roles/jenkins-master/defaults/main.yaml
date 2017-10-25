@@ -4,7 +4,7 @@ java_initial_heap_size: "512M"
 java_max_heap_size: "1024M"
 java_debug: "5"
 
-jenkins_url: "https://{{ansible_hostname}}/"
+jenkins_url: "https://{{ansible_fqdn}}/"
 jenkins_log_file: "/var/log/jenkins/jenkins.log"
 jenkins_plugins:
   # Checkout git repositories

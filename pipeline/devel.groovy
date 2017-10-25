@@ -17,7 +17,7 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
       node('builds_slave_label') {
         lock(resource: "update-versions_workspace_$env.NODE_NAME") {
           stage('Update packages versions') {
-            pipelineStages.updateVersions()
+            pipelineStages.updateVersions(releaseCategory)
           }
 
           if (skipIfNoUpdates && !pipelineStages.hasUpdates) {

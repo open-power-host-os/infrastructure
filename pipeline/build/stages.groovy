@@ -109,7 +109,7 @@ def validate() {
   }
 }
 
-def buildPackages() {
+def buildPackages(boolean cleanWorkspace = true) {
   if (triggeredRepoName) {
     utils.setGithubStatus(
       triggeredRepoName, 'Building packages', 'PENDING')
@@ -123,7 +123,9 @@ def buildPackages() {
   String VERSIONS_REPO_PATH =
     "$params.BUILDS_WORKSPACE_DIR/repositories/$VERSIONS_REPO_DIR"
 
-  deleteDir()
+  if (cleanWorkspace) {
+    deleteDir()
+  }
   utils.checkoutRepo('builds', gitRepos)
   dir('builds') {
     // Tell mock to use a different mirror/repo.
@@ -158,6 +160,7 @@ def buildPackages() {
         sh """\
 python host_os.py \\
        --work-dir $params.BUILDS_WORKSPACE_DIR \\
+       $params.HOST_OS_EXTRA_PARAMETERS \\
        build-packages \\
            --force-rebuild \\
            --keep-build-dir \\
@@ -195,7 +198,7 @@ python host_os.py \\
   }
 }
 
-def buildIso() {
+def buildIso(boolean cleanWorkspace = true) {
   if (!buildInfo.build_packages_finished) {
     error('Skipping ISO build because packages build failed')
   }
@@ -214,7 +217,9 @@ def buildIso() {
   ISO_VERSION = ISO_VERSION.replaceAll(/:/, '')
   ISO_VERSION = ISO_VERSION.replaceFirst(/[.].*/, '')
 
-  deleteDir()
+  if (cleanWorkspace) {
+    deleteDir()
+  }
   utils.checkoutRepo('builds', gitRepos)
 
   unstash 'repository_dir'
@@ -246,6 +251,7 @@ def buildIso() {
       catchError {
         sh """\
 python host_os.py \\
+       $params.HOST_OS_EXTRA_PARAMETERS \\
        build-iso \\
            --packages-dir ../repository \\
            --iso-version $ISO_VERSION \\
@@ -272,13 +278,15 @@ python host_os.py \\
   }
 }
 
-def uploadArtifacts() {
+def uploadArtifacts(boolean cleanWorkspace = true) {
   if (triggeredRepoName) {
     utils.setGithubStatus(
       triggeredRepoName, 'Uploading artifacts', 'PENDING')
   }
 
-  deleteDir()
+  if (cleanWorkspace) {
+    deleteDir()
+  }
   if (buildInfo.build_packages_finished) {
     unstash 'repository_dir'
 
@@ -334,21 +342,30 @@ gpgcheck=0
   utils.archiveAndPrint('hostos.repo')
 
   echo 'Creating remote build directory hierarchy'
-  sh "mkdir -p $BUILDS_DIR_NAME/$buildTimestamp"
-  utils.rsyncUpload("--recursive $BUILDS_DIR_NAME/", BUILDS_DIR_RSYNC_URL)
+  // This avoids conflicts if the remote builds dir is named the same as
+  // other directories
+  dir('remote_dirs') {
+    sh "mkdir -p $BUILDS_DIR_NAME/$buildTimestamp"
+    utils.rsyncUpload("--recursive $BUILDS_DIR_NAME/", BUILDS_DIR_RSYNC_URL)
+  }
 
   echo 'Uploading artifacts'
   // The --ignore-existing prevents a build from being overwritten if some
-  // problem occurs and the build is manually replayed, for example
+  // problem occurs and the build is manually replayed, for example.
+  // When called from periodic builds, the workspace is not cleaned and
+  // the repository and iso directories are still symlinks, so we need the
+  // --copy-dirlinks flag.
   utils.rsyncUpload('--ignore-existing --recursive ' +
       constants.BUILD_INFORMATION_DIR, BUILD_DIR_RSYNC_URL)
   if (buildInfo.build_packages_finished) {
-    utils.rsyncUpload('--ignore-existing --recursive repository',
-                      BUILD_DIR_RSYNC_URL)
+    utils.rsyncUpload(
+      '--ignore-existing --copy-dirlinks --recursive repository',
+      BUILD_DIR_RSYNC_URL)
     utils.rsyncUpload('hostos.repo', BUILD_DIR_RSYNC_URL)
   }
   if (buildInfo.build_iso_finished) {
-    utils.rsyncUpload('--ignore-existing --recursive iso', BUILD_DIR_RSYNC_URL)
+    utils.rsyncUpload(
+      '--ignore-existing --copy-dirlinks --recursive iso', BUILD_DIR_RSYNC_URL)
   }
 }
 

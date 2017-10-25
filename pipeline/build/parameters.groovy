@@ -58,6 +58,12 @@ Map pipelineParameters = [
   PACKAGES: [
     defaultValue: '',
     description: 'Packages to build. Leave empty to build all.'],
+  HOST_OS_EXTRA_PARAMETERS: [
+    defaultValue: '',
+    description: 'Arbitrary extra parameters to pass to the ' +
+      'host_os.py script, coming before the subcommands. Arguments ' +
+      'containing spaces have to be enclosed in double quotes, e.g. ' +
+      '--mock-args "--with tests"'],
   BUILD_PACKAGES_EXTRA_PARAMETERS: [
     defaultValue: '',
     description: 'Arbitrary extra parameters to pass to the ' +

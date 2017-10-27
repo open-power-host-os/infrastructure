@@ -55,7 +55,7 @@ There's another periodic job similar to the one above, which differs by not
 pushing commits to remote git repositories. It allows developers of the
 packages to have their new commits tested and to have a build with those
 commits as soon as possible. The default is to execute those periodic builds
-nightly (daily at 22 PM, Jenkins master's timezone).
+nightly (daily at 8 AM UTC, Jenkins master's timezone).
 
 ## Infrastructure setup
 

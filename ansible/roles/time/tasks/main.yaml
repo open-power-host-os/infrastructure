@@ -1,0 +1,34 @@
+---
+- name: Set timezone
+  timezone: name="{{ timezone }}"
+  notify: restart ntpd
+  tags:
+    - setup
+
+- name: Stop NTP service before running ntpdate
+  service: name=ntpd state=stopped
+  tags:
+    - setup
+
+- name: Configure ntp.conf
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart ntpd
+  tags:
+    - setup
+
+- name: Run ntpdate
+  command: "ntpdate -t 5 {{ item }}"
+  notify: restart ntpd
+  with_items: "{{ ntp_servers }}"
+  tags:
+    - setup
+
+- name: Enable NTP service
+  service: name=ntpd enabled=yes state=started
+  tags:
+    - setup

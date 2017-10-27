@@ -4,7 +4,7 @@
     name={{item.name}} owner={{item.owner}} group={{item.group}}
     mode={{item.mode}} state=directory
   with_items:
-    - { name: "{{jenkins_home_dir}}/.ssh", owner: jenkins, group: jenkins,
+    - { name: "{{jenkins_home_dir}}/.ssh", owner: "{{user_name}}", group: "{{user_name}}",
         mode: "0700" }
   tags:
     - setup
@@ -18,9 +18,9 @@
   with_items:
     - { src: "{{jenkins_private_ssh_key_file_path}}",
         dest: "{{jenkins_home_dir}}/.ssh/jenkins_id_rsa",
-        owner: jenkins, group: jenkins, mode: "0600" }
+        owner: "{{user_name}}", group: "{{user_name}}", mode: "0600" }
     - { src: "{{jenkins_public_ssh_key_file_path}}",
         dest: "{{jenkins_home_dir}}/.ssh/authorized_keys",
-        owner: jenkins, group: jenkins, mode: "0600" }
+        owner: "{{user_name}}", group: "{{user_name}}", mode: "0600" }
   tags:
     - setup

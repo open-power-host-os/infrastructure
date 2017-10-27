@@ -4,16 +4,16 @@
     name={{item.name}} owner={{item.owner}} group={{item.group}}
     mode={{item.mode}} state=directory
   with_items:
-    - { name: "{{jenkins_bin_dir}}/bin", owner: jenkins, group: jenkins,
+    - { name: "{{jenkins_bin_dir}}/bin", owner: "{{user_name}}", group: "{{user_name}}",
         mode: "0755" }
-    - { name: /var/log/jenkins, owner: jenkins, group: jenkins, mode: "0755" }
+    - { name: /var/log/jenkins, owner: "{{user_name}}", group: "{{user_name}}", mode: "0755" }
   tags:
     - setup
 
 - name: Install {{jenkins_bin_dir}}/bin/jenkinsd
   template:
     src=jenkinsd dest="{{jenkins_bin_dir}}/bin/jenkinsd"
-    owner=jenkins group=root mode=0755
+    owner=root group=root mode=0755
   notify: restart jenkins
   tags:
     - setup
@@ -22,6 +22,7 @@
   get_url:
     url=http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war.sha256
     dest="{{jenkins_bin_dir}}/jenkins.war.sha256"
+    owner=root group=root
     force=yes
   tags:
     - setup
@@ -36,6 +37,7 @@
   get_url:
     url=http://mirrors.jenkins-ci.org/war-stable/latest/jenkins.war
     dest="{{jenkins_bin_dir}}/jenkins.war"
+    owner=root group=root
     timeout=30
     checksum="sha256:{{jenkins_war_sha256.stdout}}"
   register: jenkinswar
@@ -45,7 +47,7 @@
 
 - name: Ensure jenkins.war permissions
   file:
-    path="{{jenkins_bin_dir}}/jenkins.war" owner=jenkins group=root mode=0644
+    path="{{jenkins_bin_dir}}/jenkins.war" owner=root group=root mode=0644
   when: jenkinswar.changed
   notify: restart jenkins
   tags:
@@ -73,7 +75,7 @@
 - name: Create Jenkins admin user directory
   file:
     path="{{jenkins_home_dir}}/users/{{jenkins_admin_user}}"
-    owner=jenkins group=jenkins mode=0755 state=directory recurse=yes
+    owner={{user_name}} group={{user_name}} mode=0755 state=directory recurse=yes
   tags:
     - setup
 
@@ -81,12 +83,15 @@
   template:
     src=admin_config.xml.j2 dest="{{jenkins_home_dir}}/users/{{jenkins_admin_user}}/config.xml"
     force=no
+    owner={{user_name}} group={{user_name}}
   register: jenkins_admin_config
   tags:
     - setup
 
 - name: Create Jenkins config
-  copy: src=config.xml dest="{{jenkins_home_dir}}/config.xml"
+  copy:
+    src=config.xml dest="{{jenkins_home_dir}}/config.xml"
+    owner={{user_name}} group={{user_name}}
   register: jenkins_config
   tags:
     - setup
@@ -95,6 +100,8 @@
   template:
     src: jenkins.model.JenkinsLocationConfiguration.xml.j2
     dest: "{{jenkins_home_dir}}/jenkins.model.JenkinsLocationConfiguration.xml"
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
   register: jenkins_url_config
   tags:
     - setup

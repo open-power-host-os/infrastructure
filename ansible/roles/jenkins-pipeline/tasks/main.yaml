@@ -1,7 +1,7 @@
 ---
 - name: Create Jenkins configuration directory
   file:
-    name="{{jenkins_config_dir}}" owner=jenkins group=jenkins
+    name="{{jenkins_config_dir}}" owner={{user_name}} group={{user_name}}
     mode="0755" state=directory
   tags:
     - setup
@@ -10,7 +10,8 @@
   template:
     src: pipeline_constants.groovy.j2
     dest: "{{jenkins_config_dir}}/pipeline_constants.groovy"
-    owner: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0444"
   tags:
     - setup
@@ -19,8 +20,8 @@
   template:
     src: org.jenkinsci.plugins.github_branch_source.GitHubConfiguration.xml.j2
     dest: "{{jenkins_home_dir}}/org.jenkinsci.plugins.github_branch_source.GitHubConfiguration.xml"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0644"
   notify: restart jenkins
   tags:
@@ -30,8 +31,8 @@
   file:
     state: directory
     dest: "{{credentials_job_target_dir}}"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0755"
   notify: restart jenkins
   tags:
@@ -41,8 +42,8 @@
   template:
     src: "{{credentials_job_template}}"
     dest: "{{credentials_job_target_dir}}/config.xml"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0644"
   notify: restart jenkins
   tags:
@@ -52,8 +53,8 @@
   file:
     state: directory
     dest: "{{slave_node_job_target_dir}}"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0755"
   notify: restart jenkins
   tags:
@@ -63,8 +64,8 @@
   template:
     src: "{{slave_node_job_template}}"
     dest: "{{slave_node_job_target_dir}}/config.xml"
-    owner: jenkins
-    group: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0644"
   notify: restart jenkins
   tags:
@@ -74,7 +75,8 @@
   template:
     src: scriptApproval.xml.j2
     dest: "{{jenkins_home_dir}}/scriptApproval.xml"
-    owner: jenkins
+    owner: "{{user_name}}"
+    group: "{{user_name}}"
     mode: "0644"
   notify: restart jenkins
   tags:

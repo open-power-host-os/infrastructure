@@ -29,7 +29,7 @@
         <hudson.model.StringParameterDefinition>
           <name>NODE_USER_HOME</name>
           <description>Path to the user`s home directory in the slave node.</description>
-          <defaultValue>/home/jenkins/</defaultValue>
+          <defaultValue>/home/{{jenkins_slave_user_name}}/</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>NUMBER_OF_EXECUTORS</name>

@@ -9,7 +9,7 @@ Description=Jenkins Daemon
 [Service]
 Type=forking
 ExecStart={{jenkins_bin_dir}}/bin/jenkinsd
-User=jenkins
+User={{user_name}}
 
 [Install]
 WantedBy=multi-user.target

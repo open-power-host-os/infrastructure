@@ -1,0 +1,11 @@
+---
+distro_packages:
+  - ntp
+  - ntpdate
+
+ntp_servers:
+  - 0.centos.pool.ntp.org
+  - 1.centos.pool.ntp.org
+
+# List timezones with `timedatectl list-timezones`
+timezone: "UTC"

@@ -5,6 +5,7 @@
   roles:
     - selinux
     - epel
+    - time
     - packages-jenkins-master
     - user
     - nginx

@@ -30,8 +30,8 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
           }
 
           if (currentBuild.result != 'FAILURE') {
-            stage('Build ISO') {
-              pipelineStages.buildIso()
+            stage('Build images') {
+              pipelineStages.buildImages()
             }
           }
 

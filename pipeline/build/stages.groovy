@@ -198,16 +198,16 @@ python host_os.py \\
   }
 }
 
-def buildIso(boolean cleanWorkspace = true) {
+def buildImages(boolean cleanWorkspace = true) {
   if (!buildInfo.build_packages_finished) {
-    error('Skipping ISO build because packages build failed')
+    error('Skipping images build because packages build failed')
   }
 
-  buildInfo.build_iso_finished = false
+  buildInfo.build_images_finished = false
 
   if (triggeredRepoName) {
     utils.setGithubStatus(
-      triggeredRepoName, 'Building ISO', 'PENDING')
+      triggeredRepoName, 'Building images', 'PENDING')
   }
 
   // Convert timestamp from format YYYY-MM-DDThh:mm:ss.ssssss
@@ -246,35 +246,36 @@ def buildIso(boolean cleanWorkspace = true) {
                           params.EPEL_ALTERNATE_MIRROR_RELEASE_URL)
     }
 
-    lock(resource: "build-iso_workspace_$env.NODE_NAME") {
-      echo 'Building ISO'
+    lock(resource: "build-images_workspace_$env.NODE_NAME") {
+      echo 'Building images'
       catchError {
         sh """\
 python host_os.py \\
        $params.HOST_OS_EXTRA_PARAMETERS \\
-       build-iso \\
+       build-images \\
+           --install-tree \\
            --packages-dir ../repository \\
            --iso-version $ISO_VERSION \\
-           $params.BUILD_ISO_EXTRA_PARAMETERS \\
+           $params.BUILD_IMAGES_EXTRA_PARAMETERS \\
 """
-        buildInfo.build_iso_finished = true
+        buildInfo.build_images_finished = true
       }
     }
   }
 
-  if (buildInfo.build_iso_finished) {
+  if (buildInfo.build_images_finished) {
     sh 'ln -s builds/result/iso/latest iso'
-    stash name: 'iso_dir', includes: 'iso/'
+    stash name: 'images_dir', includes: 'iso/'
     utils.archiveAndPrint('iso/')
   }
 
   dir('logs') {
-    sh 'ln -s ../builds/workspace build-iso'
+    sh 'ln -s ../builds/workspace build-images'
   }
-  utils.archiveAndPrint('logs/build-iso/*.log', true)
+  utils.archiveAndPrint('logs/build-images/*.log', true)
 
-  if (!buildInfo.build_iso_finished) {
-    error('ISO build failed')
+  if (!buildInfo.build_images_finished) {
+    error('Images build failed')
   }
 }
 
@@ -294,8 +295,8 @@ def uploadArtifacts(boolean cleanWorkspace = true) {
       sh 'mv ../repository/*.json ./'
     }
   }
-  if (buildInfo.build_iso_finished) {
-    unstash 'iso_dir'
+  if (buildInfo.build_images_finished) {
+    unstash 'images_dir'
   }
 
   String BUILDS_DIR_NAME
@@ -363,7 +364,7 @@ gpgcheck=0
       BUILD_DIR_RSYNC_URL)
     utils.rsyncUpload('hostos.repo', BUILD_DIR_RSYNC_URL)
   }
-  if (buildInfo.build_iso_finished) {
+  if (buildInfo.build_images_finished) {
     utils.rsyncUpload(
       '--ignore-existing --copy-dirlinks --recursive iso', BUILD_DIR_RSYNC_URL)
   }

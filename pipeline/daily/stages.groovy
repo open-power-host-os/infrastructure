@@ -151,8 +151,8 @@ def buildPackages() {
   buildStages.buildPackages(false)
 }
 
-def buildIso() {
-  buildStages.buildIso(false)
+def buildImages() {
+  buildStages.buildImages(false)
 }
 
 def uploadBuildArtifacts() {

@@ -69,10 +69,10 @@ Map pipelineParameters = [
     description: 'Arbitrary extra parameters to pass to the ' +
       'build-packages command. Arguments containing spaces have to ' +
       'be enclosed in double quotes, e.g. --mock-args "--with tests"'],
-  BUILD_ISO_EXTRA_PARAMETERS: [
+  BUILD_IMAGES_EXTRA_PARAMETERS: [
     defaultValue: '',
     description: 'Arbitrary extra parameters to pass to the ' +
-      'build-iso command. Arguments containing spaces have to ' +
+      'build-images command. Arguments containing spaces have to ' +
       'be enclosed in double quotes, e.g. --mock-args "--with tests"'],
 ]
 

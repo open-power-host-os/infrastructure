@@ -81,3 +81,13 @@
     - "{{avocado_repos}}"
   tags:
     - setup
+
+- name: Install BVT script
+  copy:
+    src: "{{playbook_dir}}/../scripts/host-os-bvt.py"
+    dest: /usr/bin/host-os-bvt
+    owner: root
+    group: root
+    mode: 0555
+  tags:
+    - setup

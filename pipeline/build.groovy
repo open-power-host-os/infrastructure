@@ -31,9 +31,9 @@ def execute() {
     }
 
     catchError {
-      stage('Build ISO') {
+      stage('Build images') {
         node('builds_slave_label') {
-          pipelineStages.buildIso()
+          pipelineStages.buildImages()
         }
       }
     }

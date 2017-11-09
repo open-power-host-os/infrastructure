@@ -15,3 +15,5 @@ avocado_repos:
   - { repo: "https://github.com/autotest/tp-libvirt.git", dest: "{{test_providers_dir}}/io-github-autotest-libvirt" }
   - { repo: "https://github.com/autotest/tp-qemu.git", dest: "{{test_providers_dir}}/io-github-autotest-qemu" }
   - { repo: "https://github.com/spiceqa/tp-spice.git", dest: "{{test_providers_dir}}/io-github-spiceqa-spice" }
+
+avocado_http_ports: 8000-8004/tcp

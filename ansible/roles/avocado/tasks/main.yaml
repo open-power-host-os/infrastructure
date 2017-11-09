@@ -19,6 +19,16 @@
   tags:
     - setup
 
+# Those ports are used to provide kickstart files via HTTP
+- name: Open ports in firewalld
+  firewalld:
+    port: "{{avocado_http_ports}}"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  tags:
+    - setup
+
 - name: Creating avocado directories
   file:
     path: "{{item}}"

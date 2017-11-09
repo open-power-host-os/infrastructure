@@ -43,6 +43,12 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
             pipelineStages.createReleaseNotes(releaseCategory)
           }
 
+          stage('Run BVT') {
+            node('bvt_slave_label') {
+              pipelineStages.runBVT()
+            }
+          }
+
           stage('Commit to Git repository') {
             pipelineStages.commitToGitRepo()
           }

@@ -42,7 +42,21 @@
     - "{{avocado_iso_dir}}"
     - "{{avocado_log_dir}}"
     - "{{avocado_test_dir}}"
+    - "{{avocado_vt_repo_dir}}"
     - "{{test_providers_dir}}"
+    - "{{test_providers_downloads_dir}}"
+  tags:
+    - setup
+
+- name: Clone avocado-vt
+  git:
+    repo: "{{avocado_vt_repo}}"
+    version: "{{avocado_vt_branch}}"
+    dest: "{{avocado_vt_repo_dir}}"
+    update: yes
+  notify:
+    - vt-install
+    - vt-bootstrap
   tags:
     - setup
 
@@ -50,6 +64,17 @@
   template:
     src: avocado.conf.j2
     dest: "{{avocado_conf}}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: vt-bootstrap
+  tags:
+    - setup
+
+- name: Setup test providers
+  copy:
+    src: host-os-bvt.ini
+    dest: "{{test_providers_dir}}/host-os-bvt.ini"
     owner: root
     group: root
     mode: 0644

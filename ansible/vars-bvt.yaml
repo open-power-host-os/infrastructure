@@ -9,11 +9,21 @@ avocado_test_dir: "{{avocado_dir}}/tests"
 avocado_conf_dir: "{{ansible_env.HOME}}/.config/avocado"
 avocado_conf: "{{avocado_conf_dir}}/avocado.conf"
 
-test_providers_dir: "{{avocado_data_dir}}/avocado-vt/test-providers.d/downloads"
+avocado_vt_repo: "https://github.com/open-power-host-os/avocado-vt.git"
+avocado_vt_branch: "master"
+avocado_vt_repo_dir: "{{ansible_env.HOME}}/bvt/avocado-vt"
+
+test_providers_dir: "{{avocado_data_dir}}/avocado-vt/test-providers.d"
+test_providers_downloads_dir: "{{test_providers_dir}}/downloads"
 
 avocado_repos:
-  - { repo: "https://github.com/autotest/tp-libvirt.git", dest: "{{test_providers_dir}}/io-github-autotest-libvirt" }
-  - { repo: "https://github.com/autotest/tp-qemu.git", dest: "{{test_providers_dir}}/io-github-autotest-qemu" }
-  - { repo: "https://github.com/spiceqa/tp-spice.git", dest: "{{test_providers_dir}}/io-github-spiceqa-spice" }
+  - { repo: "https://github.com/autotest/tp-libvirt.git",
+  dest: "{{test_providers_downloads_dir}}/io-github-autotest-libvirt" }
+  - { repo: "https://github.com/autotest/tp-qemu.git",
+  dest: "{{test_providers_downloads_dir}}/io-github-autotest-qemu" }
+  - { repo: "https://github.com/spiceqa/tp-spice.git",
+  dest: "{{test_providers_downloads_dir}}/io-github-spiceqa-spice" }
+  - { repo: "https://github.com/open-power-host-os/bvt.git",
+  dest: "{{test_providers_downloads_dir}}/host-os-bvt" }
 
 avocado_http_ports: 8000-8004/tcp

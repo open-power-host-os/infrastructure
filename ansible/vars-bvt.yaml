@@ -1,4 +1,8 @@
 ---
+user_name: jenkins-slave
+user_groups: ''
+jenkins_home_dir: "/home/{{user_name}}"
+
 avocado_dir: "{{ansible_env.HOME}}/avocado"
 
 avocado_data_dir: "{{avocado_dir}}/data"

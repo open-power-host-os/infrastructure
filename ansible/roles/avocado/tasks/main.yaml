@@ -1,14 +1,3 @@
-- name: Setup avocado-vt configuration
-  copy:
-    src: vt.conf
-    dest: /etc/avocado/conf.d/vt.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: vt-bootstrap
-  tags:
-    - setup
-
 # This is necessary to create virbr0 interface. You can create it
 # manually, but libvirt does the job for you.
 - name: Start libvirtd service

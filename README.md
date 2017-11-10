@@ -108,15 +108,16 @@ by Jenkins Ansible playbooks, so you do not need to do it manually.
 
 ### Automatically setup Jenkins master and slave(s) using Ansible playbooks
 
-There are two Ansible playbooks: one that sets up a Jenkins master node and
-another one that sets up a Jenkins slave node. Read the
+There are three Ansible playbooks: one that sets up a Jenkins master node,
+and two that set up Jenkins slave nodes, either for building or executing
+Build Verification Tests. Read the
 [Ansible instructions](ansible/README.md) for details on how to execute
 the playbooks.
 
-If you wish to have a single system hosting the entire Jenkins instance, both
+If you wish to have a single system hosting the entire Jenkins instance, the
 playbooks can be executed in the same system. Execute first the Jenkins master
 playbook, stop Jenkins service (systemctl stop jenkins) and then execute the
-Jenkins slave playbook.
+other playbooks.
 
 Note: The Jenkins playbooks may fail due to network errors. If you see HTTP
 request errors, try executing them again.
@@ -179,6 +180,18 @@ the job at `https://<jenkins-server>/job/create_slave_node`. Set the IP address 
 of the slave in IP_ADDRESS job parameter. The other job parameters values do not
 need to be modified. You should have already executed the Jenkins slave playbook(s)
 on those slaves.
+
+##### Create BVT slave in Jenkins web UI
+
+The Build Verification Tests (BVT) use [Avocado](https://avocado-framework.github.io/)
+to execute tests on virtual machines. The tests require passwordless access to
+sudo, so it is recommended that a separate machine is used forthat purpose. It
+may be a virtual machine, the tests will then run in a nested virtualized
+guest.
+
+To create the slave node from the Jenkins UI, follow the same instructions
+above, setting the IP_ADDRESS and, additionally, changing the NODE_LABEL to
+"bvt_slave_label".
 
 #### Create builds jobs
 

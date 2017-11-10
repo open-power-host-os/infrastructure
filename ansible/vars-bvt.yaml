@@ -21,6 +21,18 @@ avocado_vt_repo_dir: "{{ansible_env.HOME}}/bvt/avocado-vt"
 test_providers_dir: "{{avocado_data_dir}}/avocado-vt/test-providers.d"
 test_providers_downloads_dir: "{{test_providers_dir}}/downloads"
 
+avocado_dirs:
+  - "{{ansible_env.HOME}}"
+  - "{{avocado_dir}}"
+  - "{{avocado_data_dir}}"
+  - "{{avocado_iso_dir}}"
+  - "{{avocado_log_dir}}"
+  - "{{avocado_test_dir}}"
+  - "{{avocado_conf_dir}}"
+  - "{{avocado_vt_repo_dir}}"
+  - "{{test_providers_dir}}"
+  - "{{test_providers_downloads_dir}}"
+
 avocado_repos:
   - { repo: "https://github.com/autotest/tp-libvirt.git",
   dest: "{{test_providers_downloads_dir}}/io-github-autotest-libvirt" }

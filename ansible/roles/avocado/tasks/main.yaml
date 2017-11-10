@@ -67,15 +67,7 @@
     owner: root
     group: root
     mode: 0755
-  with_items:
-    - "{{avocado_conf_dir}}"
-    - "{{avocado_data_dir}}"
-    - "{{avocado_iso_dir}}"
-    - "{{avocado_log_dir}}"
-    - "{{avocado_test_dir}}"
-    - "{{avocado_vt_repo_dir}}"
-    - "{{test_providers_dir}}"
-    - "{{test_providers_downloads_dir}}"
+  with_items: "{{avocado_dirs}}"
   tags:
     - setup
 

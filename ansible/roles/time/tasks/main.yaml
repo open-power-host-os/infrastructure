@@ -1,4 +1,10 @@
 ---
+- name: Install required packages [time]
+  package: name={{item}} state=present
+  with_items: "{{time_packages}}"
+  tags:
+    - setup
+
 - name: Set timezone
   timezone: name="{{ timezone }}"
   notify: restart ntpd

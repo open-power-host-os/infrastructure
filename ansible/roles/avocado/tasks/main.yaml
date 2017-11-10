@@ -25,6 +25,21 @@
   tags:
     - setup
 
+- name: Configure SSH key to download from remote server
+  copy:
+    src={{upload_server_user_private_ssh_key_file_path}}
+    dest="{{user_home_dir}}/.ssh/upload_server_id_rsa"
+    owner={{user_name}} group={{user_name}} mode=0600
+  tags:
+    - setup
+
+- name: Add known keys for remote hosts
+  copy:
+    src={{known_hosts_file_path}} dest="{{jenkins_home_dir}}/.ssh/known_hosts"
+    owner={{user_name}} group={{user_name}}
+  tags:
+    - setup
+
 # This is necessary to create virbr0 interface. You can create it
 # manually, but libvirt does the job for you.
 - name: Start libvirtd service

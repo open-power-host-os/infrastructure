@@ -1,5 +1,5 @@
 ---
-distro_packages:
+time_packages:
   - ntp
   - ntpdate
 

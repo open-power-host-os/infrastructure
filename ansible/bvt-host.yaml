@@ -3,7 +3,29 @@
   hosts: bvt-host
   remote_user: root
   roles:
+    - selinux
+    - time
+    - packages-jenkins-slave
+    - user
+    - ssh
     - avocado-repo
     - avocado
   vars_files:
     - vars-bvt.yaml
+  vars_prompt:
+    - name: "jenkins_private_ssh_key_file_path"
+      prompt: "Enter Jenkins private SSH key file path"
+      default: "~/.ssh/jenkins_id_rsa"
+      private: no
+    - name: "jenkins_public_ssh_key_file_path"
+      prompt: "Enter Jenkins public SSH key file path"
+      default: "~/.ssh/jenkins_id_rsa.pub"
+      private: no
+    - name: "upload_server_user_private_ssh_key_file_path"
+      prompt: "Enter upload server user's private SSH key file path"
+      default: "~/.ssh/open-power-host-os-builds-bot_id_rsa"
+      private: no
+    - name: "known_hosts_file_path"
+      prompt: "Enter path to file containing known keys for upload server host"
+      default: "~/.ssh/known_hosts"
+      private: no

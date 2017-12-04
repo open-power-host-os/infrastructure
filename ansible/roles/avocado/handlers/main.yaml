@@ -1,4 +1,9 @@
 ---
+- name: vt-install
+  command: python setup.py install
+  args:
+    chdir: "{{avocado_vt_repo_dir}}"
+
 - name: vt-bootstrap
   command: avocado vt-bootstrap --vt-type {{item}} --vt-no-downloads --yes-to-all
   with_items:

@@ -232,6 +232,8 @@ def commitToGitRepo() {
        "HEAD:refs/heads/$params.VERSIONS_REPO_REFERENCE")
   }
   dir(GITHUB_IO_REPO_PATH) {
+    sh("git fetch $GITHUB_IO_MAIN_REPO_URL $params.GITHUB_IO_REPO_REFERENCE")
+    sh("git rebase FETCH_HEAD")
     sh("git push $GITHUB_IO_MAIN_REPO_URL " +
        "HEAD:refs/heads/$params.GITHUB_IO_REPO_REFERENCE")
   }

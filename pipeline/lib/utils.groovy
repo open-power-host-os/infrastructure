@@ -58,14 +58,20 @@ def getGitRepos(String triggeredRepoName) {
 }
 
 def setGithubStatus(String repositoryName, String description, String status) {
-  githubNotify(account: params.GITHUB_ORGANIZATION_NAME,
-               context: 'continuous-integration/jenkins/pr-head',
-               credentialsId: 'github-user-pass-credentials',
-               description: description,
-               targetUrl: "$env.JOB_URL/workflow-stage/",
-               repo: repositoryName,
-               sha: env.CHANGE_REFSPEC,
-               status: status)
+  try {
+    githubNotify(account: params.GITHUB_ORGANIZATION_NAME,
+                 context: 'continuous-integration/jenkins/pr-head',
+                 credentialsId: 'github-user-pass-credentials',
+                 description: description,
+                 targetUrl: "$env.JOB_URL/workflow-stage/",
+                 repo: repositoryName,
+                 sha: env.CHANGE_REFSPEC,
+                 status: status)
+  } catch (IllegalArgumentException ex) {
+    // waiting for a fix to:
+    // https://issues.jenkins-ci.org/browse/JENKINS-43370
+    echo "Failed to set GitHub status"
+  }
 }
 
 def checkoutRepo(String repoName, Map gitRepos) {

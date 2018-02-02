@@ -8,7 +8,6 @@
     - packages-jenkins-slave
     - user
     - ssh
-    - avocado-repo
     - avocado
   vars_files:
     - vars-bvt.yaml

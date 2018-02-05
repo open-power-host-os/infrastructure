@@ -201,13 +201,19 @@ def runBVT() {
   } catch (hudson.AbortException exception) {
     echo('Previous build not found, update test will be skipped.')
   }
-  utils.rsyncDownload(CURRENT_YUM_REPO_FILE_URL, 'current_host_os.repo')
 
-  sh """\
+  try {
+    utils.rsyncDownload(CURRENT_YUM_REPO_FILE_URL, 'current_host_os.repo')
+
+    sh """\
 sudo host-os-bvt \
     --current-yum-config-file current_host_os.repo \
     $previousConfigParameter \
 """
+  } catch (Exception exception) {
+    echo('BVT execution failed')
+    currentBuild.result = 'UNSTABLE'
+  }
 }
 
 def commitToGitRepo() {
@@ -264,6 +270,9 @@ def notifyFailure() {
   utils.notifySlack()
 }
 
+def notifyUnstable() {
+  String msg = "${JOB_BASE_NAME} build is unstable. ${BUILD_URL}console"
+  utils.notifySlack(msg, 'warning')
 }
 
 return this

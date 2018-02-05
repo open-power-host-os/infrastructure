@@ -49,6 +49,10 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
             }
           }
 
+          if (currentBuild.result == 'UNSTABLE') {
+            pipelineStages.notifyUnstable()
+          }
+
           stage('Commit to Git repository') {
             pipelineStages.commitToGitRepo()
           }

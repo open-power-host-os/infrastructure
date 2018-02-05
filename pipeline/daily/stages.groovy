@@ -260,35 +260,10 @@ def createSymlinks() {
   utils.rsyncUpload('--links latest', PERIODIC_BUILDS_DIR_RSYNC_URL)
 }
 
-def shouldNotifyOnFailure() {
-  shouldNotify = true
-
-  for (param in params) {
-    if (param.key.startsWith("SLACK") && !param.value) {
-      shouldNotify = false
-      break
-    }
-  }
-
-  return shouldNotify
+def notifyFailure() {
+  utils.notifySlack()
 }
 
-def notifyFailure() {
-  String teamDomain = params.SLACK_TEAM_DOMAIN
-  String recipient = params.SLACK_NOTIFICATION_RECIPIENT
-  String failureMsg = "${JOB_BASE_NAME} build failed. ${BUILD_URL}console"
-
-  String tokenId = utils.addSecretString(
-    params.SLACK_TOKEN, "Slack token for $recipient @ $teamDomain")
-
-  try {
-    withCredentials([string(credentialsId: tokenId, variable: 'token')]){
-      slackSend(channel: recipient, teamDomain: teamDomain, token: token,
-		color: 'danger', message: failureMsg)
-    }
-  } finally {
-    utils.removeCredentials(tokenId)
-  }
 }
 
 return this

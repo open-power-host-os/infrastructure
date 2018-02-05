@@ -59,9 +59,7 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
         }
       }
     } catch (Exception exception) {
-      if (pipelineStages.shouldNotifyOnFailure()) {
-        pipelineStages.notifyFailure()
-      }
+      pipelineStages.notifyFailure()
       throw exception
     }
   }

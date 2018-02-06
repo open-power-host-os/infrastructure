@@ -1,7 +1,8 @@
 - name: Setup avocado repository
-  copy:
-    src: avocado.repo
+  get_url:
+    url: http://avocado-project.org/data/repos/avocado-el.repo
     dest: /etc/yum.repos.d/avocado.repo
+    force: yes
     owner: root
     group: root
     mode: 0644

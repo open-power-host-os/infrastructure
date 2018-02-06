@@ -138,5 +138,41 @@ def convertToJenkinsParameters(Map parameters) {
   return jenkinsParams
 }
 
+def slackNotificationCapable() {
+  capable = true
+
+  for (param in params) {
+    if (param.key.startsWith("SLACK") && !param.value) {
+      capable = false
+      break
+    }
+  }
+
+  return capable
+}
+
+def notifySlack(String msg = "${JOB_BASE_NAME} build failed. ${BUILD_URL}console",
+  String type = 'danger') {
+  String teamDomain = params.SLACK_TEAM_DOMAIN
+  String recipient = params.SLACK_NOTIFICATION_RECIPIENT
+  String tokenId = addSecretString(
+    params.SLACK_TOKEN, "Slack token for $recipient @ $teamDomain")
+
+  if (!slackNotificationCapable()) {
+    echo('Slack notifications not configured. Skipping...')
+    return
+  }
+
+  try {
+    withCredentials([string(credentialsId: tokenId, variable: 'token')]){
+      slackSend(channel: recipient, teamDomain: teamDomain, token: token,
+                color: type, message: msg)
+    }
+  } finally {
+    removeCredentials(tokenId)
+  }
+}
+
+
 
 return this

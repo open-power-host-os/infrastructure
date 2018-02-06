@@ -49,6 +49,12 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
             }
           }
 
+          if (currentBuild.result == 'UNSTABLE') {
+            stage('Notify unstable') {
+              pipelineStages.notifyUnstable()
+            }
+          }
+
           stage('Commit to Git repository') {
             pipelineStages.commitToGitRepo()
           }
@@ -59,7 +65,7 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
         }
       }
     } catch (Exception exception) {
-      if (pipelineStages.shouldNotifyOnFailure()) {
+      stage('Notify failure') {
         pipelineStages.notifyFailure()
       }
       throw exception

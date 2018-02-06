@@ -201,13 +201,19 @@ def runBVT() {
   } catch (hudson.AbortException exception) {
     echo('Previous build not found, update test will be skipped.')
   }
-  utils.rsyncDownload(CURRENT_YUM_REPO_FILE_URL, 'current_host_os.repo')
 
-  sh """\
+  try {
+    utils.rsyncDownload(CURRENT_YUM_REPO_FILE_URL, 'current_host_os.repo')
+
+    sh """\
 sudo host-os-bvt \
     --current-yum-config-file current_host_os.repo \
     $previousConfigParameter \
 """
+  } catch (Exception exception) {
+    echo('BVT execution failed')
+    currentBuild.result = 'UNSTABLE'
+  }
 }
 
 def commitToGitRepo() {
@@ -260,35 +266,13 @@ def createSymlinks() {
   utils.rsyncUpload('--links latest', PERIODIC_BUILDS_DIR_RSYNC_URL)
 }
 
-def shouldNotifyOnFailure() {
-  shouldNotify = true
-
-  for (param in params) {
-    if (param.key.startsWith("SLACK") && !param.value) {
-      shouldNotify = false
-      break
-    }
-  }
-
-  return shouldNotify
+def notifyFailure() {
+  utils.notifySlack()
 }
 
-def notifyFailure() {
-  String teamDomain = params.SLACK_TEAM_DOMAIN
-  String recipient = params.SLACK_NOTIFICATION_RECIPIENT
-  String failureMsg = "${JOB_BASE_NAME} build failed. ${BUILD_URL}console"
-
-  String tokenId = utils.addSecretString(
-    params.SLACK_TOKEN, "Slack token for $recipient @ $teamDomain")
-
-  try {
-    withCredentials([string(credentialsId: tokenId, variable: 'token')]){
-      slackSend(channel: recipient, teamDomain: teamDomain, token: token,
-		color: 'danger', message: failureMsg)
-    }
-  } finally {
-    utils.removeCredentials(tokenId)
-  }
+def notifyUnstable() {
+  String msg = "${JOB_BASE_NAME} build is unstable. ${BUILD_URL}console"
+  utils.notifySlack(msg, 'warning')
 }
 
 return this

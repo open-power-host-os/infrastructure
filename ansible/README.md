@@ -62,15 +62,6 @@ artifacts to the configured remote server.
 	- Path to the SSH known keys for remote hosts, usually `~/.ssh/known_hosts`. 
 The local file is just copied to remote target.
 
-- `bvt-host.yaml` playbook
-
-	- Paths to SSH private and public keys used to communicate between master
-    and slave nodes.
-	- Path to the SSH private key used to upload artifacts to the configured
-    remote server.
-	- Path to the SSH known keys for remote hosts, usually
-    `~/.ssh/known_hosts`. The local file is just copied to remote target.
-
 Provide the data requested by the playbooks (e.g. Jenkins admin user name/password
 and SSH keys locations) and wait for automatic setup to finish.
 

@@ -186,36 +186,6 @@ python host_os.py \
   }
 }
 
-def runBVT() {
-  String PREVIOUS_YUM_REPO_FILE_URL =
-    "${RSYNC_URL_PREFIX}$params.UPLOAD_SERVER_PERIODIC_BUILDS_DIR_PATH/" +
-    "latest/hostos.repo"
-  String CURRENT_YUM_REPO_FILE_URL =
-    "${RSYNC_URL_PREFIX}$params.UPLOAD_SERVER_BUILDS_DIR_PATH/" +
-    "$buildStages.buildTimestamp/hostos.repo"
-
-  previousConfigParameter = ''
-  try {
-    utils.rsyncDownload(PREVIOUS_YUM_REPO_FILE_URL, 'previous_host_os.repo')
-    previousConfigParameter = '--previous-yum-config-file previous_host_os.repo'
-  } catch (hudson.AbortException exception) {
-    echo('Previous build not found, update test will be skipped.')
-  }
-
-  try {
-    utils.rsyncDownload(CURRENT_YUM_REPO_FILE_URL, 'current_host_os.repo')
-
-    sh """\
-sudo host-os-bvt \
-    --current-yum-config-file current_host_os.repo \
-    $previousConfigParameter \
-"""
-  } catch (Exception exception) {
-    echo('BVT execution failed')
-    currentBuild.result = 'UNSTABLE'
-  }
-}
-
 def commitToGitRepo() {
   String GITHUB_BOT_HTTP_URL =
     "ssh://git@github/$params.GITHUB_BOT_USER_NAME"

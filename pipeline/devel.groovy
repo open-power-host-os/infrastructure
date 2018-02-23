@@ -43,18 +43,6 @@ def execute(Boolean skipIfNoUpdates = false, releaseCategory = 'devel') {
             pipelineStages.createReleaseNotes(releaseCategory)
           }
 
-          stage('Run BVT') {
-            node('bvt_slave_label') {
-              pipelineStages.runBVT()
-            }
-          }
-
-          if (currentBuild.result == 'UNSTABLE') {
-            stage('Notify unstable') {
-              pipelineStages.notifyUnstable()
-            }
-          }
-
           stage('Commit to Git repository') {
             pipelineStages.commitToGitRepo()
           }

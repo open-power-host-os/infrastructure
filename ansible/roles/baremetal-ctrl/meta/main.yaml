@@ -1,6 +1,0 @@
----
-dependencies:
-  - role: epel
-  - role: pkg_install
-  - role: nginx
-  - role: dnsmasq

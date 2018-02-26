@@ -1,6 +1,0 @@
-default Automated Deployment
-
-label Automated Deployment
-        kernel http://{{ ansible_default_ipv4.address }}/{{ baremetal.mac_address }}/mnt/ppc/ppc64/vmlinuz
-        initrd http://{{ ansible_default_ipv4.address }}/{{ baremetal.mac_address }}/mnt/ppc/ppc64/initrd.img
-	append ip=lan0:dhcp::{{ baremetal.mac_address }} BOOTIF={{ baremetal.mac_address }} root=live:http://{{ ansible_default_ipv4.address }}/{{ baremetal.mac_address }}/mnt/LiveOS/squashfs.img repo=http://{{ ansible_default_ipv4.address }}/{{ baremetal.mac_address }}/mnt/ inst.ks=http://{{ ansible_default_ipv4.address }}/{{ baremetal.mac_address }}/install.ks

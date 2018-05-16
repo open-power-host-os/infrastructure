@@ -1,4 +1,10 @@
 pipelineParameters += [
+  CENTOS_ALTERNATE_MIRROR_RELEASE_URL: [
+    defaultValue: 'http://mirror.centos.org/altarch/7.5.1804',
+    description:
+      'URL up to the release component of a CentOS YUM repository ' +
+      'alternate mirror. Empty to use CentOS latest release ' +
+      'official repository.'],
   GITHUB_BOT_NAME: [
     defaultValue: constants.GITHUB_BOT_NAME,
     description:
